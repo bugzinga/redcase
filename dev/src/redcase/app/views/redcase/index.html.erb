@@ -80,5 +80,11 @@
     </span>
 </h2>
 
+<% if @version.nil? then %>
+    <div style="color: #bbbbbb; text-align: center">
+        (There is no <b>version</b> for this project. If you need to execute test cases please create some one...)
+    </div>
+<% end %>
+
 <!-- Creating plugin inner tabs -->
 <%= render_tabs get_plugin_tabs(@project) %>

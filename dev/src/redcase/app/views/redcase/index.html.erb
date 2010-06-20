@@ -1,0 +1,84 @@
+
+<% content_for :header_tags do %>
+
+    <!-- ExtJS -->
+    <%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
+    <!-- Redmine -->
+    <%= stylesheet_link_tag 'application' %>
+    <!-- Redcase -->
+    <%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
+
+    <!-- Flash chart -->
+    <%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
+    <!-- ExtJS -->
+    <%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
+    <%= javascript_include_tag 'ext-3.1.1/ext-all', :plugin => 'redcase' %>
+    <!-- Redcase -->
+    <%= javascript_include_tag 'scripts', :plugin => 'redcase' %>
+    
+<% end %>
+
+<!--
+    1. We need to save for using in javascript part:
+       a) Project identifier;
+       b) User rights for this plugin;
+       c) Other projects information to use it in menu 'Copy to' to reassign
+          test case to another project;
+    2. We need to create trees of test cases for further management and execution.
+-->
+<script type="text/javascript">
+
+    jsProjectId = <%= @project.id %>;
+    jsCanEdit = <%= User.current.allowed_to?(:edit_test_cases, @project) != false %>;
+    
+    Ext.onReady(function()
+    {
+        // Collecting information about other projects (to copy test cases)...
+        <% for op in @other_projects %>
+            jsCopyToMenuItems.push({ id: '<%= op.id %>', text: '<%= op.name %>', handler: onCopyTo });
+        <% end %>
+
+        // Creating ExtJS tree for test suite and case management ("Management" tab)...
+        buildTestSuiteTree(
+        {
+            url       : <%= get_url_for('index', @project.id) %>,
+            root      : <%= test_suite_to_json(@root).to_json %>,
+            tagId     : 'management_test_suite_tree_id',
+            draggable : true,
+            pre       : 'test-suite-tree'
+        });
+
+        // Creating ExtJS tree for execution suite management ("Management" tab)...
+        buildExecutionSuiteTree(
+        {
+            url       : <%= get_url_for('execlist', @project.id) %>,
+            root      : <%= execution_suite_to_json(@execroot).to_json %>,
+            tagId     : 'management_execution_suite_tree_id',
+            draggable : true,
+            pre       : 'management_execution_suite_tree'
+        });
+
+        // Creating ExtJS tree for test casees execution ("Execution" tab)...
+        buildExecutionTree(
+        {
+            url       : <%= get_url_for('execlist', @project.id) %>,
+            root      : <%= execution_suite_to_json(@execroot).to_json %>,
+            tagId     : 'execution-tree',
+            draggable : false,
+            pre       : 'execution-tree'
+        });
+    });
+
+</script>
+
+<% html_title "Test cases" %>
+
+<h2>Test cases
+    <!-- Temporary plugin version output (only for testing) -->
+    <span style="color: gray">
+        (Plugin version: <%= Redmine::Plugin.all.detect { |x| x.name == 'Redcase' }.version %>)
+    </span>
+</h2>
+
+<!-- Creating plugin inner tabs -->
+<%= render_tabs get_plugin_tabs(@project) %>

@@ -1,0 +1,11 @@
+
+<% fields_for :list2 do |f| %>
+    <%  @lists2 = ExecutionSuite.all.collect { |x| x if x.project == @project and x.parent == nil }.compact %>
+    Execution list: <%= f.select :id, @lists2.collect { |e| [ e.name, e.id ] }, :html => { :style => 'width: 100%'} %>
+    &nbsp;&nbsp;
+    Version: <%= select_tag 'version', options_for_select(Version.find_all_by_project_id(@project.id).collect { |res| res.name }) %>
+    &nbsp;&nbsp;
+    Environment: <%= select_tag 'environments', options_for_select(ExecutionEnvironment.find(:all, :conditions => "project_id = #{@project.id}", :order => '`name` asc').collect { |res| [res.name, res.id] }) %>
+    <hr/>
+    <%= observe_field :list2_id, :function => 'update_exe2_tree()', :with => 'list2_id' %>
+<% end %>

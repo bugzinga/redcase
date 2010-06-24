@@ -133,7 +133,18 @@ module RedcaseHelper
             'leaf'         => true,
             'status'       => test_case.issue.status,
             'draggable'    => true,
-            'qtipCfg'      => { :cls => 'test', :width => '500', :closable => 'true', :text => '"' + test_case.issue.subject + '"<br/><br/><b>Description:</b><br/>' + test_case.issue.description + '<br/><b>Priority:</b> ' + test_case.issue.priority.name + '<br/><b>Author:</b> ' + test_case.issue.author.name + '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'), :title => ('Issue #' + test_case.issue.id.to_s), :dismissDelay => 30000 },
+            'qtipCfg'      => {
+                :cls => 'test',
+                :width => '500',
+                :closable => 'true',
+                :text => '"' + test_case.issue.subject + '"<br/>' +
+                    (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + test_case.issue.description)) +
+                    '<br/><b>Priority:</b> ' + test_case.issue.priority.name +
+                    '<br/><b>Author:</b> ' + test_case.issue.author.name +
+                    '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),
+                :title => ('Issue #' + test_case.issue.id.to_s),
+                :dismissDelay => 30000
+            },
             'counts'       => 0, #get_test_suite_counts_tree(find_test_suite_root(test_suite)).to_json,
             'counts_execs' => 0 #get_test_suite_counts_trees(self).to_json
         }

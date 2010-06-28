@@ -201,7 +201,7 @@ class RedcaseController < ApplicationController
             @results << found
         end
         @results = @results.compact
-        render :partial => 'adv_table'
+        render :partial => 'report_table'
     end
 
     def execute
@@ -388,7 +388,7 @@ class RedcaseController < ApplicationController
 
     def update_exelists2
         @list2 = ExecutionSuite.find_by_project_id(params[:project_id])
-        render :partial => 'list2'
+        render :partial => 'execution_list'
     end
 
     def graph
@@ -434,13 +434,13 @@ class RedcaseController < ApplicationController
     def update_combos
         @environment = ExecutionEnvironment.find(params[:environment_id])
         @version = Version.find(params[:version_id])
-        render :partial => 'combos'
+        render :partial => 'report_combos'
     end
 
     def update_combos2
         @environment = ExecutionEnvironment.find(params[:environment_id])
         @version = Version.find(params[:version_id])
-        render :partial => 'download_button'
+        render :partial => 'report_download_button'
     end
 
     private

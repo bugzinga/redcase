@@ -200,12 +200,12 @@ module RedcaseHelper
 		ExecutionEnvironment.find_all_by_project_id(project.id)
 	end
 
-	def update_execution_suite_link(icon, act)
-        link_to_remote image_tag(icon, :plugin => 'redcase', :size=> '20x20', :style => 'vertical-align: middle'), :url => { :action => 'update_exelists', :project_id => @project.id, :act => act }, :update => :management_execution_suites_id, :submit => 'list_form', :complete => 'full()'
+	def update_execution_suite_link(icon, act, size = '20x20')
+        link_to_remote image_tag(icon, :plugin => 'redcase', :size=> size, :style => 'vertical-align: middle'), :url => { :action => 'update_exelists', :project_id => @project.id, :act => act }, :update => :management_execution_suites_id, :submit => 'list_form', :complete => 'full()'
     end
 
-	def update_environment_link(icon, act)
-        link_to_remote image_tag(icon, :plugin => 'redcase', :size=> '20x20', :style => 'vertical-align: middle'), :url => { :action => 'update_environment', :project_id => @project.id, :act => act }, :update => :management_environments_id, :submit => 'environment_form_id'
+	def update_environment_link(icon, act, size = '20x20')
+        link_to_remote image_tag(icon, :plugin => 'redcase', :size=> size, :style => 'vertical-align: middle'), :url => { :action => 'update_environment', :project_id => @project.id, :act => act }, :update => :management_environments_id, :submit => 'environment_form_id'
     end
 
 end

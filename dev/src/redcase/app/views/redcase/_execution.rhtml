@@ -7,7 +7,7 @@
                 <% @list2 = ExecutionSuite.all.detect { |x| x.project == @project and x.parent == nil } %>
                 <% form_for :list2, :url => { :action => 'update_exelists', :project_id => @project.id } do |f| %>
                     <div id="lists2_id">
-                        <%= render :partial => 'list2' %>
+                        <%= render :partial => 'execution_list' %>
                     </div>
                     <div id='execution-tree' style="border: 1px #dddddd"/>
                 <% end %>

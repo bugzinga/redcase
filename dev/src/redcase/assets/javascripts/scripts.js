@@ -619,7 +619,7 @@ xcontextMenu = new Ext.menu.Menu(
 	items:
 	[
 	{
-		text    : 'New',
+		text    : 'Add suite',
 		handler : onxCreate
 	},
 	{
@@ -933,7 +933,7 @@ function initSuiteContextMenu()
 	items = [];
 
 	items.push({
-		text: 'New',
+		text: 'Add suite',
 		handler: onCreate
 	});
 
@@ -1011,7 +1011,7 @@ function update_exe2_tree()
 		success : function(responseObject)
 		{
 			rs = Ext.decode(responseObject.responseText);
-			rs['prefix'] = 'execution-tree';
+			rs['prefix'] = 'execution_test_cases_tree';
 			exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
 			exec2Tree.getLoader().load(exec2Tree.getRootNode());
 			exec2Tree.getRootNode().expand();

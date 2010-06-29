@@ -4,6 +4,78 @@
 	border-width: 0px;
 }
 
+.execution-layout-table
+{
+	border-collapse: collapse;
+	border: 1px #bbbbbb solid;
+	width: 100%;
+	height: 450px;
+	table-layout: fixed
+}
+
+.execution-layout-table h3 select
+{
+	width: 100px;
+}
+
+.execution-layout-table h3
+{
+	border-width: 0px;
+}
+
+.execution-layout-table tr td
+{
+	padding: 8px;
+	width: 50%;
+	border: 1px #cccccc dashed;
+	vertical-align: top;
+}
+
+.execution-layout-table .last-cell
+{
+	border-right-width: 0px;
+}
+
+#execution_test_cases_id h3
+{
+	display: inline;
+}
+
+#execution-settings-suite
+{
+	color: navy;
+}
+
+#execution-settings-suite select
+{
+	border: 1px navy solid;
+}
+
+#execution-settings-version
+{
+	color: purple;
+}
+
+#execution-settings-version select
+{
+	border: 1px purple solid;
+}
+
+#execution-settings-environment
+{
+	color: maroon;
+}
+
+#execution-settings-environment select
+{
+	border: 1px maroon solid;
+}
+
+#execution_test_case_info_id h3
+{
+	color: rgb(48, 96, 48);
+}
+
 .management-layout-table
 {
 	border-collapse: collapse;

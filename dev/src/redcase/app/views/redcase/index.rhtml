@@ -63,9 +63,9 @@
         {
             url       : <%= get_url_for('execlist', @project.id) %>,
             root      : <%= execution_suite_to_json(@execroot).to_json %>,
-            tagId     : 'execution-tree',
+            tagId     : 'execution_test_cases_tree_id',
             draggable : false,
-            pre       : 'execution-tree'
+            pre       : 'execution_test_cases_tree'
         });
     });
 

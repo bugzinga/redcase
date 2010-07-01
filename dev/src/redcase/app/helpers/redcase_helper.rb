@@ -126,10 +126,11 @@ module RedcaseHelper
 
     def test_case_to_json(test_case)
         {
+
             'issue_id'     => test_case.issue_id,
             'text'         => test_case.issue.subject,
             'editable'     => false,
-            'desc'         => test_case.issue.description, #(textilizable(test_case.issue.description) if test_case.issue.description),
+            'desc'         => (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description),
             'leaf'         => true,
             'status'       => test_case.issue.status,
             'draggable'    => true,
@@ -138,7 +139,7 @@ module RedcaseHelper
                 :width => '500',
                 :closable => 'true',
                 :text => '"' + test_case.issue.subject + '"<br/>' +
-                    (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + test_case.issue.description)) +
+                    (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description))) +
                     '<br/><b>Priority:</b> ' + test_case.issue.priority.name +
                     '<br/><b>Author:</b> ' + test_case.issue.author.name +
                     '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),

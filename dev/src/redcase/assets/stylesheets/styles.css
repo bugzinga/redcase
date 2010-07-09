@@ -438,3 +438,9 @@ a:hover img
 {
         text-decoration:none;
 }
+
+.ext-ie UL.x-tree-node-ct
+{
+	line-height:inherit;
+        font-size:inherit;
+}

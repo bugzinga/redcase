@@ -150,7 +150,8 @@ class RedcaseController < ApplicationController
             nts.reload
         }
         ois = Issue.find(params[:id])
-        is = Issue.create(:project_id => params[:project_id], :subject => ois.subject, :tracker_id => ois.tracker_id, :author_id => ois.author_id)
+        #is = Issue.create(:project_id => params[:project_id], :subject => ois.subject, :tracker_id => ois.tracker_id, :author_id => ois.author_id)
+        is = Issue.create(:project_id => params[:project_id], :tracker_id => ois.tracker_id, :author_id => ois.author_id, :status_id => ois.status_id, :priority => IssuePriority.all.first, :subject => ois.subject)
         TestCase.create(:issue => is, :test_suite => nts)
         redirect_to :action => "index", :params => { "project_id" => params[:real_project_id] }
     end

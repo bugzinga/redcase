@@ -544,6 +544,36 @@ function onxCreate(b, e)
 	});
 }
 
+
+function onxView()
+{
+    //Ext.Ajax.disableCaching = false;
+    
+    if (currentNode.parentNode == null)
+	{
+		return;
+	}
+        parentNode = currentNode.parentNode;
+	conn = new Ext.data.Connection();
+        conn.disableCaching = false;
+	if (currentNode.isLeaf())
+	{
+        
+            window.open('issues/'+currentNode.attributes.issue_id, 'test')
+        }
+
+
+        
+
+}
+
+
+
+
+
+
+
+
 function onxDelete()
 {
 	if (xcurrentNode.parentNode == null)
@@ -640,10 +670,11 @@ function suiteTreeContextHandler(node)
 	|| ((node.parentNode.parentNode == null) && (node.text == ".Unsorted" || node.text == ".Obsolete"));
 
 	contextMenu.items.get(1).setVisible(!isNotDeletable);
+        contextMenu.items.get(2).setVisible(node.isLeaf());
 
-	if(contextMenu.items.getCount() == 3)
+	if(contextMenu.items.getCount() == 4)
 	{
-		contextMenu.items.get(2).setVisible(node.isLeaf());
+		contextMenu.items.get(3).setVisible(node.isLeaf());
 	}
 
 	contextMenu.show(node.ui.getAnchor());
@@ -942,6 +973,12 @@ function initSuiteContextMenu()
 		handler: onDelete
 	});
 
+        items.push({
+               text: 'View',
+	       handler: onxView
+
+        });
+
 	if (jsCopyToMenuItems.length > 0)
 	{
 		items.push({
@@ -953,6 +990,7 @@ function initSuiteContextMenu()
 	contextMenu = new Ext.menu.Menu({
 		items: items
 	});
+        
 }
 
 function update_exe_tree()

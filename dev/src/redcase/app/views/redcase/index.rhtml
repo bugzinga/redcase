@@ -35,7 +35,7 @@
     {
         // Collecting information about other projects (to copy test cases)...
         <% for op in @other_projects %>
-            jsCopyToMenuItems.push({ id: '<%= op.id %>', text: '<%= op.name %>', handler: onCopyTo });
+            jsCopyToMenuItems.push({ id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo });
         <% end %>
 
         // Creating ExtJS tree for test suite and case management ("Management" tab)...

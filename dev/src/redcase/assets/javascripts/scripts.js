@@ -32,7 +32,8 @@ Ext.override(Ext.tree.TreeNodeUI,
 		var color;
 		if (n.isLeaf())
 		{
-			color = (n.attributes.status.name == 'In Progress') ? 'green' : 'brown';
+		        checked:true;
+                        color = (n.attributes.status.name == 'In Progress') ? 'green' : 'brown';
 		}
 
 		this.indentMarkup = n.parentNode ? n.parentNode.ui.getChildIndent() : '';
@@ -166,9 +167,45 @@ function buildExecutionSuiteTree(params)
 
 function buildExecutionTree(params)
 {
-	exec2Tree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
+	exec2Tree = getCheckedTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	exec2Tree.getSelectionModel().on('selectionchange', onExecSelectionChange);
 }
+
+function getCheckedTree(url, root, tagId, draggable, pre)
+{
+	tree = new Ext.tree.TreePanel(
+	{
+		useArrows       : false,
+		autoScroll      : true,
+		animate         : false,
+		enableDD        : draggable,
+		containerScroll : true,
+		border          : false,
+		root            : new Ext.tree.AsyncTreeNode(root),
+                
+
+		loader          : new Ext.tree.TreeLoader(
+		{
+			url             : url,
+			preloadChildren : true,
+			baseParams      :
+			{
+				format: 'json'
+			}
+		})//,
+		//height: ((tagId == 'management_test_suite_tree_id') ? 410 : 360)
+	});
+
+	tree.getRootNode().attributes.prefix = pre;
+	tree.render(tagId);
+	tree.root.expand();
+
+	return tree;
+}
+
+
+
+
 
 function getTree(url, root, tagId, draggable, pre)
 {
@@ -689,6 +726,10 @@ function execTreeContextHandler(node)
 	{
 		xcontextMenu.items.get(0).setVisible(false);
 	}
+        else
+        {
+                xcontextMenu.items.get(0).setVisible(true);
+        }
 
 	xcontextMenu.items.get(1).setVisible(node.parentNode != null);
 	xcontextMenu.show(node.ui.getAnchor());
@@ -777,13 +818,15 @@ function findNext(node)
 	}
 	else {
 		next.expand();
+                
 		for (i = 0; i < next.childNodes.length; i++) {
 			child = next.childNodes[i];
 			if (child.isLeaf())
 			{
 				return child;
 			}
-			nextChild = findNext(child);
+			child.expand();
+                        nextChild =  findNested(child);
 			if (nextChild) {
 				return nextChild;
 			}
@@ -792,9 +835,41 @@ function findNext(node)
 	}
 }
 
+function findNested(node)
+{
+	next = node;
+
+	if (!next) {
+		return node.parentNode ? findNext(node.parentNode) : null;
+	}
+	else if (next.isLeaf())
+	{
+		return next;
+	}
+	else {
+		next.expand();
+
+		for (i = 0; i < next.childNodes.length; i++) {
+			child = next.childNodes[i];
+			if (child.isLeaf())
+			{
+				return child;
+			}
+			child.expand();
+                        nextChild = findNext(child);
+			if (nextChild) {
+				return nextChild;
+			}
+		}
+		return findNext(next);
+	}
+}
+
+
 function execute() {
 	node = exec2Tree.getSelectionModel().getSelectedNode();
-	result = Ext.get('results');
+
+        result = Ext.get('results');
 	envs = Ext.get('environments');
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');

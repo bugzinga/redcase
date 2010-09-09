@@ -32,8 +32,8 @@ Ext.override(Ext.tree.TreeNodeUI,
 		var color;
 		if (n.isLeaf())
 		{
-		        checked:true;
-                        color = (n.attributes.status.name == 'In Progress') ? 'green' : 'brown';
+			checked:true;
+		color = (n.attributes.status.name == 'In Progress') ? 'green' : 'brown';
 		}
 
 		this.indentMarkup = n.parentNode ? n.parentNode.ui.getChildIndent() : '';
@@ -43,33 +43,33 @@ Ext.override(Ext.tree.TreeNodeUI,
 		href = a.href ? a.href : Ext.isGecko ? "" : "#",
 		buf =
 		[
-            '<li class="x-tree-node">',
-                '<div ext:tree-node-id="', n.id, '" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls, '" unselectable="on">',
-                    '<span class="x-tree-node-indent">', this.indentMarkup, "</span>",
-                    '<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
-                    '<img src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',
-                        (n.isLeaf() && n.attributes.status.name == "In Progress")
-                            ? ' in-progress'
-                            : ' others',
-                        (a.icon ? " x-tree-node-inline-icon" : ""),
-                        (a.iconCls ? " " + a.iconCls : ""),
-                        '" unselectable="on" />',
-                    cb ? ('<input class="x-tree-node-cb" type="checkbox" ' + (a.checked ? 'checked="checked" />' : '/>')) : '',
-                    '<a hidefocus="on" class="x-tree-node-anchor" href="', href, '" tabIndex="1" ', a.hrefTarget ? ' target="' + a.hrefTarget + '"' : "", '>',
-                        '<span unselectable="on"',
-                            (n.isLeaf() ? ( (n.attributes.status.name != "In Progress") ? ' style="color: lightgray"' : '') : ''),
-                        '>',
-                            n.text,
-/*
+		'<li class="x-tree-node">',
+		'<div ext:tree-node-id="', n.id, '" class="x-tree-node-el x-tree-node-leaf x-unselectable ', a.cls, '" unselectable="on">',
+		'<span class="x-tree-node-indent">', this.indentMarkup, "</span>",
+		'<img src="', this.emptyIcon, '" class="x-tree-ec-icon x-tree-elbow" />',
+		'<img src="', a.icon || this.emptyIcon, '" class="x-tree-node-icon',
+		(n.isLeaf() && n.attributes.status.name == "In Progress")
+		? ' in-progress'
+		: ' others',
+		(a.icon ? " x-tree-node-inline-icon" : ""),
+		(a.iconCls ? " " + a.iconCls : ""),
+		'" unselectable="on" />',
+		cb ? ('<input class="x-tree-node-cb" type="checkbox" ' + (a.checked ? 'checked="checked" />' : '/>')) : '',
+		'<a hidefocus="on" class="x-tree-node-anchor" href="', href, '" tabIndex="1" ', a.hrefTarget ? ' target="' + a.hrefTarget + '"' : "", '>',
+		'<span unselectable="on"',
+		(n.isLeaf() ? ( (n.attributes.status.name != "In Progress") ? ' style="color: lightgray"' : '') : ''),
+		'>',
+		n.text,
+		/*
                                 (!n.isLeaf()
                                     ? "<span id='" + root.attributes.prefix + "#" + n.attributes.id + "' style='color: gray'>(" + n.attributes.child_tc_count + "/" + n.attributes.all_tc_count + ")</span>"
                                     : ""), //<span unselectable='on' style='font-size: 8px; vertical-align: super; color: " + color + "'>" + n.attributes.status.name + "</span>"),
 */
-                        "</span>",
-                    '</a>',
-                '</div>',
-                '<ul class="x-tree-node-ct" style="display:none;"></ul>',
-            '</li>'
+		"</span>",
+		'</a>',
+		'</div>',
+		'<ul class="x-tree-node-ct" style="display:none;"></ul>',
+		'</li>'
 		].join('');
 
 		if(bulkRender !== true && n.nextSibling && (nel = n.nextSibling.ui.getEl()))
@@ -99,7 +99,7 @@ Ext.override(Ext.tree.TreeNodeUI,
 
 		this.anchor = cs[index];
 		this.textNode = cs[index].firstChild;
-/*
+	/*
 		var obj;
 
 		if (tree == suiteTree)
@@ -193,7 +193,7 @@ function getCheckedTree(url, root, tagId, draggable, pre)
 				format: 'json'
 			}
 		})//,
-		//height: ((tagId == 'management_test_suite_tree_id') ? 410 : 360)
+	//height: ((tagId == 'management_test_suite_tree_id') ? 410 : 360)
 	});
 
 	tree.getRootNode().attributes.prefix = pre;
@@ -227,7 +227,7 @@ function getTree(url, root, tagId, draggable, pre)
 				format: 'json'
 			}
 		})//,
-		//height: ((tagId == 'management_test_suite_tree_id') ? 410 : 360)
+	//height: ((tagId == 'management_test_suite_tree_id') ? 410 : 360)
 	});
 
 	tree.getRootNode().attributes.prefix = pre;
@@ -277,7 +277,7 @@ function onMove(dropEvent)
 				dropEvent.dropNode.remove(true);
 			},
 			"Test case '" + dropEvent.dropNode.text + "' can't be moved"
-		);
+			);
 	}
 	else
 	{
@@ -297,7 +297,7 @@ function onMove(dropEvent)
 				dropEvent.dropNode.remove(true);
 			},
 			"Test suite '" + dropEvent.dropNode.text + "' can't be moved"
-		);
+			);
 	}
 
 	dropEvent.cancel = true;
@@ -584,20 +584,20 @@ function onxCreate(b, e)
 
 function onxView()
 {
-    //Ext.Ajax.disableCaching = false;
+	//Ext.Ajax.disableCaching = false;
     
-    if (currentNode.parentNode == null)
+	if (currentNode.parentNode == null)
 	{
 		return;
 	}
-        parentNode = currentNode.parentNode;
+	parentNode = currentNode.parentNode;
 	conn = new Ext.data.Connection();
-        conn.disableCaching = false;
+	conn.disableCaching = false;
 	if (currentNode.isLeaf())
 	{
         
-            window.open('issues/'+currentNode.attributes.issue_id, 'test')
-        }
+		window.open('issues/'+currentNode.attributes.issue_id, 'test')
+	}
 
 
         
@@ -707,7 +707,7 @@ function suiteTreeContextHandler(node)
 	|| ((node.parentNode.parentNode == null) && (node.text == ".Unsorted" || node.text == ".Obsolete"));
 
 	contextMenu.items.get(1).setVisible(!isNotDeletable);
-        contextMenu.items.get(2).setVisible(node.isLeaf());
+	contextMenu.items.get(2).setVisible(node.isLeaf());
 
 	if(contextMenu.items.getCount() == 4)
 	{
@@ -726,10 +726,10 @@ function execTreeContextHandler(node)
 	{
 		xcontextMenu.items.get(0).setVisible(false);
 	}
-        else
-        {
-                xcontextMenu.items.get(0).setVisible(true);
-        }
+	else
+	{
+		xcontextMenu.items.get(0).setVisible(true);
+	}
 
 	xcontextMenu.items.get(1).setVisible(node.parentNode != null);
 	xcontextMenu.show(node.ui.getAnchor());
@@ -826,7 +826,7 @@ function findNext(node)
 				return child;
 			}
 			child.expand();
-                        nextChild =  findNested(child);
+			nextChild =  findNested(child);
 			if (nextChild) {
 				return nextChild;
 			}
@@ -856,7 +856,7 @@ function findNested(node)
 				return child;
 			}
 			child.expand();
-                        nextChild = findNext(child);
+			nextChild = findNext(child);
 			if (nextChild) {
 				return nextChild;
 			}
@@ -868,8 +868,7 @@ function findNested(node)
 
 function execute() {
 	node = exec2Tree.getSelectionModel().getSelectedNode();
-
-        result = Ext.get('results');
+	result = Ext.get('results');
 	envs = Ext.get('environments');
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');
@@ -926,11 +925,17 @@ function onExecSelectionChange(model, node)
 			},
 			success: function(responseObject) {
 				Ext.get('exec_descr_id').setDisplayed(Ext.decode(responseObject.responseText).desc ? 'block' : 'none');
-                                desc = Ext.get('test-case-desc');
-                                subj = Ext.get('test-case-subj');
-                                subj.update(Ext.decode(responseObject.responseText).text)
+				desc = Ext.get('test-case-desc');
+				subj = Ext.get('test-case-subj');
+				subj.update(Ext.decode(responseObject.responseText).text)
 				desc.update(Ext.decode(responseObject.responseText).desc);
 				edit.setVisible(true);
+
+				results = Ext.get('results');
+				results.set( {
+					value: 'Passed'
+				}, false );
+
 				version = Ext.get('version');
 				conn.request({
 					url: 'redcase/get_executions',
@@ -1048,11 +1053,11 @@ function initSuiteContextMenu()
 		handler: onDelete
 	});
 
-        items.push({
-               text: 'View',
-	       handler: onxView
+	items.push({
+		text: 'View',
+		handler: onxView
 
-        });
+	});
 
 	if (jsCopyToMenuItems.length > 0)
 	{

@@ -12,7 +12,7 @@ Redmine::Plugin.register :redcase do
     name        'Redcase'
     description 'Test cases management plugin for Redmine'
     author      'QA Project'
-    version     '1.0 alpha 0.129'
+    version     '1.0 alpha 0.130'
 
     permission  :view_test_cases,
                 :redcase => [
@@ -104,7 +104,7 @@ Redmine::Plugin.register :redcase do
                 {
                     :param   => :project_id,
                     :if      => proc { |p|
-                        (User.current.allowed_to?(:view_test_cases, p) or User.current.allowed_to?(:edit_test_cases, p))
+                        (User.current.allowed_to?(:view_test_cases, p) or User.current.allowed_to?(:edit_test_cases, p)) and (p.trackers.select { |t| t.name == 'Test case' }.length > 0)
                     },
                     :caption => 'Test cases',
                     :after   => :new_issue

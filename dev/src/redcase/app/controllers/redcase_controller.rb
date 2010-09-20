@@ -19,6 +19,20 @@ class RedcaseController < ApplicationController
         @environment = execution_environment_default(@project)
         get_graph_core(@version.id, @environment.id) if not @version.nil?
         all_issues = Issue.find_all_by_project_id(@project.id, :include => [ :tracker, :test_case ]);
+        obsoleted_issues = all_issues.select { |issue| (issue.tracker.name == "Test case") and (issue.status.name == "Obsolete")}
+        obsoleted_issues.each { |issue|
+		if not issue.test_case.nil?
+			if not issue.test_case.test_suite.name == ".Obsolete"
+				issue.test_case.test_suite = test_suite_obsolete(Project.find(params[:project_id]))
+				issue.test_case.save();
+			end
+			if not issue.test_case.execution_suites.nil?
+				issue.test_case.execution_suites.each { |x| x.test_cases.delete(issue.test_case) }
+			end
+        end
+		
+		}
+
         unlinked_issues = all_issues.select { |issue| (issue.tracker.name == "Test case") and (issue.test_case.nil?) }
         unlinked_issues.each { |issue|
             x = TestCase.create(:issue => issue, :test_suite => @root.children.detect { |o| o.name == ".Unsorted" } )

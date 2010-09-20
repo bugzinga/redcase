@@ -876,7 +876,7 @@ function execute() {
 	Element.show('ajax-indicator');
 	conn.request({
 		url: 'redcase/execute',
-		method: 'GET',
+		method: 'POST',
 		params: {
 			"id": node.attributes.issue_id,
 			"project_id": jsProjectId,

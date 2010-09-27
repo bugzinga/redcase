@@ -4,9 +4,9 @@
 
     <tr>
 
-        <td colspan="2">&nbsp;</td>
+        <td>&nbsp;</td>
 
-        <td align="right">
+        <td align="right" colspan="2">
             <% form_tag({ :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now }, :id => 'spec_id') do %>
                 <%= link_to image_tag('test_spec.png', :plugin => 'redcase', :size=> '180x36', :style => 'float: right'),
                   { :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now },

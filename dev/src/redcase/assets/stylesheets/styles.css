@@ -145,6 +145,11 @@
 	border: 1px maroon solid;
 }
 
+#management_environments_id
+{
+	border-right-width: 0px;
+}
+
 #management_environments_id h3
 {
 	color: purple;
@@ -165,11 +170,6 @@
 	padding: 8px;
 	width: 33%;
 	border: 1px #cccccc dashed;
-}
-
-.management-layout-table .last-cell
-{
-	border-right-width: 0px;
 }
 
 .no_underline:hover

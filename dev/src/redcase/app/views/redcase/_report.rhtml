@@ -1,23 +1,32 @@
 
-<table width="100%" style="border-collapse: collapse">
+<!-- "Report" tab view -->
+<table class="report-layout-table">
+
     <tr>
+
         <td colspan="2">&nbsp;</td>
+
         <td align="right">
             <% form_tag({ :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now }, :id => 'spec_id') do %>
                 <%= link_to image_tag('test_spec.png', :plugin => 'redcase', :size=> '180x36', :style => 'float: right'),
-                            { :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now },
-                            { :class => 'no_underline', :submit => 'spec_id' } %>
+                  { :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now },
+                  { :class => 'no_underline', :submit => 'spec_id' } %>
             <% end %>
             <% form_tag({ :action =>  :export_to_excel, :project_id => @project.id, :time => Time.now }) do %>
                 <%= link_to image_tag('full_rep.png', :plugin => 'redcase', :size=> '105x36', :style => 'float: right'),
-                            { :action =>  :export_to_excel, :project_id => @project.id, :time => Time.now },
-                            { :class => 'no_underline', :submit => 'spec_id'} %>
+                  { :action =>  :export_to_excel, :project_id => @project.id, :time => Time.now },
+                  { :class => 'no_underline', :submit => 'spec_id'} %>
             <% end %>
         </td>
+
         <td>&nbsp;</td>
+
     </tr>
+
     <tr valign="top">
+
         <td>&nbsp;</td>
+
         <td align="center" class="back" style="border: 1px #bbbbbb solid; width: 550px">
             <div id="graph_id">
                 <table width="100%">
@@ -34,11 +43,14 @@
                 </div>
             </div>
         </td>
-        <td align="center" class="y-back" style="border: 1px #bbbbbb solid; width: 550px; padding: 0px">
-            <div id="table_id" style="width: 100%">
-                <%= render :partial => 'report_table' %>
-            </div>
+
+        <!-- Test case execution results table -->
+        <td id="report_results_table_id">
+            <%= render :partial => 'report_results' %>
         </td>
+
         <td>&nbsp;</td>
+
     </tr>
+
 </table>

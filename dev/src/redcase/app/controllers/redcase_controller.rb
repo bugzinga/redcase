@@ -216,7 +216,7 @@ class RedcaseController < ApplicationController
             @results << found
         end
         @results = @results.compact
-        render :partial => 'report_table'
+        render :partial => 'report_results'
     end
 
     def execute

@@ -1,4 +1,20 @@
 
+#report_results_table_id
+{
+	text-align: center;
+	background-image: url('../images/y.jpg');
+	background-repeat: repeat-x;
+	border: 1px #bbbbbb solid;
+	width: 550px;
+	padding: 0px;
+}
+
+.report-layout-table
+{
+	border-collapse: collapse;
+	width: 100%;
+}
+
 #execution_test_cases_tree_id
 {
 	overflow: auto;

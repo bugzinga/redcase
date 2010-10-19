@@ -276,10 +276,13 @@ class RedcaseController < ApplicationController
         versions = Version.find(params[:version_id])
         environments = ExecutionEnvironment.find(params[:environment_id])
         rows = []
-        rows << ([""] +  ["#{versions.name}"+"(#{environments.name})"] + ["Comment"]).flatten
-        test_cases.each { |test_case|
-            row = []
-            row << "##{test_case.issue.id}: #{test_case.issue.subject}"
+        rows << (["ID"] + ["Suite"] + ["Title"] + ["#{versions.name}"+"(#{environments.name})"] + ["Comment"]).flatten
+		test_cases = test_cases.sort! { |a, b| a.test_suite.name <=> b.test_suite.name }
+		test_cases.each { |test_case|
+           	row = []
+			row << "##{test_case.issue.id}"
+			row << test_case.test_suite.name
+            row << "#{test_case.issue.subject}"
            
             found = ExecutionJournal.find_by_test_case_id_and_environment_id_and_version_id(test_case.id, environments.id, versions.id, :order => 'created_on desc')
             row << ((not found) ? "Not Executed" : found.result.name)

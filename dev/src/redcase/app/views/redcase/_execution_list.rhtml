@@ -10,7 +10,7 @@
         </h3>
         <h3 id="execution-settings-version">
             Version:
-            <%= select_tag 'version', options_for_select(Version.find_all_by_project_id(@project.id).collect { |res| res.name } ) %>
+            <%= select_tag 'version', options_for_select(Version.find_all_by_project_id(@project.id).collect { |res| res.name }, @verison.name ) %>
         </h3>
         <h3 id="execution-settings-environment">
             Environment:

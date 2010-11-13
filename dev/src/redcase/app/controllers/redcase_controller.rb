@@ -406,6 +406,7 @@ class RedcaseController < ApplicationController
 
     def update_exelists2
         @list2 = ExecutionSuite.find_by_project_id(params[:project_id])
+        @version = Version.find_by_project_id(params[:project_id], :order => 'created_on desc')
         render :partial => 'execution_list'
     end
 

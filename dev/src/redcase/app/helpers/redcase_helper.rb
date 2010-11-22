@@ -209,4 +209,8 @@ module RedcaseHelper
         link_to_remote image_tag(icon, :plugin => 'redcase', :size=> size, :style => 'vertical-align: middle'), :url => { :action => 'update_environment', :project_id => @project.id, :act => act }, :update => :management_environments_id, :submit => 'environment_form_id'
     end
 
+    def get_last_version(project_id)
+        Version.find_by_project_id(project_id, :order => 'created_on desc')
+    end
+
 end

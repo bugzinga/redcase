@@ -15,7 +15,7 @@ class RedcaseController < ApplicationController
         @other_projects = Project.find(:all, :conditions => "id <> #{@project.id}")
         @root = test_suite_root(@project)
         @execroot = execution_suite_root(@project)
-        @version = Version.find_by_project_id(@project.id, :order => 'created_on desc')
+        @version = get_last_version(@project)
         @environment = execution_environment_default(@project)
         get_graph_core(@version.id, @environment.id) if not @version.nil?
         all_issues = Issue.find_all_by_project_id(@project.id, :include => [ :tracker, :test_case ]);
@@ -406,7 +406,7 @@ class RedcaseController < ApplicationController
 
     def update_exelists2
         @list2 = ExecutionSuite.find_by_project_id(params[:project_id])
-        @version = Version.find_by_project_id(params[:project_id], :order => 'created_on desc')
+        @version = get_last_version(params[:project_id])
         render :partial => 'execution_list'
     end
 

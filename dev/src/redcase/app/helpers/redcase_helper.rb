@@ -206,7 +206,7 @@ module RedcaseHelper
     end
 
 	def update_environment_link(icon, act, size = '20x20')
-        link_to_remote image_tag(icon, :plugin => 'redcase', :size=> size, :style => 'vertical-align: middle'), :url => { :action => 'update_environment', :project_id => @project.id, :act => act }, :update => :management_environments_id, :submit => 'environment_form_id'
+        link_to_remote image_tag(icon, :plugin => 'redcase', :size=> size, :style => 'vertical-align: middle'), :url => { :action => 'update_environment', :project_id => @project.id, :act => act }, :update => :management_environments_id, :submit => 'environment_form_id', :complete => 'full()'
     end
 
     def get_last_version(project_id)

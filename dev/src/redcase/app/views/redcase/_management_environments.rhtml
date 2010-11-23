@@ -3,7 +3,7 @@
 <% environments = get_environments_by_project(@project) %>
 
 <!-- AJAX form to manage test environments -->
-<% remote_form_for :env, :url => { :action => 'update_environment', :project_id => @project.id, :act => 'save' }, :update => :management_environments_id, :html => { :id => 'environment_form_id' }  do |f| %>
+<% remote_form_for :env, :url => { :action => 'update_environment', :project_id => @project.id, :act => 'save' }, :update => :management_environments_id, :complete => 'full()', :html => { :id => 'environment_form_id' }  do |f| %>
 	<h3>
         Environment: <%= f.select :id, environments.collect { |e| [ e.name, e.id ] } %>
         <%= observe_field :env_id, :url => { :action => 'update_environment', :project_id => @project.id }, :with => 'env_id', :update => :management_environments_id %>

@@ -8,6 +8,11 @@
     full = function() {
         update_exe_tree();
         update2exe();
+        updateReport();
+    }
+
+    updateReport = function() {
+        <%= remote_function :url => { :action => 'update_combos', :project_id => @project.id, :environment_id => @environment.id, :version_id => @version.id }, :update => "combos_id" %>
     }
     
 </script>

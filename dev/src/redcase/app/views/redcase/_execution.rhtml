@@ -27,7 +27,7 @@
                 <%= text_area_tag 'exec-comment', nil, :rows => 4, :style => 'width: 95%' %>
                 <br/>
                 Result:
-                <%= select_tag 'results', options_for_select(ExecutionResult.find(:all, :order => '`order` asc').collect { |res| res.name }) %>
+                <%= select_tag 'results', options_for_select(ExecutionResult.find(:all, :order => 'order_num asc').collect { |res| res.name }) %>
                 &nbsp;
                 <%= submit_tag 'Save', :onclick => 'execute()' %>
                 <br/>

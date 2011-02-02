@@ -14,7 +14,7 @@
         </h3>
         <h3 id="execution-settings-environment">
             Environment:
-            <%= select_tag 'environments', options_for_select(ExecutionEnvironment.find(:all, :conditions => "project_id = #{@project.id}", :order => '`name` asc').collect { |res| [res.name, res.id] }) %>
+            <%= select_tag 'environments', options_for_select(ExecutionEnvironment.find(:all, :conditions => "project_id = #{@project.id}", :order => 'name asc').collect { |res| [res.name, res.id] }) %>
         </h3>
         <%= observe_field :list2_id, :function => 'update_exe2_tree()', :with => 'list2_id' %>
     </div>

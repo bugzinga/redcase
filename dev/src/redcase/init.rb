@@ -12,7 +12,7 @@ Redmine::Plugin.register :redcase do
     name        'Redcase'
     description 'Test cases management plugin for Redmine'
     author      'QA Project'
-    version     '1.0 alpha 0.142'
+    version     '1.0 alpha 0.143'
 
     permission  :view_test_cases,
                 :redcase => [

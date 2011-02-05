@@ -7,8 +7,7 @@ class RedcaseResultOrderBug < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :execution_results, :order_num
-    ExecutionResult.create(:name => 'Not Run')
+    rename_column  :execution_results, :order_num, :order
   end
 
 end

@@ -12,11 +12,7 @@
                   { :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now },
                   { :class => 'no_underline', :submit => 'spec_id' } %>
             <% end %>
-            <% form_tag({ :action =>  :export_to_excel, :project_id => @project.id, :time => Time.now }) do %>
-                <%= link_to image_tag('full_rep.png', :plugin => 'redcase', :size=> '105x36', :style => 'float: right'),
-                  { :action =>  :export_to_excel, :project_id => @project.id, :time => Time.now },
-                  { :class => 'no_underline', :submit => 'spec_id'} %>
-            <% end %>
+           
         </td>
 
         <td>&nbsp;</td>

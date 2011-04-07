@@ -246,30 +246,6 @@ class RedcaseController < ApplicationController
         end
     end
   
-    def export_to_excel
-        issues = Issue.find_all_by_project_id(@project.id, :order => 'id asc').collect { |issue| issue.id }
-        test_cases = TestCase.find(:all, :conditions => { :issue_id => issues })
-        versions = Version.find_all_by_project_id(@project.id)
-        environments = ExecutionEnvironment.find_all_by_project_id(@project.id)
-        rows = []
-        rows << ([""] + versions.collect { |version| environments.collect { |execution| "#{version.name} (#{execution.name})" } }).flatten
-        test_cases.each { |test_case|
-            row = []
-            row << "##{test_case.issue.id}: #{test_case.issue.subject}"
-            versions.each { |version|
-                environments.each { |environment|
-                    found = ExecutionJournal.find_by_test_case_id_and_environment_id_and_version_id(test_case.id, environment.id, version.id, :order => 'created_on desc')
-                    row << ((not found) ? "Not Executed" : found.result.name)
-                }
-            }
-            rows << row.clone
-        }
-        buffer = ''
-        rows.each { |row| CSV.generate_row(row, rows[0].length, buffer) }
-        project_name = @project.name.gsub(' ', '_');
-        send_data(buffer, { :filename => "TCReport-#{project_name}-#{Time.now.strftime('%d%m%Y-%I%M%S')}.csv"})
-    end
-
     def export_to_excel2
         issues = Issue.find_all_by_project_id(@project.id, :order => 'id asc').collect { |issue| issue.id }
         test_cases = TestCase.find(:all, :conditions => { :issue_id => issues })

@@ -14,7 +14,7 @@ module RedcaseHelper
     # Returns root test suite linked to the project and creates one and nested 'system'
     # test suites (for 'obsolete' and 'unsorted' test cases) if they are not exist yet
     def test_suite_root(project)
-        test_suite = TestSuite.find_by_project_id(project.id, :include => [ { :test_cases => [ :issue ] } ])
+        test_suite = TestSuite.find_by_project_id(project.id, :joins => :children, :include => [ { :children => { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } }, { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } ])
         if test_suite.nil? then
             test_suite = TestSuite.create(:name => "Root");
             test_suite.project = project
@@ -36,7 +36,7 @@ module RedcaseHelper
     end
   
     def execution_suite_root(project)
-        execution_suite = ExecutionSuite.find_by_project_id(project.id, :include => [ { :test_cases => [ :issue ] } ])
+        execution_suite = ExecutionSuite.find_by_project_id(project.id, :joins => :children, :include => [ { :children => { :test_cases => { :issue => :author } } }, { :test_cases => { :issue => :author } } ])
         if execution_suite.nil?
             execution_suite = ExecutionSuite.create(:name => "Root", :project => project)
         end
@@ -125,12 +125,14 @@ module RedcaseHelper
     end
 
     def test_case_to_json(test_case)
-        {
+        textilized_description = (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description)
+ 
+      {
 
             'issue_id'     => test_case.issue_id,
             'text'         => test_case.issue.subject,
             'editable'     => false,
-            'desc'         => (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description),
+            'desc'         => textilized_description,
             'leaf'         => true,
             'status'       => test_case.issue.status,
             'draggable'    => true,
@@ -139,7 +141,7 @@ module RedcaseHelper
                 :width => '500',
                 :closable => 'true',
                 :text => '"' + test_case.issue.subject + '"<br/>' +
-                    (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description))) +
+                    (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + textilized_description)) +
                     '<br/><b>Priority:</b> ' + test_case.issue.priority.name +
                     '<br/><b>Author:</b> ' + test_case.issue.author.name +
                     '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),

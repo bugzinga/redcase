@@ -7,7 +7,22 @@ module RedcaseHelper
 
     include ApplicationHelper
 
-    def test_cases_count(test_suite)
+    class RedcasePerformance < ActionController::Base
+		def start(message)
+			@message = message
+			@start_time = Time.now
+			logger.info 'Starting measuring ' + @message + ' ...'
+		end
+		def stop()
+			result =   Time.now - @start_time
+			logger.info 'Stopping measuring ' + @message
+			logger.info 'Executing time: ' + result.to_s
+		end
+	end
+
+
+
+	def test_cases_count(test_suite)
         test_suite.test_cases.count + test_suite.children.inject(0) { |res, x| res + test_cases_count(x) }
     end
 
@@ -36,7 +51,7 @@ module RedcaseHelper
     end
   
     def execution_suite_root(project)
-        execution_suite = ExecutionSuite.find_by_project_id(project.id, :joins => :children, :include => [ { :children => { :test_cases => { :issue => :author } } }, { :test_cases => { :issue => :author } } ])
+        execution_suite = ExecutionSuite.find_by_project_id(project.id, :joins => :children, :include => [ { :children => { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } }, { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } ])
         if execution_suite.nil?
             execution_suite = ExecutionSuite.create(:name => "Root", :project => project)
         end
@@ -127,7 +142,7 @@ module RedcaseHelper
     def test_case_to_json(test_case)
         textilized_description = (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description)
  
-      {
+		{
 
             'issue_id'     => test_case.issue_id,
             'text'         => test_case.issue.subject,
@@ -141,10 +156,10 @@ module RedcaseHelper
                 :width => '500',
                 :closable => 'true',
                 :text => '"' + test_case.issue.subject + '"<br/>' +
-                    (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + textilized_description)) +
-                    '<br/><b>Priority:</b> ' + test_case.issue.priority.name +
-                    '<br/><b>Author:</b> ' + test_case.issue.author.name +
-                    '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),
+				  (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + textilized_description)) +
+				  '<br/><b>Priority:</b> ' + test_case.issue.priority.name +
+				  '<br/><b>Author:</b> ' + test_case.issue.author.name +
+				  '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),
                 :title => ('Issue #' + test_case.issue.id.to_s),
                 :dismissDelay => 30000
             },
@@ -169,14 +184,17 @@ module RedcaseHelper
     end
 
     def test_suite_to_json(suite)
+		redcase_performance = RedcasePerformance.new
+		redcase_performance.start('Test suite to json')
         if suite.parent_id then
             kids = suite.children.collect { |s| test_suite_to_json(s) } + suite.test_cases.sort_by { |x| x.issue.subject }.collect { |tc| test_case_to_json(tc) }
         else
             kids = suite.children.select { |x| (x.name != '.Obsolete' and x.name != '.Unsorted') }.collect { |s| test_suite_to_json(s) } +
-                   suite.test_cases.sort_by { |x| x.issue.subject }.collect { |tc| test_case_to_json(tc) } +
-                   suite.children.select { |x| (x.name == '.Obsolete' or x.name == '.Unsorted') }.collect { |s| test_suite_to_json(s) }
+			  suite.test_cases.sort_by { |x| x.issue.subject }.collect { |tc| test_case_to_json(tc) } +
+			  suite.children.select { |x| (x.name == '.Obsolete' or x.name == '.Unsorted') }.collect { |s| test_suite_to_json(s) }
         end
-        {
+		redcase_performance.stop
+		{
             'suite_id'       => suite.id,
             'text'           => suite.name,
             'id'             => suite.id,
@@ -189,7 +207,8 @@ module RedcaseHelper
             'all_tc_count'   => 0, #test_cases_count(self),
             'counts'         => 0 #get_test_suite_counts_tree(find_test_suite_root(self)).to_json
         }
-    end
+		
+	end
 
     def get_url_for(action, project_id)
         "'#{url_for(:action => action, :project_id => project_id)}'"

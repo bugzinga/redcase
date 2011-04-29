@@ -8,15 +8,14 @@ module RedcaseHelper
     include ApplicationHelper
 
     class RedcasePerformance < ActionController::Base
-		def start(message)
-			@message = message
+		def start(action)
+			@action = action
 			@start_time = Time.now
-			logger.info 'Starting measuring ' + @message + ' ...'
+			logger.info "[Redcase] Time calculation: #{@action}"
 		end
 		def stop()
-			result =   Time.now - @start_time
-			logger.info 'Stopping measuring ' + @message
-			logger.info 'Executing time: ' + result.to_s
+			result = (Time.now - @start_time)
+			logger.info "#{result.round(4)} sec(s): #{@action}"
 		end
 	end
 
@@ -29,7 +28,16 @@ module RedcaseHelper
     # Returns root test suite linked to the project and creates one and nested 'system'
     # test suites (for 'obsolete' and 'unsorted' test cases) if they are not exist yet
     def test_suite_root(project)
-        test_suite = TestSuite.find_by_project_id(project.id, :joins => :children, :include => [ { :children => { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } }, { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } ])
+        test_suite = TestSuite.find_by_project_id(
+			project.id,
+			:joins => :children,
+			:include => [
+				{ :children => [
+					{ :children => { :test_cases => [ { :issue => [ :author, :status, :priority ] } ] }} ,
+					{ :test_cases => [ { :issue => [ :author, :status, :priority ] } ] } ] },
+				[ { :children => :children }, { :test_cases => [{ :issue => [:author, :status, :priority] } ] } ]
+			])
+		#test_suite = test_suites.detect { |x| x.project_id == project.id }
         if test_suite.nil? then
             test_suite = TestSuite.create(:name => "Root");
             test_suite.project = project
@@ -51,7 +59,16 @@ module RedcaseHelper
     end
   
     def execution_suite_root(project)
-        execution_suite = ExecutionSuite.find_by_project_id(project.id, :joins => :children, :include => [ { :children => { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } }, { :test_cases => [{ :issue => :author }, {:issue => :status},  {:issue => :priority}] } ])
+        execution_suite = ExecutionSuite.find_by_project_id(
+			project.id,
+			:joins => :children,
+			:include => [
+				{ :children => [
+					{ :children => { :test_cases => [ { :issue => [ :author, :status, :priority ] } ] } },
+					{ :test_cases => [ { :issue => [ :author, :status, :priority ] } ] } ]
+				},
+				{ :test_cases => [ { :issue => [ :author, :status, :priority ] } ] }
+			])
         if execution_suite.nil?
             execution_suite = ExecutionSuite.create(:name => "Root", :project => project)
         end
@@ -156,10 +173,10 @@ module RedcaseHelper
                 :width => '500',
                 :closable => 'true',
                 :text => '"' + test_case.issue.subject + '"<br/>' +
-				  (test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + textilized_description)) +
-				  '<br/><b>Priority:</b> ' + test_case.issue.priority.name +
-				  '<br/><b>Author:</b> ' + test_case.issue.author.name +
-				  '<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),
+					(test_case.issue.description.nil? ? '' : ('<br/><b>Description:</b><br/>' + textilized_description)) +
+					'<br/><b>Priority:</b> ' + test_case.issue.priority.name +
+					'<br/><b>Author:</b> ' + test_case.issue.author.name +
+					'<br/><b>Created:</b> ' + test_case.issue.created_on.strftime('%d.%m.%Y %H:%M'),
                 :title => ('Issue #' + test_case.issue.id.to_s),
                 :dismissDelay => 30000
             },
@@ -184,22 +201,46 @@ module RedcaseHelper
     end
 
     def test_suite_to_json(suite)
-		redcase_performance = RedcasePerformance.new
-		redcase_performance.start('Test suite to json')
         if suite.parent_id then
-            kids = suite.children.collect { |s| test_suite_to_json(s) } + suite.test_cases.sort_by { |x| x.issue.subject }.collect { |tc| test_case_to_json(tc) }
+			#logger.info("Child: #{suite.name}");
+            kids = suite.children.collect { |s|
+				#logger.info("select not root #{s.name}");
+				test_suite_to_json(s)
+			} + suite.test_cases.sort_by { |x|
+					#logger.info("sort_by not root #{x.issue.subject}");
+					x.issue.subject
+				}.collect { |tc|
+					#logger.info("sort_by not root/collect #{tc.issue.subject}");
+					test_case_to_json(tc)
+				}
         else
-            kids = suite.children.select { |x| (x.name != '.Obsolete' and x.name != '.Unsorted') }.collect { |s| test_suite_to_json(s) } +
-			  suite.test_cases.sort_by { |x| x.issue.subject }.collect { |tc| test_case_to_json(tc) } +
-			  suite.children.select { |x| (x.name == '.Obsolete' or x.name == '.Unsorted') }.collect { |s| test_suite_to_json(s) }
+			#logger.info("Root: #{suite.name}");
+            kids = suite.children.select { |x|
+				#logger.info("select not obsolete/unsorted #{x.name}");
+				(x.name != '.Obsolete' and x.name != '.Unsorted')
+			}.collect { |s|
+				#logger.info("select not/collect");
+				test_suite_to_json(s)
+			} +
+				suite.test_cases.sort_by { |x|
+					#logger.info("sort_by");
+					x.issue.subject }.collect { |tc|
+						#logger.info("sort_by/collect");
+						test_case_to_json(tc)
+					} +
+				suite.children.select { |x|
+					#logger.info("select obsolete/unsorted #{x.name}");
+					(x.name == '.Obsolete' or x.name == '.Unsorted') }.collect { |s|
+						#logger.info("select/collect");
+						test_suite_to_json(s)
+					}
         end
-		redcase_performance.stop
 		{
             'suite_id'       => suite.id,
             'text'           => suite.name,
             'id'             => suite.id,
             'expandable'     => true,
-            'expanded'       => (suite.children.count + suite.test_cases.count) == 0,
+            'expanded'       => false, #(suite.children.count + suite.test_cases.count) == 0,
             'editable'       => (!((suite.name == ".Unsorted" or suite.name == ".Obsolete") and suite.parent.parent.nil?) and !suite.parent.nil?),
             'children'       => kids,
             'draggable'      => (!suite.parent.nil? and !((suite.name == ".Unsorted" or suite.name == ".Obsolete") and suite.parent.parent.nil?)),

@@ -13,28 +13,44 @@ class RedcaseController < ApplicationController
 
 	def index
 		redcase_performance = RedcasePerformance.new
-		redcase_performance.start('Other project')
+
+		#redcase_performance.start('Getting all test suites and links')
+		#all_test_suites = TestSuite.find(:all, :include => [ { :test_cases => { :issue => [ :author, :priority, :status ] } } ] )
+		#redcase_performance.stop
+
+		#redcase_performance.start('Getting all execution suites and links')
+		#all_execution_suites = ExecutionSuite.find(:all, :include => [ { :test_cases => { :issue => [ :author, :priority, :status ] } } ] )
+		#redcase_performance.stop
+
+		redcase_performance.start('Searching all other projects')
 		@other_projects = Project.find(:all, :conditions => "id <> #{@project.id}")
 		redcase_performance.stop
-		redcase_performance.start('Root')
+
+		redcase_performance.start('Getting root test suite')
 		@root = test_suite_root(@project)
 		redcase_performance.stop
-		redcase_performance.start('Execroot')
+
+		redcase_performance.start('Getting root execution suite')
 		@execroot = execution_suite_root(@project)
 		redcase_performance.stop
-		redcase_performance.start('Version')
+
+		redcase_performance.start('Getting project last version')
 		@version = get_last_version(@project)
 		redcase_performance.stop
-		redcase_performance.start('Environment')
+
+		redcase_performance.start('Getting default environment')
 		@environment = execution_environment_default(@project)
 		redcase_performance.stop
-		redcase_performance.start('Root graph')
+
+		redcase_performance.start('Getting graph information')
 		get_graph_core(@version.id, @environment.id) if not @version.nil?
 		redcase_performance.stop
-		redcase_performance.start('All issues')
+
+		redcase_performance.start('Getting all project issues')
 		all_issues = Issue.find_all_by_project_id(@project.id, :include => [ :tracker, :test_case, :status ]);
 		redcase_performance.stop
-		redcase_performance.start('Obsolete issues')
+
+		redcase_performance.start('Getting all obsolete issues')
 		obsoleted_issues = all_issues.select { |issue| (issue.tracker.name == "Test case") and (issue.status.name == "Obsolete")}
 		obsoleted_issues.each { |issue|
 			if not issue.test_case.nil?
@@ -49,25 +65,36 @@ class RedcaseController < ApplicationController
 		
 		}
 		redcase_performance.stop
-		redcase_performance.start('Unlinked issues')
+
+		redcase_performance.start('Searching for unlinked test case issues')
 		unlinked_issues = all_issues.select { |issue| (issue.tracker.name == "Test case") and (issue.test_case.nil?) }
 		unlinked_issues.each { |issue|
 			x = TestCase.create(:issue => issue, :test_suite => @root.children.detect { |o| o.name == ".Unsorted" } )
 		}
 		redcase_performance.stop
-		redcase_performance.start('Missed tc')
 
+		redcase_performance.start('Searching for dead test cases')
 		missed_tc = all_issues.collect { |issue|
 			tc = issue.test_case # TestCase.find_by_issue_id(issue.id)
 			tc if (tc && (issue.tracker.name != "Test case"))
 		}.compact
 		missed_tc.each { |tc| tc.destroy }
 		redcase_performance.stop
-		redcase_performance.start('list')
+
+		redcase_performance.start('Getting all root execution suites')
 		@list = ExecutionSuite.all.detect { |x| x.project == @project and x.parent == nil }
 		redcase_performance.stop
-		redcase_performance.start('default exec env')
+
+		redcase_performance.start('Getting default execution environment')
 		@env = execution_environment_default(@project)
+		redcase_performance.stop
+
+		redcase_performance.start('Convert root test suite to json')
+		@root_json = test_suite_to_json(@root)
+		redcase_performance.stop
+
+		redcase_performance.start('Convert root execution suite to json')
+		@exec_json = execution_suite_to_json(@execroot)
 		redcase_performance.stop
 
 		respond_to do |format|

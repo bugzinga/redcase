@@ -42,7 +42,7 @@
         buildTestSuiteTree(
         {
             url       : <%= get_url_for('index', @project.id) %>,
-            root      : <%= test_suite_to_json(@root).to_json %>,
+            root      : <%= @root_json.to_json %>,
             tagId     : 'management_test_suite_tree_id',
             draggable : true,
             pre       : 'test-suite-tree'
@@ -52,7 +52,7 @@
         buildExecutionSuiteTree(
         {
             url       : <%= get_url_for('execlist', @project.id) %>,
-            root      : <%= execution_suite_to_json(@execroot).to_json %>,
+            root      : <%= @exec_json.to_json %>,
             tagId     : 'management_execution_suite_tree_id',
             draggable : true,
             pre       : 'management_execution_suite_tree'
@@ -62,7 +62,7 @@
         buildExecutionTree(
         {
             url       : <%= get_url_for('execlist', @project.id) %>,
-            root      : <%= execution_suite_to_json(@execroot).to_json %>,
+            root      : <%= @exec_json.to_json %>,
             tagId     : 'execution_test_cases_tree_id',
             draggable : false,
             pre       : 'execution_test_cases_tree'

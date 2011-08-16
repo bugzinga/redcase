@@ -1,6 +1,12 @@
 
+# The module with auxiliary functions.
 require "redcase_helper"
+
+# The library for CSV format export.
+# CSV should be replaced with XLS soon.
 require 'csv'
+
+# The library for RTF format export.
 require 'rtf'
 require 'open_flash_chart/open_flash_chart'
 
@@ -10,6 +16,7 @@ class RedcaseController < ApplicationController
 	include RTF
 	include RedcaseHelper
 	before_filter :find_project, :authorize
+  skip_before_filter :verify_authenticity_token
 
 	def index
 		redcase_performance = RedcasePerformance.new

@@ -1,5 +1,4 @@
 
-# The module with auxiliary functions.
 require "redcase_helper"
 
 # The library for CSV format export.
@@ -16,7 +15,6 @@ class RedcaseController < ApplicationController
 	include RTF
 	include RedcaseHelper
 	before_filter :find_project, :authorize
-  skip_before_filter :verify_authenticity_token
 
 	def index
 		redcase_performance = RedcasePerformance.new

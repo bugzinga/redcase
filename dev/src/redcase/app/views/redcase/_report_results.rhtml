@@ -21,14 +21,14 @@
 
 <table class="redcase-row" style="width: 100%; margin: 0px; text-align: center">
     <tr style="font-weight: bold; background-color: #507aaa; color: white; text-align: center; vertical-align: top">
-        <td style="width: 45px; vertical-align: middle; border-left-width: 0px; border-top-width: 0px; padding: 6px">ID</td>
-        <td style="width: 110px; vertical-align: middle; border-top-width: 0px; padding: 6px">Name</td>
-        <td style="width: 80px; vertical-align: middle; border-top-width: 0px; padding: 6px">Date</td>
+        <td style="width: 45px; vertical-align: middle; border-left-width: 0px; border-top-width: 0px; padding: 6px"><%= l('label_id') %></td>
+        <td style="width: 110px; vertical-align: middle; border-top-width: 0px; padding: 6px"><%= l('label_name') %></td>
+        <td style="width: 80px; vertical-align: middle; border-top-width: 0px; padding: 6px"><%= l('label_date') %></td>
         <td style="width: 115px; vertical-align: middle; border-top-width: 0px; padding: 6px">
             <%= select('filter_id', nil, ExecutionResult.all.collect { |x| [x.name, x.id] } << ['All results', 0], { :selected => 0 }, { :style => 'width: 100%' }) %>
             <%= observe_field 'filter_id_', :function => "refresh()" %>
         </td>
-        <td style="vertical-align: middle; border-top-width: 0px; padding: 6px">Executor</td>
+        <td style="vertical-align: middle; border-top-width: 0px; padding: 6px"><%= l('label_executor') %></td>
         <td style="width: 25px; vertical-align: middle; border-right-width: 0px; border-top-width: 0px; padding: 6px">&nbsp;</td>
     </tr>
     <% @results.each do |x| %>

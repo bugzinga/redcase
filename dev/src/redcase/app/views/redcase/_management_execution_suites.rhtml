@@ -27,7 +27,7 @@
 <!-- AJAX form to manage execution suites -->
 <% remote_form_for :list, :url => { :action => 'update_exelists', :project_id => @project.id, :act => 'save' }, :update => :management_execution_suites_id, :complete => 'full()', :html => { :id => 'list_form' } do |f| %>
 	<h3>
-        Execution suite: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
+        <%= l('label_execution_suite') %>: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
         <%= observe_field :list_id, :function => 'update_exe_tree()', :with => 'list_id' %>
     </h3>
     <p>

@@ -21,7 +21,6 @@ var xcontextMenu;
 Ext.dd.StatusProxy.prototype.animRepair = false;
 Ext.QuickTips.init();
 Ext.chart.Chart.CHART_URL = '/plugin_assets/redcase/javascripts/ext-3.1.1/resources/charts.swf';
-
 Ext.override(Ext.tree.TreeNodeUI,
 {
 	renderElements: function(n, a, targetNode, bulkRender)
@@ -241,6 +240,14 @@ function request(method, params, success, failureMsg)
 {
 	params.format = 'json';
 	conn = new Ext.data.Connection();
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	conn.request(
 	{
 		url     : context + method,
@@ -259,6 +266,10 @@ function request(method, params, success, failureMsg)
  */
 function onMove(dropEvent)
 {
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	if(dropEvent.dropNode.isLeaf())
 	{
 		request(
@@ -306,7 +317,14 @@ function onMove(dropEvent)
 function onxMove(dropEvent)
 {
 	conn = new Ext.data.Connection();
-
+        
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	if(dropEvent.dropNode.isLeaf())
 	{
 		if(dropEvent.target.getOwnerTree() != dropEvent.dropNode.getOwnerTree())
@@ -426,6 +444,15 @@ function onCreate(b, e)
 		if (btn == 'ok')
 		{
 			conn = new Ext.data.Connection();
+                        
+
+			var csrf = Ext.select("meta[name='csrf-token']").first();
+			Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+				'X-CSRF-Token': csrf.getAttribute('content')
+				});
+			conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+				'X-CSRF-Token': csrf.getAttribute('content')
+				});
 			conn.request(
 			{
 				url     : 'redcase/test_suite_manager',
@@ -463,7 +490,13 @@ function onDelete()
 
 	parentNode = currentNode.parentNode;
 	conn = new Ext.data.Connection();
-
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	if(currentNode.isLeaf())
 	{
 		conn.request(
@@ -520,7 +553,13 @@ function onCopyTo(b, e)
 
 	parentNode = currentNode.parentNode;
 	conn = new Ext.data.Connection();
-
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	conn.request(
 	{
 		url    : 'redcase/reassign_test_case',
@@ -549,6 +588,13 @@ function onxCreate(b, e)
 		if (btn == 'ok')
 		{
 			conn = new Ext.data.Connection();
+			var csrf = Ext.select("meta[name='csrf-token']").first();
+			Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+				'X-CSRF-Token': csrf.getAttribute('content')
+				});
+			conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+				'X-CSRF-Token': csrf.getAttribute('content')
+				});
 			conn.request(
 			{
 				url     : 'redcase/execution_suite_manager',
@@ -592,6 +638,13 @@ function onxView()
 	}
 	parentNode = currentNode.parentNode;
 	conn = new Ext.data.Connection();
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	conn.disableCaching = false;
 	if (currentNode.isLeaf())
 	{
@@ -620,7 +673,13 @@ function onxDelete()
 
 	parentNode = xcurrentNode.parentNode;
 	conn = new Ext.data.Connection();
-
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	if (xcurrentNode.isLeaf())
 	{
 		conn.request(
@@ -742,6 +801,13 @@ function getEditorSuite()
 	editorSuite.on('beforecomplete', function(editor, newValue, originalValue) {
 
 		conn = new Ext.data.Connection();
+		var csrf = Ext.select("meta[name='csrf-token']").first();
+		Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+			'X-CSRF-Token': csrf.getAttribute('content')
+			});
+		conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+			'X-CSRF-Token': csrf.getAttribute('content')
+			});
 
 		conn.request({
 			url: 'redcase/test_suite_manager',
@@ -774,7 +840,13 @@ function getEditorExec()
 	editorExec.on('beforecomplete', function(editor, newValue, originalValue) {
 
 		conn = new Ext.data.Connection();
-
+		var csrf = Ext.select("meta[name='csrf-token']").first();
+		Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+			'X-CSRF-Token': csrf.getAttribute('content')
+			});
+		conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+			'X-CSRF-Token': csrf.getAttribute('content')
+			});
 		conn.request({
 			url: 'redcase/execution_suite_manager',
 			method: 'GET',
@@ -864,8 +936,6 @@ function findNested(node)
 		return findNext(next);
 	}
 }
-
-
 function execute() {
 	node = exec2Tree.getSelectionModel().getSelectedNode();
 	result = Ext.get('results');
@@ -873,6 +943,13 @@ function execute() {
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');
 	conn = new Ext.data.Connection();
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
+	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	Element.show('ajax-indicator');
 	conn.request({
 		url: 'redcase/execute',
@@ -913,6 +990,10 @@ function onExecSelectionChange(model, node)
 	r.setDisplayed('none');
 	if (node.isLeaf()) {
 		conn = new Ext.data.Connection();
+		var csrf = Ext.select("meta[name='csrf-token']").first();
+		Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+			'X-CSRF-Token': csrf.getAttribute('content')
+			});
 		Element.show('ajax-indicator');
 		conn.request({
 			waitMsg: 'loading test case info',
@@ -1001,7 +1082,7 @@ function getHistory(rs)
 {
 	unique = {}
 	txt = "<table class='redcase-row' width='100%'>"
-	txt += "<tr style='font-weight: bold; background-color: #eeeeee'><td>Date</td><td>Result</td><td>Comments</td><td>Executor</td><td>Environment</td><td>Version</td></tr>"
+	txt += "<tr style='font-weight: bold; background-color: #eeeeee'><td>date</td><td>result</td><td>comments</td><td>executor</td><td>environment</td><td>version</td></tr>";
 	for(i = 0; i < rs.length; i++) {
 		switch (rs[i].result)
 		{
@@ -1077,10 +1158,12 @@ function update_exe_tree()
 {
 	choosen = Ext.get('list_id').getValue(false);
 	conn = new Ext.data.Connection();
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	nameEl = Ext.get('list_name');
-
 	Element.show('ajax-indicator');
-
 	conn.request(
 	{
 		url     : 'redcase/index',
@@ -1113,7 +1196,10 @@ function update_exe2_tree()
 {
 	choosen = Ext.get('list2_id').getValue(false);
 	conn = new Ext.data.Connection();
-
+	var csrf = Ext.select("meta[name='csrf-token']").first();
+	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+		'X-CSRF-Token': csrf.getAttribute('content')
+		});
 	Element.show('ajax-indicator');
 
 	conn.request(

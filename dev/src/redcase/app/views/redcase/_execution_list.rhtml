@@ -4,18 +4,45 @@
 
 <% form_for :list2, :url => { :action => 'update_exelists', :project_id => @project.id } do |f| %>
     <div>
-        <h3 id="execution-settings-suite">
-            Execution suite:
+<table>
+<tr>
+<td>
+<h3 id="execution-settings-suite">
+            <%= l('label_execution_suite') %>:
+            </h3>
+</td>            
+<td>
+<h3 id="execution-settings-suite">
             <%= f.select :id, @lists2.collect { |e| [ e.name, e.id ] } %>
         </h3>
+        </td>
+</tr>
+<tr>
+<td>
         <h3 id="execution-settings-version">
-            Version:
+            <%= l('label_version') %>:
+            </h3>
+</td>            
+<td>
+<h3 id="execution-settings-version">
             <%= select_tag 'version', options_for_select(Version.find_all_by_project_id(@project.id).collect { |res| res.name }, @version.name ) %>
         </h3>
+        </td>
+</tr>
+<tr>
+<td>
         <h3 id="execution-settings-environment">
-            Environment:
+            <%= l('label_environment') %>:
+            </h3>
+</td>            
+<td>
+<h3 id="execution-settings-environment">
             <%= select_tag 'environments', options_for_select(ExecutionEnvironment.find(:all, :conditions => "project_id = #{@project.id}", :order => 'name asc').collect { |res| [res.name, res.id] }) %>
         </h3>
+</td>
+</tr>
+</table>
+<br/>
         <%= observe_field :list2_id, :function => 'update_exe2_tree()', :with => 'list2_id' %>
     </div>
     <br/>

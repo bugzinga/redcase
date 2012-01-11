@@ -71,6 +71,7 @@
 #execution-settings-suite select
 {
 	border: 1px navy solid;
+        width: 250px; 
 }
 
 #execution-settings-version
@@ -81,6 +82,7 @@
 #execution-settings-version select
 {
 	border: 1px purple solid;
+        width: 250px;
 }
 
 #execution-settings-environment
@@ -91,6 +93,7 @@
 #execution-settings-environment select
 {
 	border: 1px maroon solid;
+        width: 250px;
 }
 
 #execution_test_case_info_id h3

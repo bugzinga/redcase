@@ -1,0 +1,51 @@
+
+<!-- "Report" tab view -->
+<table class="report-layout-table">
+
+    <tr>
+
+        <td>&nbsp;</td>
+
+        <td align="right" colspan="2">
+            <%= form_tag({ :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now }, :id => 'spec_id') do %>
+                <%= link_to image_tag('test_spec.png', :plugin => 'redcase', :size=> '180x36', :style => 'float: right'),
+                  { :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now },
+                  { :class => 'no_underline', :submit => 'spec_id' } %>
+            <% end %>
+        </td>
+
+        <td>&nbsp;</td>
+
+    </tr>
+
+    <tr valign="top">
+
+        <td>&nbsp;</td>
+
+        <td align="center" class="back" style="border: 1px #bbbbbb solid; width: 550px">
+            <div id="graph_id">
+                <table width="100%">
+                    <tr>
+                        <td align="center" valign="middle">
+                            <div id="combos_id" style="display: inline-block; vertical-align: middle"><%= render :partial => 'report_combos' %></div>
+                            &nbsp;
+                            <div id="download_button_id" style="display: inline-block; vertical-align: middle"><%= render :partial => 'report_download_button'%></div>
+                        </td>
+                    </tr>
+                </table>
+                <div id="chart_id" class="graph" style="width: 510px; height: 510px; padding: 4px">
+                    <%= @graph.html_safe %>
+                </div>
+            </div>
+        </td>
+
+        <!-- Test case execution results table -->
+        <td id="report_results_table_id">
+            <%= render :partial => 'report_results' %>
+        </td>
+
+        <td>&nbsp;</td>
+
+    </tr>
+
+</table>

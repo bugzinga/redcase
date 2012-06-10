@@ -1,0 +1,40 @@
+
+<script type="text/javascript">
+
+    update2exe = function() {
+        <%= remote_function :url => { :action => 'update_exelists2', :project_id => @project.id }, :update => "execution_settings_id", :complete => "update_exe2_tree()" %>
+    }
+
+    full = function() {
+        update_exe_tree();
+        update2exe();
+        updateReport();
+    }
+
+    updateReport = function() {
+        <%=
+            params = { :action => 'update_combos', :project_id => @project.id, :environment_id => @environment.id }
+            params['version_id'] = @version.id if (@version)
+            remote_function :url => params, :update => "combos_id"
+        %>
+    }
+    
+</script>
+
+<!-- Loading execution suites for project every time when this form is reloading -->
+<% @lists = get_execution_suites_by_project_and_parent(@project) %>
+
+<!-- AJAX form to manage execution suites -->
+<%= form_for :list, :remote => true, :url => { :action => 'update_exelists', :project_id => @project.id, :act => 'save' }, :update => :management_execution_suites_id, :complete => 'full()', :html => { :id => 'list_form' } do |f| %>
+	<h3>
+        <%= l('label_execution_suite') %>: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
+        <%= observe_field :list_id, :function => 'update_exe_tree()', :with => 'list_id' %>
+    </h3>
+    <p>
+        <%= f.text_field :name %>
+        <%= update_execution_suite_link 'save.png', 'save' %>
+        <%= update_execution_suite_link 'add.jpg', 'new', '13x13' %>
+        <%= update_execution_suite_link 'delete.jpg', 'delete', '13x13' if (@lists.length > 1)%>
+    </p>
+	<br/>
+<% end %>

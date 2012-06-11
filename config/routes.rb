@@ -1,1 +1,3 @@
-match ':controller(/:action(/:id))(.:format)'
+
+# Plugin's routes
+# See: http://guides.rubyonrails.org/routing.html

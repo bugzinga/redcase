@@ -1,0 +1,19 @@
+How to make it work.
+
+1. Edit group :test in Gemfile in the Redmide directory (gems to be added marked by ->, or corse you shouldn't put this arrow )
+
+group :test do
+  gem "shoulda", "~> 2.11"
+  gem "mocha"
+->  gem "cucumber-rails"
+->  gem "capybara"
+->  gem "database_cleaner"
+end
+
+2. Go to Redmine directory and run "bundle install"
+
+3. Runs "rails g cucumber:install"
+
+4. Make a symlink $RAILS_HOME/plugins/redcase/features -> $RAILS_HOME/features
+
+5. Run "rake cucumber"

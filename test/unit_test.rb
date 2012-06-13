@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path('../../../../test/test_helper', __FILE__)
 
 class UnitTest < ActiveSupport::TestCase
   test "Redcase plugin should be in the Redmine plugins list" do

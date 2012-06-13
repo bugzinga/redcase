@@ -7,5 +7,4 @@ Feature: Redcase Plugin Installation
   Scenario: Redcase in the plugins list
     Given I logged in as admin
     When I open plugins list
-    Then Redcase should be in the Redmine plugins collection
-    And I should see Redcase in the list of plugins
+    Then I should see Redcase in the list of plugins

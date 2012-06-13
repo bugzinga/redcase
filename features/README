@@ -16,4 +16,8 @@ end
 
 4. Make a symlink $RAILS_HOME/plugins/redcase/features -> $RAILS_HOME/features
 
-5. Run "rake cucumber"
+To run unit tests:
+"ruby -I test plugins/redcase/test/unit_test.rb"
+
+To run integration tests:
+"rake cucumber"

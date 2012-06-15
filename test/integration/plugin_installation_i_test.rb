@@ -16,7 +16,6 @@ class PluginInstallationITest < ActionController::IntegrationTest
         get "admin/plugins"
         assert_response :success
         assert_tag :span, :content => "Redcase"
-
     end
 
 end

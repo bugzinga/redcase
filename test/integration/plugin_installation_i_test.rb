@@ -1,7 +1,7 @@
 
 require 'test_helper'
 
-class IntegrationTest < ActionController::IntegrationTest
+class PluginInstallationITest < ActionController::IntegrationTest
 
     fixtures :users
 

@@ -3,7 +3,7 @@ require 'test_helper'
 
 class PluginInstallationITest < ActionController::IntegrationTest
 
-    fixtures :users
+    fixtures :users, :roles
 
     test "Redcase should be listes in plugins list" do
         get "/"

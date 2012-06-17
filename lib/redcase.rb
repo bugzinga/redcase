@@ -21,7 +21,7 @@ module Redcase
         require 'dispatcher'
     end
 
-    class Injection
+    class Patch
 
         def self.run(&block)
             if System::rails2?

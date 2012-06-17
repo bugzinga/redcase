@@ -3,28 +3,28 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 
 #require 'test_helper'
 
-class PluginTabsITest < RedcaseIntegrationTest
+class PluginTabsITest < ActionController::IntegrationTest
 
     fixtures :users, :roles, :projects
 
     # TODO: a temporary test, should be modified after the plugin rights
     #       implementations as the tab behaviour will be changed 
     test 'Redcase tab must be in the project menu' do
-        @log.info ''
-        @log.info 'Loading Redmine'
+        log.info ''
+        log.info 'Loading Redmine'
         get '/'
         assert_response :success
-        @log.info 'Opening the login page'
+        log.info 'Opening the login page'
         get '/login'
         assert_response :success
-        @log.info 'Logging in as an administrator'
+        log.info 'Logging in as an administrator'
         post_via_redirect '/login', :username => 'admin', :password => 'admin'
         assert_response :success
-        @log.info 'Finding a random project'
+        log.info 'Finding a random project'
         project = Project.first
         assert_not_nil project
-        @log.info "Project found: '#{project.identifier}' "
-        @log.info "Loading the project page and check if '#{l(:redcase_i18n_tab)}' tab appeared there"
+        log.info "Project found: '#{project.identifier}' "
+        log.info "Loading the project page and check if '#{l(:redcase_i18n_tab)}' tab appeared there"
         get "/projects/#{project.identifier}"
         assert_response :success
         assert_select 'a.redcase', l(:redcase_i18n_tab)

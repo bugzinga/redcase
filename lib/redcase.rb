@@ -3,16 +3,16 @@ module Redcase
 
     class System
 
-        def self.get_rails_version
-            Rails::version.split('.').first.to_i
+        def self.rails_version
+            @@rails_version ||= Rails::version.split('.').first.to_i
         end
 
         def self.rails2?
-            (get_rails_version == 2)
+            (rails_version == 2)
         end
 
         def self.rails3?
-            (get_rails_version == 3)
+            (rails_version == 3)
         end
 
     end
@@ -33,7 +33,7 @@ module Redcase
                     block.call
                 end
             else
-                raise "Rails version '#{System::get_rails_version}' is not suported"
+                raise "Rails version '#{System::rails_version}' is not suported"
             end
         end
 

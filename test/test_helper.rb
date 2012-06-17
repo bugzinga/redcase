@@ -10,13 +10,11 @@ end
 
 require File.expand_path(current_folder + test_helper_relative_path)
 
-class RedcaseIntegrationTest < ActionController::IntegrationTest
-
+class Test::Unit::TestCase
     include Redmine::I18n
-
-    def initialize(name)
-        super(name)
-        @log = Logger.new(STDOUT)
+    
+    def log
+        @log ||= Logger.new(STDOUT)
     end
 
 end

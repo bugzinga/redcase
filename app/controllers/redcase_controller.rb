@@ -8,6 +8,8 @@ class RedcaseController < ApplicationController
     def index
     end
 
+    private
+
     def find_project
         @project = Project.find(params[:project_id])
     end

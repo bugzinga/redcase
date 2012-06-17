@@ -1,4 +1,6 @@
 
-if ( Rails::version().split('.').first.to_i > 2)
+include Redcase
+
+if System::rails3?
     get 'index', :to => 'redcase#index'
 end

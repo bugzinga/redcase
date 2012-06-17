@@ -1,5 +1,5 @@
 
-current_folder = File.expand_path(File.dirname(__FILE__))
+current_folder = File.dirname(__FILE__)
 
 # Workaround to build the path to 'test_helper' for different Redmine versions
 if current_folder.include? 'vendor'
@@ -8,7 +8,7 @@ else
     test_helper_relative_path = '/../../../test/test_helper'
 end
 
-require current_folder + test_helper_relative_path
+require File.expand_path(current_folder + test_helper_relative_path)
 
 class RedcaseIntegrationTest < ActionController::IntegrationTest
 

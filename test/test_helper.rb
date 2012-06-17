@@ -1,9 +1,9 @@
 
 # Load the normal Rails helper
-# require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../../../test/test_helper')
 
 # Ensure that we are using the temporary fixture path
-Engines::Testing.set_fixture_path
+#Engines::Testing.set_fixture_path
 
 class RedcaseIntegrationTest < ActionController::IntegrationTest
 
@@ -13,5 +13,5 @@ class RedcaseIntegrationTest < ActionController::IntegrationTest
         super(name)
         @log = Logger.new(STDOUT)
     end
-    
+
 end

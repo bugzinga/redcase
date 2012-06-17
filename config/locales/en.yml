@@ -1,8 +1,8 @@
 
 en:
 
-    redcase_tab : Test cases
+    redcase_i18n_tab : Test cases
 
-    redcase_tab_management : Management
-    redcase_tab_execution  : Execution
-    redcase_tab_report     : Report
+    redcase_i18n_tab_management : Management
+    redcase_i18n_tab_execution  : Execution
+    redcase_i18n_tab_report     : Report

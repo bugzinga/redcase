@@ -1,5 +1,8 @@
+
 en:
-    redcase_tab_title: 'Test cases'
-    label_test_case_management: 'Management'
-    label_test_case_execution: 'Execution'
-    label_test_case_report: 'Report'
+
+    redcase_tab : Test cases
+
+    redcase_tab_management : Management
+    redcase_tab_execution  : Execution
+    redcase_tab_report     : Report

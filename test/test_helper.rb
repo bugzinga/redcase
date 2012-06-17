@@ -4,4 +4,3 @@
 
 # Ensure that we are using the temporary fixture path
 Engines::Testing.set_fixture_path
-

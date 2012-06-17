@@ -1,12 +1,12 @@
 
-include Redmine
-include Redcase
+require 'redmine'
+require 'redcase'
 
 Redmine::Plugin.register :redcase do
 
     name 'Redcase'
     description 'Test case management plugin for Redmine'
-    version '1.0-alpha-2.25'
+    version '1.0-alpha-2.26'
     url 'http://redcase.sourceforge.net'
     author 'Redcase Dev Team'
 
@@ -24,8 +24,10 @@ Redmine::Plugin.register :redcase do
              :after   => :new_issue
          }
 
-    Injection::run do
-        ActionDispatch::Routing::Mapper.send :include, Redcase
+    Redcase::Injection::run do
+        if Redcase::System::rails3?
+            ActionDispatch::Routing::Mapper.send :include, Redcase
+        end
     end
 
 end

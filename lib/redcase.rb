@@ -1,4 +1,6 @@
 
+require 'dispatcher'
+
 module Redcase
 
     class System

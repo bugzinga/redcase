@@ -6,3 +6,9 @@ en:
     redcase_i18n_tab_management : Management
     redcase_i18n_tab_execution  : Execution
     redcase_i18n_tab_report     : Report
+
+    redcase_i18n_tracker : Test case
+
+    redcase_i18n_status_new         : New
+    redcase_i18n_status_in_progress : In Progress
+    redcase_i18n_status_obsolete    : Obsolete

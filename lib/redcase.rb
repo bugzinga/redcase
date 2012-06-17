@@ -1,6 +1,4 @@
 
-require 'dispatcher'
-
 module Redcase
 
     class System
@@ -17,6 +15,10 @@ module Redcase
             (get_rails_version == 3)
         end
 
+    end
+
+    if System::rails2?
+        require 'dispatcher'
     end
 
     class Injection

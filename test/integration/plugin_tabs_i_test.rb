@@ -6,7 +6,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 class PluginTabsITest < RedcaseIntegrationTest
 
     fixtures :users, :roles, :projects
-    
+
     # TODO: a temporary test, should be modified after the plugin rights
     #       implementations as the tab behaviour will be changed 
     test 'Redcase tab must be in the project menu' do

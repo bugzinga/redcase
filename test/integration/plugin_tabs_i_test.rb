@@ -23,9 +23,9 @@ class PluginTabsITest < RedcaseIntegrationTest
         @log.info 'Finding a random project'
         project = Project.first
         assert_not_nil project
-        @log.info "Project found: '#{project.name}' "
+        @log.info "Project found: '#{project.identifier}' "
         @log.info "Loading the project page and check if '#{l(:redcase_i18n_tab)}' tab appeared there"
-        get "/projects/#{project.name}"
+        get "/projects/#{project.identifier}"
         assert_response :success
         assert_select 'a.redcase', l(:redcase_i18n_tab)
     end

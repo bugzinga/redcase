@@ -1,0 +1,5 @@
+ru:
+    permission_redcase_management: Управление тест-кейсами
+    permission_redcase_execution: Выполнение тест-кейсов
+    permission_redcase_report: Отчеты по тест-кейсам
+    

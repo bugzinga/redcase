@@ -12,3 +12,7 @@ en:
     redcase_i18n_status_new         : New
     redcase_i18n_status_in_progress : In Progress
     redcase_i18n_status_obsolete    : Obsolete
+    
+    permission_redcase_management: Test cases management
+    permission_redcase_execution: Test cases execution
+    permission_redcase_report: Test cases reports

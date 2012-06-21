@@ -1,4 +1,4 @@
 
 if Redcase::System::rails3?
-    get 'index', :to => 'redcase#index'
+    get 'redcase', :to => 'redcase#index'
 end

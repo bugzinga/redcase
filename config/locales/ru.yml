@@ -13,6 +13,6 @@ ru:
     redcase_i18n_status_in_progress : В Работе
     redcase_i18n_status_obsolete    : Неактуальный
     
-    redcase_i18n_permission_manage  : Управление тест кейсами
-    redcase_i18n_permission_execute : Выполнение тест кейсов
-    redcase_i18n_permission_view    : Просмотр отчетов по тестам
+    permission_manage_test_cases  : Управление тест кейсами
+    permission_execute_test_cases : Выполнение тест кейсов
+    permission_view_test_results  : Просмотр отчетов по тестам

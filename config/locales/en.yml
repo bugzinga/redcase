@@ -13,6 +13,6 @@ en:
     redcase_i18n_status_in_progress : In Progress
     redcase_i18n_status_obsolete    : Obsolete
     
-    redcase_i18n_permission_manage  : Manage test cases
-    redcase_i18n_permission_execute : Execute test cases
-    redcase_i18n_permission_view    : View test results
+    permission_manage_test_cases  : Manage test cases
+    permission_execute_test_cases : Execute test cases
+    permission_view_test_results  : View test results

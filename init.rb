@@ -6,13 +6,13 @@ Redmine::Plugin.register :redcase do
 
     name 'Redcase'
     description 'Test case management plugin for Redmine'
-    version '1.0-alpha-2.39'
+    version '1.0-alpha-2.40'
     url 'http://redcase.sourceforge.net'
     author 'Redcase Dev Team'
 
-    permission :redcase_i18n_permission_manage, :redcase => :index, :require => :member
-    permission :redcase_i18n_permission_execute, :redcase => :index, :require => :member
-    permission :redcase_i18n_permission_view, :redcase => :index, :require => :member
+    permission :manage_test_cases, :redcase => :index, :require => :member
+    permission :execute_test_cases, :redcase => :index, :require => :member
+    permission :view_test_results, :redcase => :index, :require => :member
 
     menu :project_menu,
          :redcase,

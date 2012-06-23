@@ -55,8 +55,8 @@ roles_999:
     - :view_changesets
     - :manage_related_issues
     - :manage_project_activities
-    - :manage_test_cases
-    - :execute_test_cases
-    - :view_test_results
+    - :redcase_manage_test_cases
+    - :redcase_execute_test_cases
+    - :redcase_view_test_results
 
   position: 999

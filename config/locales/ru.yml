@@ -10,9 +10,9 @@ ru:
     redcase_i18n_tracker : Тест кейс
 
     redcase_i18n_status_new         : Новый
-    redcase_i18n_status_in_progress : В Работе
+    redcase_i18n_status_in_progress : Активный
     redcase_i18n_status_obsolete    : Неактуальный
-    
-    permission_manage_test_cases  : Управление тест кейсами
-    permission_execute_test_cases : Выполнение тест кейсов
-    permission_view_test_results  : Просмотр отчетов по тестам
+
+    permission_redcase_manage_test_cases  : Управление тест кейсами
+    permission_redcase_execute_test_cases : Выполнение тест кейсов
+    permission_redcase_view_test_results  : Просмотр отчетов по тестам

@@ -1,5 +1,18 @@
+
 ru:
-    permission_redcase_management: Управление тест-кейсами
-    permission_redcase_execution: Выполнение тест-кейсов
-    permission_redcase_report: Отчеты по тест-кейсам
+
+    redcase_i18n_tab : Тест кейсы
+
+    redcase_i18n_tab_management : Управление
+    redcase_i18n_tab_execution  : Выполнение
+    redcase_i18n_tab_report     : Отчеты
+
+    redcase_i18n_tracker : Тест кейс
+
+    redcase_i18n_status_new         : Новый
+    redcase_i18n_status_in_progress : В Работе
+    redcase_i18n_status_obsolete    : Неактуальный
     
+    redcase_i18n_permission_manage  : Управление тест кейсами
+    redcase_i18n_permission_execute : Выполнение тест кейсов
+    redcase_i18n_permission_view    : Просмотр отчетов по тестам

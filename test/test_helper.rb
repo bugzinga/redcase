@@ -23,7 +23,7 @@ class Test::Unit::TestCase
         if fixtures.empty?
             Dir.new(fixtures_path).each do |file|
                 file.gsub!(/\.+$|\.yml/, '')
-                fixtures << file unless (file.empty? or (file == '.svn'))
+                fixtures << file unless (file.empty? or File.directory?(file))
             end
         end
         if Redcase::System::rails2?

@@ -1,0 +1,21 @@
+#tab-content-Management div {
+  width: 33%; 
+  float: left;
+  padding: .1%;
+}
+
+#tab-content-Management .left {
+  border: 1px solid #bbbbbb;
+  border-right: 1px dashed #bbbbbb;
+}
+
+#tab-content-Management .center {
+  border: 1px solid #bbbbbb;
+  border-left: none;
+  border-right: none;
+}
+
+#tab-content-Management .right {
+  border: 1px solid #bbbbbb;
+  border-left: 1px dashed #bbbbbb;
+}

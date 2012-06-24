@@ -4,9 +4,9 @@ require File.expand_path(File.dirname(__FILE__) + '/../test_helper')
 class PluginTabsITest < ActionController::IntegrationTest
 
     fixtures :users, :roles, :projects
+    load_redcase_fixtures
 
     test 'Redcase tab should be in the project menu and all three tabs should be displayed' do
-        load_redcase_fixtures
         log.info ''
         log.info 'Loading Redmine'
         get '/'

@@ -38,5 +38,16 @@ module Redcase
         end
 
     end
+    
+    module ProjectPatch
+
+        def self.included(base)
+            base.class_eval do
+                has_one :test_suite,
+                        :dependent => :destroy
+            end
+        end
+
+    end
 
 end

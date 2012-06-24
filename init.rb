@@ -6,7 +6,7 @@ Redmine::Plugin.register :redcase do
 
     name 'Redcase'
     description 'Test case management plugin for Redmine'
-    version '1.0-alpha-2.47'
+    version '1.0-alpha-2.48'
     url 'http://redcase.sourceforge.net'
     author 'Redcase Dev Team'
 
@@ -35,7 +35,7 @@ Redmine::Plugin.register :redcase do
          }
 
     Redcase::Patch::run do
-        # TODO: injection in Redmine entities
+        Project.send :include, Redcase::ProjectPatch
     end
 
 end

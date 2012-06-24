@@ -6,7 +6,7 @@ Redmine::Plugin.register :redcase do
 
     name 'Redcase'
     description 'Test case management plugin for Redmine'
-    version '1.0-alpha-2.45'
+    version '1.0-alpha-2.46'
     url 'http://redcase.sourceforge.net'
     author 'Redcase Dev Team'
 

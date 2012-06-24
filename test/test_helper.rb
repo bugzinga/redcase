@@ -9,29 +9,28 @@ test_helper_path += '/../../../test/test_helper'
 
 require File.expand_path(test_helper_path)
 
-# Loads ALL Redcase fixtures if +aFixtures+ is empty
-# Otherwise loads specified fixtures
-def load_redcase_fixtures(aFixtures = [])
-    fixturesPath = File.expand_path(File.dirname(__FILE__) + '/fixtures')
-    
-    unless aFixtures.empty?
-        ActiveRecord::Fixtures.create_fixtures(fixturesPath, aFixtures)
-    else
-        fixtures = []
-        Dir.new(fixturesPath).each do |file|
-            file.gsub!(/\.+$|\.yml/,'') 
-            fixtures << file unless file.empty?
-        end
-        ActiveRecord::Fixtures.create_fixtures(fixturesPath, fixtures)
-    end
-end
-
 class Test::Unit::TestCase
 
     include Redmine::I18n
 
     def log
         @log ||= Logger.new(STDOUT)
+    end
+
+    def load_redcase_fixtures(test_fixtures = [])
+        fixtures_path = File.expand_path(File.dirname(__FILE__) + '/fixtures')
+        fixtures = test_fixtures.dup
+        if fixtures.empty?
+            Dir.new(fixtures_path).each do |file|
+                file.gsub!(/\.+$|\.yml/, '')
+                fixtures << file unless (file.empty? or (file == '.svn'))
+            end
+        end
+        if Redcase::System::rails2?
+            Fixtures.create_fixtures(fixtures_path, fixtures)
+        elsif Redcase::System::rails3?
+            ActiveRecord::Fixtures.create_fixtures(fixtures_path, fixtures)
+        end
     end
 
 end

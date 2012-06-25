@@ -2,4 +2,15 @@
     <%= stylesheet_link_tag 'redcase', :plugin => 'redcase' %>
 <% end %>
 
+<script type="text/javascript">
+    var testSuites = <%= @root.to_json(:include => :children).html_safe %>;
+    Event.observe(window, 'load', function() {
+        $$('.expander').each(function(element) {
+            element.observe('click', function() { alert(element); })
+        });
+        $$('.hascontextmenu').each(function(element) {
+            element.observe('contextmenu', function() { alert(element); return false; })
+        });        
+    });
+</script>
 <%= render_tabs get_redcase_inner_tabs(@project) %>

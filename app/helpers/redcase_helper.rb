@@ -16,7 +16,6 @@ module RedcaseHelper
                 tabs << { :name => 'Report', :partial => 'redcase/report', :label => :redcase_i18n_tab_report }
             end
         end
-            tabs
+        tabs
     end
-
 end

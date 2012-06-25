@@ -2,20 +2,24 @@
   width: 33%; 
   float: left;
   padding: .1%;
+  min-height: 400px;
 }
 
 #tab-content-Management .left {
   border: 1px solid #bbbbbb;
   border-right: 1px dashed #bbbbbb;
+  height: 100%;
 }
 
 #tab-content-Management .center {
   border: 1px solid #bbbbbb;
   border-left: none;
   border-right: none;
+  height: 100%;
 }
 
 #tab-content-Management .right {
   border: 1px solid #bbbbbb;
   border-left: 1px dashed #bbbbbb;
+  height: 100%;
 }

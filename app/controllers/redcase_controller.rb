@@ -6,6 +6,7 @@ class RedcaseController < ApplicationController
     before_filter :find_project, :authorize
 
     def index
+        @root = TestSuite.root(@project)
     end
 
     private

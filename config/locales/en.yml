@@ -16,3 +16,7 @@ en:
     permission_redcase_manage_test_cases  : Manage test cases
     permission_redcase_execute_test_cases : Execute test cases
     permission_redcase_view_test_results  : View test results
+    
+    redcase_i18n_root       : Root
+    redcase_i18n_obsolete   : .Obsolete
+    redcase_i18n_unsorted   : .Unsorted

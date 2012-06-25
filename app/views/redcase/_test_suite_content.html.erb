@@ -1,0 +1,11 @@
+<%
+    padding = level.nil? ? 0 : level * 10
+%>
+<% root.children.each do |child| %>
+    <tr class="entry dir hascontextmenu">
+        <td style="padding-left: <%= padding %>px" class="filename">
+            <span class="expander">&nbsp;&nbsp;</span>
+            <span class="icon icon-folder"><%= child.name %></a>
+        </td>
+    </tr>
+<% end %>

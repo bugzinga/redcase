@@ -1,0 +1,13 @@
+<div class="autoscroll" style="width: 100%">
+    <table class="list entries" id="browser">
+        <tbody>
+            <tr class="entry dir open loaded hascontextmenu">
+                <td style="padding-left: 0px" class="filename">
+                    <span class="expander">&nbsp;&nbsp;</span>
+                    <span class="icon icon-folder"><%= root.name %></a>                    
+                </td>
+            </tr>
+            <%= render :partial => 'test_suite_content', :locals => { :root => root, :level => 1 } %>
+        </tbody>
+    </table>
+</div>

@@ -1,28 +1,26 @@
 
 <div id="rcExecutionSuites" class="left">
-    <pre>
-        ROOT
-        |
-        |
-        \_ SUITE
-         _ SUITE
-    </pre>
+    <%= render :partial => 'test_suites_tree', :locals => { :root => @root } %>
 </div>
 <div id="rcExecutionSuites" class="center">
-    <pre>
-        ROOT
-        |
-        |
-        \_ SUITE
-         _ SUITE
-    </pre>
+    <div class="autoscroll" style="width: 100%">
+        <pre>
+            ROOT
+            |
+            |
+            \_ SUITE
+             _ SUITE
+        </pre>
+    </div>
 </div>
 <div id="rcExecutionSuites" class="right">
-    <pre>
-        ROOT
-        |
-        |
-        \_ SUITE
-         _ SUITE
-    </pre>
+    <div class="autoscroll" style="width: 100%">
+        <pre>
+            ROOT
+            |
+            |
+            \_ SUITE
+             _ SUITE
+        </pre>
+    </div>
 </div>    

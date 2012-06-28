@@ -2,8 +2,9 @@
     padding = level.nil? ? 0 : level * 10
 %>
 <% root.children.each do |child| %>
-    <tr class="entry dir hascontextmenu">
+    <tr class="entry dir hascontextmenu" data-id="<%= child.id %>" data-class="<%= child.class %>">
         <td style="padding-left: <%= padding %>px" class="filename">
+            <input type="checkbox" name="ids[]" value="<%= "#{child.class}:#{child.id}" %>" style="display: none" />
             <span class="expander">&nbsp;&nbsp;</span>
             <span class="icon icon-folder"><%= child.name %></a>
         </td>

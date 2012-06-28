@@ -8,9 +8,9 @@
         $$('.expander').each(function(element) {
             element.observe('click', function() { alert(element); })
         });
-        $$('.hascontextmenu').each(function(element) {
-            element.observe('contextmenu', function() { alert(element); return false; })
-        });        
+        // $$('.hascontextmenu').each(function(element) {
+        //     element.observe('contextmenu', function() { alert(element); return false; })
+        // });        
     });
 </script>
 <%= render_tabs get_redcase_inner_tabs(@project) %>

@@ -3,14 +3,16 @@
     <div class="autoscroll" style="width: 100%">
         <table class="list entries" id="browser">
             <tbody>
-                <tr class="entry dir open loaded hascontextmenu">
+                <tr class="entry dir open loaded hascontextmenu" id='<%= "#{@root.class}:#{@root.id}" %>'>
                     <td style="padding-left: 0px" class="filename">
                         <input type="checkbox" name="ids[]" value="<%= "#{@root.class}:#{@root.id}" %>" style="display: none" />
-                        <span class="expander">&nbsp;&nbsp;</span>
+                        <span>&nbsp;&nbsp;</span>
                         <span class="icon icon-folder"><%= root.name %></a>                    
                     </td>
                 </tr>
-                <%= render :partial => 'test_suite_content', :locals => { :root => root, :level => 1 } %>
+                <% @root.children.each do |child| %>
+                    <%= render :partial => 'test_suite_node', :locals => { :node => child, :level => 1, :parent => @root } %>
+                <% end %>
             </tbody>
         </table>
     </div>

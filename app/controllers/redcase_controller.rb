@@ -1,6 +1,5 @@
-
 class RedcaseController < ApplicationController
-
+    
     unloadable
 
     before_filter :find_project, :authorize

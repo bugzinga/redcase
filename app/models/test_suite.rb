@@ -22,4 +22,8 @@ class TestSuite < ActiveRecord::Base
         end
         return test_suite
     end
+    
+    def isRoot?
+        name == "Root"
+    end
 end

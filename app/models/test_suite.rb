@@ -5,7 +5,7 @@ class TestSuite < ActiveRecord::Base
 
     acts_as_tree :order => :name
     belongs_to   :project
-    
+
     ##
     # Returns the root test suite for +project+
     # Creates default folders if there is no test suites for the project
@@ -22,8 +22,9 @@ class TestSuite < ActiveRecord::Base
         end
         return test_suite
     end
-    
+
     def isRoot?
-        name == "Root"
+        !project.nil?
     end
+
 end

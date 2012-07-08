@@ -1,4 +1,8 @@
+
 class TestSuitesController < ApplicationController
+
+    unloadable
+
     def new
         @parent = TestSuite.find(params[:parent_id])
         @node = TestSuite.new
@@ -9,7 +13,7 @@ class TestSuitesController < ApplicationController
             format.js 
         end
     end
-    
+
     def create
         @node = TestSuite.new(params[:test_suite])
         @parent = @node.parent
@@ -19,7 +23,7 @@ class TestSuitesController < ApplicationController
             end
         end
     end
-    
+
     def show
         @node = TestSuite.includes(:children).find(params[:id])
         @level = params[:level]
@@ -27,16 +31,14 @@ class TestSuitesController < ApplicationController
             format.js
         end
     end
-    
+
     def edit
-        
     end
-    
+
     def update
-        
     end
-    
+
     def destroy
-        
     end
+
 end

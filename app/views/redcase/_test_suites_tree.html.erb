@@ -1,4 +1,8 @@
-<%= context_menu("/testsuitestree/context_menu") %>
+<%
+    context_menu_controller = 'redcase_context_menus'
+    context_menu_action = 'test_suites_tree'
+%>
+<%= javascript_tag "new ContextMenu('#{url_for(:controller => context_menu_controller, :action => context_menu_action)}')" %>
 <form>
     <div class="autoscroll" style="width: 100%">
         <table class="list entries" id="browser">
@@ -7,7 +11,7 @@
                     <td style="padding-left: 0px" class="filename">
                         <input type="checkbox" name="ids[]" value="<%= "#{@root.class}:#{@root.id}" %>" style="display: none" />
                         <span>&nbsp;&nbsp;</span>
-                        <span class="icon icon-folder"><%= root.name %></a>                    
+                        <span class="icon icon-folder"><%= root.name %></a>
                     </td>
                 </tr>
                 <% @root.children.each do |child| %>

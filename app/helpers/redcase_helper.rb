@@ -18,4 +18,5 @@ module RedcaseHelper
         end
         tabs
     end
+
 end

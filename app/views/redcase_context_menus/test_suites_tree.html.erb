@@ -1,11 +1,11 @@
 <ul>
     <li>
-        <%= link_to "Add", { :controller => 'test_suites', :action => 'new', :parent_id => @node },
+        <%= link_to "Add", { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
                 :class => 'icon-add', :remote => true %>
     </li>
     <% unless @node.isRoot? %>
         <li>
-            <%= link_to "Rename", { :controller => 'test_suites', :action => 'edit', :id => @node },
+            <%= link_to "Rename", { :controller => 'redcase_test_suites', :action => 'edit', :id => @node },
                     :class => 'icon-edit' %>
         </li>
     <% end %>

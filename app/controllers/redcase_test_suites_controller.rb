@@ -1,5 +1,5 @@
 
-class TestSuitesController < ApplicationController
+class RedcaseTestSuitesController < ApplicationController
 
     unloadable
 

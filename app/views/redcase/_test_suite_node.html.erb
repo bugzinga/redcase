@@ -13,7 +13,7 @@
         <input type="checkbox" name="ids[]" value="<%= tr_id %>" style="display: none" />
         <span class="expander" onclick="<%= remote_function(
                           :url => {
-                                :controller => 'test_suites',
+                                :controller => 'redcase_test_suites',
                                 :action => 'show',
                                 :id     => node.id,
                                 :level  => (level.to_i + 1).to_s,

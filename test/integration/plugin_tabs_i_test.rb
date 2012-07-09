@@ -32,5 +32,5 @@ class PluginTabsITest < ActionController::IntegrationTest
         assert_select 'a#tab-Execution', l(:redcase_i18n_tab_execution)
         assert_select 'a#tab-Report', l(:redcase_i18n_tab_report)
     end
-    
+
 end

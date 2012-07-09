@@ -16,7 +16,7 @@ class Test::Unit::TestCase
     def log
         @log ||= Logger.new(STDOUT)
     end
-    
+
     ##
     # Load local Recase fixtures
     # It should be a class method

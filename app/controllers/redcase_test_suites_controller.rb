@@ -4,8 +4,8 @@ class RedcaseTestSuitesController < ApplicationController
     unloadable
 
     def new
-        @parent = TestSuite.find(params[:parent_id])
-        @node = TestSuite.new
+        @parent = RedcaseTestSuite.find(params[:parent_id])
+        @node = RedcaseTestSuite.new
         @node.parent = @parent
 
         respond_to do |format|
@@ -15,7 +15,7 @@ class RedcaseTestSuitesController < ApplicationController
     end
 
     def create
-        @node = TestSuite.new(params[:test_suite])
+        @node = RedcaseTestSuite.new(params[:test_suite])
         @parent = @node.parent
         if @node.save
             respond_to do |format|
@@ -25,7 +25,7 @@ class RedcaseTestSuitesController < ApplicationController
     end
 
     def show
-        @node = TestSuite.includes(:children).find(params[:id])
+        @node = RedcaseTestSuite.includes(:children).find(params[:id])
         @level = params[:level]
         respond_to do |format|
             format.js

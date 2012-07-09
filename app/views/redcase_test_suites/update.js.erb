@@ -1,0 +1,14 @@
+// Hidding modal dialog
+hideModal("modalDiv");
+$("modalDiv").toggle();
+// Removing form
+$("edit_redcase_test_suite_<%= @node.id %>").remove();
+
+var childs = $('<%= "#{@node.class}:#{@node.id}" %>').firstDescendant().childElements();
+for(var i=0; i<childs.length; i++) {
+    if(childs[i].hasClassName('node-name')) {
+        childs[i].update('<%= @node.name %>');
+        break;
+    }
+}
+

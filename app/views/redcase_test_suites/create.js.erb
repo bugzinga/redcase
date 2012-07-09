@@ -2,11 +2,11 @@
 hideModal("modalDiv");
 $("modalDiv").toggle();
 // Removing form
-$("new_test_suite").remove();
+$("new_redcase_test_suite").remove();
 // Calclating padding for the new tree element
 // It should be padding of parent three element + 10 px
 var padding = parseInt($('<%= "#{@parent.class}:#{@parent.id}" %>').firstDescendant().getStyle('padding-left')) + 10;
 // Adding new tree element
-var strRow = '<%=j render :partial => 'redcase/test_suite_node', :locals => { :node => @node, :level => 1, :parent => @parent } %>';
+var strRow = '<%=j render :partial => "redcase/test_suite_node", :locals => { :node => @node, :level => 1, :parent => @parent } %>';
 // Applying calculated padding
 $('<%= "#{@parent.class}:#{@parent.id}" %>').insert({after: strRow}).next().firstDescendant().setStyle({'padding-left' : padding + 'px'});

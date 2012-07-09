@@ -3,10 +3,14 @@
         <%= link_to "Add", { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
                 :class => 'icon-add', :remote => true %>
     </li>
-    <% unless @node.isRoot? %>
+    <% unless @node.builtin? %>
         <li>
             <%= link_to "Rename", { :controller => 'redcase_test_suites', :action => 'edit', :id => @node },
-                    :class => 'icon-edit' %>
+                    :class => 'icon-edit', :remote => true %>
         </li>
+        <li>
+            <%= link_to l(:redcase_i18n_delete), { :controller => 'redcase_test_suites', :action => 'destroy', :id => @node },
+                    :class => 'icon-del', :remote => true, :confirm => '', :method => :delete %>
+        </li>        
     <% end %>
 </ul>

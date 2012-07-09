@@ -15,7 +15,7 @@ class RedcaseTestSuitesController < ApplicationController
     end
 
     def create
-        @node = RedcaseTestSuite.new(params[:test_suite])
+        @node = RedcaseTestSuite.new(params[:redcase_test_suite])
         @parent = @node.parent
         if @node.save
             respond_to do |format|
@@ -33,12 +33,29 @@ class RedcaseTestSuitesController < ApplicationController
     end
 
     def edit
+        @node = RedcaseTestSuite.find(params[:id])
+        respond_to do |format|
+            format.js
+        end
     end
 
     def update
+        @node = RedcaseTestSuite.find(params[:id])
+        @node.name = params[:redcase_test_suite][:name]
+        @node.save!
+        respond_to do |format|
+            format.js
+        end
     end
 
     def destroy
+        node = RedcaseTestSuite.find(params[:id])
+        @node_class = "#{node.class}:#{node.id}"
+        @parent_class = "#{node.parent.class}:#{node.parent.id}"
+        node.destroy
+        respond_to do |format|
+            format.js
+        end
     end
 
 end

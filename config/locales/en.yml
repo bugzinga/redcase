@@ -20,3 +20,7 @@ en:
     redcase_i18n_root       : Root
     redcase_i18n_obsolete   : .Obsolete
     redcase_i18n_unsorted   : .Unsorted
+    
+    redcase_i18n_add        : Add
+    redcase_i18n_rename     : Rename
+    redcase_i18n_delete     : Delete

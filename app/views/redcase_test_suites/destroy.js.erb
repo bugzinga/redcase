@@ -1,0 +1,30 @@
+var sParentClass = '<%= @parent_class %>';
+var sNodeClass = '<%= @node_class %>';
+var node = $(sNodeClass);
+
+// Rows that goes after deleted node
+var rows = node.nextSiblings();
+// Array of IDs of the deleted node and its childs
+var classes = [];
+classes.push(node.identify());
+// Removing deleted node from the tree
+node.remove();
+
+for(var i=0; i<rows.length; i++) {
+    if(rows[i].hasClassName(sParentClass)) {
+        // The row has the same level as the deleted node
+        // So we can stop here
+        break;
+    }
+    
+    for(var j=0; j<classes.length; j++) {
+        if(rows[i].hasClassName(classes[j])) {
+            // The row represents a child of the deleted node
+            // So we add its ID to the array of IDs
+            classes.push(rows[i].identify());
+            // Remove the row from the tree
+            rows[i].remove();
+            break;
+        }
+    }   
+}

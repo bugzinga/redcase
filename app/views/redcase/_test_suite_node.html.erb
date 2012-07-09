@@ -1,14 +1,9 @@
 <%
-    if node.name == '.Obsolete' or node.name == '.Unsorted'
-        has_context_menu = ''
-    else
-        has_context_menu = 'hascontextmenu'
-    end
     tr_id = "#{node.class}:#{node.id}"
     padding = level.nil? ? 0 : level.to_i * 10
     tr_class = "#{parent.class}:#{parent.id} entry dir" if parent
 %>
-<tr class="entry dir <%= has_context_menu %> <%= tr_class %>" id="<%= tr_id %>">
+<tr class="entry dir hascontextmenu <%= tr_class %>" id="<%= tr_id %>">
     <td style="padding-left: <%= padding %>px">
         <input type="checkbox" name="ids[]" value="<%= tr_id %>" style="display: none" />
         <span class="expander" onclick="<%= remote_function(
@@ -24,6 +19,6 @@
                           :success => "scmEntryLoaded('#{tr_id}')",
                           :condition => "scmEntryClick('#{tr_id}')"
                         ) %>">&nbsp;&nbsp;</span>
-        <span class="icon icon-folder"><%= node.name %></a>
+        <span class="icon icon-folder node-name"><%= node.name %></a>
     </td>
 </tr>

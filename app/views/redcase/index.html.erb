@@ -1,28 +1,38 @@
-<% content_for :header_tags do %>
-    <%= javascript_include_tag 'prototype', :plugin => 'redcase'  %>
-    <%= javascript_include_tag 'application', :plugin => 'redcase'  %>
-    <%= javascript_include_tag 'context_menu', :plugin => 'redcase'  %>
-    <%= stylesheet_link_tag 'context_menu' %>
-    <%= stylesheet_link_tag 'application', :plugin => 'redcase'  %>
-    <%= stylesheet_link_tag 'redcase', :plugin => 'redcase' %>
-<% end %>
+<%
+    content_for :header_tags do
+        if Redcase::System.rails2?
+%>
+            <%= javascript_include_tag 'prototype', :plugin => 'redcase' %>
+            <%= javascript_include_tag 'application', :plugin => 'redcase' %>
+            <%= javascript_include_tag 'context_menu', :plugin => 'redcase' %>
+            <%= stylesheet_link_tag 'application', :plugin => 'redcase' %>
+<%
+        else
+%>
+            <%= javascript_include_tag 'context_menu' %>
+<%
+        end
+%>
+            <%= stylesheet_link_tag 'context_menu' %>
+            <%= stylesheet_link_tag 'redcase', :plugin => 'redcase' %>
+<%
+    end
+%>
 
 <script type="text/javascript">
-Ajax.Responders.register({
-  onCreate: function(request) {
-    var csrf_meta_tag = $$('meta[name=csrf-token]')[0];
-
-    if (csrf_meta_tag) {
-      var header = 'X-CSRF-Token',
-          token = csrf_meta_tag.readAttribute('content');
-
-      if (!request.options.requestHeaders) {
-        request.options.requestHeaders = {};
-      }
-      request.options.requestHeaders[header] = token;
-    }
-  }
-});
+    Ajax.Responders.register({
+        onCreate: function(request) {
+                var csrf_meta_tag = $$('meta[name=csrf-token]')[0];
+                if (csrf_meta_tag) {
+                    var header = 'X-CSRF-Token',
+                    token = csrf_meta_tag.readAttribute('content');
+                    if (!request.options.requestHeaders) {
+                        request.options.requestHeaders = {};
+                    }
+                    request.options.requestHeaders[header] = token;
+                }
+            }
+        });
 </script>
 
 <div id="modalDiv" style="display: none"></div>

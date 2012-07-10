@@ -20,11 +20,11 @@ class RedcaseTestSuite < ActiveRecord::Base
             return nil
         end
     end
-    
+
     ##
     # Returns the root test suite for +project+
     # Creates default folders if there is no test suites for the project
-    def self.root(project = 0)        
+    def self.root(project = 0)
         test_suite = RedcaseTestSuite.find_by_project_id(
                         project.id,
                         :include => :children)
@@ -41,8 +41,8 @@ class RedcaseTestSuite < ActiveRecord::Base
     def isRoot?
         !project.nil?
     end
-    
+
     def builtin?
         (name == l(:redcase_i18n_root)) || (name == l(:redcase_i18n_obsolete)) || (name == l(:redcase_i18n_unsorted))
-    end    
+    end
 end

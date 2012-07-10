@@ -7,10 +7,8 @@ class RedcaseTestSuitesController < ApplicationController
         @parent = RedcaseTestSuite.find(params[:parent_id])
         @node = RedcaseTestSuite.new
         @node.parent = @parent
-
         respond_to do |format|
-            format.html
-            format.js 
+            format.js { render :layout => false }
         end
     end
 

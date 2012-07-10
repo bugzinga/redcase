@@ -1,16 +1,44 @@
 <ul>
     <li>
-        <%= link_to "Add", { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
-                :class => 'icon-add', :remote => true %>
+        <%=
+            if Redcase::System.rails3?
+                link_to "Add",
+                        { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
+                        :class => 'icon-add',
+                        :remote => true
+            else
+                link_to_remote "Add",
+                               :url => { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
+                               :class => 'icon-add',
+                               :complete => 'eval(request.data)'
+            end
+        %>
     </li>
-    <% unless @node.builtin? %>
-        <li>
-            <%= link_to "Rename", { :controller => 'redcase_test_suites', :action => 'edit', :id => @node },
-                    :class => 'icon-edit', :remote => true %>
-        </li>
-        <li>
-            <%= link_to l(:redcase_i18n_delete), { :controller => 'redcase_test_suites', :action => 'destroy', :id => @node },
-                    :class => 'icon-del', :remote => true, :confirm => '', :method => :delete %>
-        </li>        
-    <% end %>
+<% unless @node.builtin? %>
+    <li>
+        <%=
+            if Redcase::System.rails3?
+                link_to "Rename",
+                        { :controller => 'redcase_test_suites', :action => 'edit', :id => @node },
+                        :class => 'icon-edit',
+                        :remote => true
+            else
+                link_to_remote "Rename",
+                               :url => { :controller => 'redcase_test_suites', :action => 'edit', :id => @node },
+                               :class => 'icon-edit',
+                               :complete => 'eval(request.data)'
+            end
+        %>
+    </li>
+    <li>
+        <%=
+            link_to l(:redcase_i18n_delete),
+                    { :controller => 'redcase_test_suites', :action => 'destroy', :id => @node },
+                    :class => 'icon-del',
+                    :remote => true,
+                    :confirm => '',
+                    :method => :delete
+        %>
+    </li>
+<% end %>
 </ul>

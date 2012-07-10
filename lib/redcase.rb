@@ -38,7 +38,7 @@ module Redcase
         end
 
     end
-    
+
     module ProjectPatch
 
         def self.included(base)

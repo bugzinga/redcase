@@ -14,11 +14,11 @@ $$("#modalDiv form").first().remove();
 
 // Calclating padding for the new tree element
 // It should be padding of parent three element + 10 px
-var parentNodeId = '<%= raw("#{@parent.class}:#{@parent.id}").gsub(/[\n]+/, '').gsub(/["]+/, '\\\"') %>';
+var parentNodeId = '<%= raw ("#{@parent.class}:#{@parent.id}").gsub(/[\n]+/, '').gsub(/["]+/, '\\\"') %>';
 var padding = parseInt($(parentNodeId).firstDescendant().getStyle('padding-left')) + 10;
 
 // Adding new tree element
-var strRow = "<%= raw(render :partial => 'redcase/test_suite_node', :locals => { :node => @node, :level => 1, :parent => @parent }).gsub(/[\n]+/, '').gsub(/["]+/, '\\\"') %>";
+var strRow = "<%= raw (render :partial => 'redcase/test_suite_node', :locals => { :node => @node, :level => 1, :parent => @parent }).gsub(/[\n]+/, '').gsub(/["]+/, '\\\"') %>";
 
 // Applying calculated padding
 $(parentNodeId).insert({after: strRow}).next().firstDescendant().setStyle({'padding-left' : padding + 'px'});

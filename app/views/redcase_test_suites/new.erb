@@ -1,2 +1,3 @@
-$('modalDiv').insert('<%= raw (render "form").gsub(/[\n]+/, "") %>');
+var form = "<%= raw(render "form").gsub(/[\n]+/, "").gsub(/["]+/, "\\\"") %>"
+$('modalDiv').insert(form);
 showModal('modalDiv', 100);

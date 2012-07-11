@@ -324,7 +324,7 @@ function showModal(id, width) {
 function hideModal(el) {
   var modal;
 	if (el) {
-		modal = Element.up(el, 'div.modal');
+		modal = $(el);
 	} else {
 		modal = $('ajax-modal');
 	}

@@ -1,4 +1,4 @@
-<% form_for :node, @node, :remote => true do |f| %>
+<% remote_form_for :node, @node, :url => { :action => 'create' } do |f| %>
     <%= f.hidden_field :parent_id, :value => @node.parent.id %>
     <%= f.label :name %>:
     <%= f.text_field :name  %>

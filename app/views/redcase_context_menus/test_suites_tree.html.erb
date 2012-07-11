@@ -9,8 +9,7 @@
             else
                 link_to_remote "Add",
                                :url => { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
-                               :class => 'icon-add',
-                               :complete => 'eval(request.data)'
+                               :class => 'icon-add'
             end
         %>
     </li>

@@ -13,11 +13,11 @@ class RedcaseTestSuitesController < ApplicationController
     end
 
     def create
-        @node = RedcaseTestSuite.new(params[:redcase_test_suite])
+        @node = RedcaseTestSuite.new(params[:node])
         @parent = @node.parent
         if @node.save
             respond_to do |format|
-                format.js
+                format.js { render :layout => false }
             end
         end
     end

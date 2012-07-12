@@ -13,7 +13,7 @@ class RedcaseTestSuitesController < ApplicationController
     end
 
     def create
-        @node = RedcaseTestSuite.new(params[:node])
+        @node = RedcaseTestSuite.new(params[:redcase_test_suite])
         @parent = @node.parent
         if @node.save
             respond_to do |format|

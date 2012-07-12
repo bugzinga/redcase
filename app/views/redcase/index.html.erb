@@ -3,7 +3,6 @@
         if Redcase::System.rails2?
 %>
             <%= javascript_include_tag 'prototype', :plugin => 'redcase' %>
-            <%= javascript_include_tag 'application', :plugin => 'redcase' %>
             <%= javascript_include_tag 'context_menu', :plugin => 'redcase' %>
             <%= stylesheet_link_tag 'application', :plugin => 'redcase' %>
 <%
@@ -13,6 +12,7 @@
 <%
         end
 %>
+            <%= javascript_include_tag 'application', :plugin => 'redcase' %>
             <%= stylesheet_link_tag 'context_menu' %>
             <%= stylesheet_link_tag 'redcase', :plugin => 'redcase' %>
 <%

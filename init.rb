@@ -6,7 +6,7 @@ Redmine::Plugin.register :redcase do
 
     name 'Redcase'
     description 'Test case management plugin for Redmine'
-    version '1.0-alpha-2.71'
+    version '1.0-alpha-2.72'
     url 'http://redcase.sourceforge.net'
     author 'Redcase Dev Team'
 
@@ -28,7 +28,7 @@ Redmine::Plugin.register :redcase do
                      User.current.allowed_to?(:redcase_manage_test_cases, p) or
                      User.current.allowed_to?(:redcase_execute_test_cases, p) or
                      User.current.allowed_to?(:redcase_view_test_results, p)
-                 ) and p.enabled_modules.find_by_name("issue_tracking")
+                 ) and (p.trackers.select { |t| t.name == ::I18n.t(:redcase_i18n_tracker) }.length > 0)
              },
              :caption => :redcase_i18n_tab,
              :after   => :new_issue

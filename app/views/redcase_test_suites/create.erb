@@ -22,4 +22,4 @@ var padding = parseInt($(parentNodeId).firstDescendant().getStyle('padding-left'
 var strRow = "<%= raw (render :partial => 'redcase/test_suite_node', :locals => { :node => @node, :level => 1, :parent => @parent }).gsub(/[\n]+/, '').gsub(/["]+/, '\\\"') %>";
 
 // Applying calculated padding
-$(parentNodeId).insert({after: strRow}).next().firstDescendant().setStyle({'padding-left' : padding + 'px'});
+$(parentNodeId).insert({after: strRow}).next().firstDescendant().style['paddingLeft'] = padding + 'px';

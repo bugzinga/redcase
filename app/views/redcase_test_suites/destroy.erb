@@ -1,12 +1,15 @@
+
 var sParentClass = '<%= @parent_class %>';
 var sNodeClass = '<%= @node_class %>';
 var node = $(sNodeClass);
 
 // Rows that goes after deleted node
 var rows = node.nextSiblings();
+
 // Array of IDs of the deleted node and its childs
 var classes = [];
 classes.push(node.identify());
+
 // Removing deleted node from the tree
 node.remove();
 
@@ -16,7 +19,6 @@ for(var i=0; i<rows.length; i++) {
         // So we can stop here
         break;
     }
-    
     for(var j=0; j<classes.length; j++) {
         if(rows[i].hasClassName(classes[j])) {
             // The row represents a child of the deleted node
@@ -26,5 +28,5 @@ for(var i=0; i<rows.length; i++) {
             rows[i].remove();
             break;
         }
-    }   
+    }
 }

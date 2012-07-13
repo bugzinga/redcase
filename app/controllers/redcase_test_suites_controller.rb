@@ -52,7 +52,7 @@ class RedcaseTestSuitesController < ApplicationController
         @parent_class = "#{node.parent.class}:#{node.parent.id}"
         node.destroy
         respond_to do |format|
-            format.js
+            format.js { render :layout => false }
         end
     end
 

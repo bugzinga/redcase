@@ -1,4 +1,4 @@
-var form = "<%= raw (render "form").gsub(/[\n]+/, "").gsub(/["]+/, "\\\"") %>"
+var form = "<%= raw (render "form").gsub(/[\n]+/, "").gsub(/["]+/, "\\\"") %>";
 <% if flash[:error] %>
     $('errors').update('<%= flash[:error] %>');
 <% else %>

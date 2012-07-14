@@ -24,3 +24,5 @@ en:
     redcase_i18n_add        : Add
     redcase_i18n_rename     : Rename
     redcase_i18n_delete     : Delete
+    
+    redcase_i18n_error_suite_exists :   Test suite already exists

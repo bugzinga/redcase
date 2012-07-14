@@ -1,3 +1,7 @@
-$("modalDiv").insert("<%=j render 'form' %>");
+<% if flash[:error] %>
+    $('errors').update('<%= flash[:error] %>');
+<% else %>
+    $("modalDiv").insert("<%=j render 'form' %>");
+<% end %>
 showModal("modalDiv", 100);
 

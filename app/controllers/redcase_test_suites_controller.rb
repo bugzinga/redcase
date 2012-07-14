@@ -15,10 +15,14 @@ class RedcaseTestSuitesController < ApplicationController
     def create
         @node = RedcaseTestSuite.new(params[:redcase_test_suite])
         @parent = @node.parent
-        if @node.save
+        begin
+            @node.save!
             respond_to do |format|
                 format.js { render :layout => false }
             end
+        rescue
+            flash.now[:error] = l(:redcase_i18n_error_suite_exists)
+            render :new
         end
     end
 
@@ -40,9 +44,14 @@ class RedcaseTestSuitesController < ApplicationController
     def update
         @node = RedcaseTestSuite.find(params[:id])
         @node.name = params[:redcase_test_suite][:name]
-        @node.save!
-        respond_to do |format|
-            format.js
+        begin
+            @node.save!
+            respond_to do |format|
+                format.js
+            end
+        rescue
+            flash.now[:error] = l(:redcase_i18n_error_suite_exists)
+            render :edit            
         end
     end
 

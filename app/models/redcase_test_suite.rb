@@ -45,7 +45,7 @@ class RedcaseTestSuite < ActiveRecord::Base
     def builtin?
         if self.project_id
             return true
-        elsif self.parent.project_id && ( (name == l(:redcase_i18n_obsolete)) || (name == l(:redcase_i18n_unsorted)) 
+        elsif self.parent.project_id && ( (name == l(:redcase_i18n_obsolete)) || (name == l(:redcase_i18n_unsorted)) ) 
             return true
         else
             return false

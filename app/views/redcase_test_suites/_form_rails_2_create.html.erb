@@ -1,4 +1,4 @@
-<% remote_form_for :redcase_test_suite, @node do |f| %>
+<% remote_form_for :redcase_test_suite, @node, :url => { :controller => 'redcase_test_suites', :action => 'create' } do |f| %>
     <%= f.hidden_field :parent_id, :value => @node.parent.id %>
     <%= f.label :name %>:
     <%= f.text_field :name  %>

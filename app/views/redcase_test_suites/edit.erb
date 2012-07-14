@@ -1,7 +1,10 @@
+var form = "<%= raw (render "form_update").gsub(/[\n]+/, "").gsub(/["]+/, "\\\"") %>";
+
 <% if flash[:error] %>
     $('errors').update('<%= flash[:error] %>');
 <% else %>
-    $("modalDiv").insert("<%=j render 'form' %>");
+    $("modalDiv").insert(form);
+    showModal("modalDiv");
 <% end %>
-showModal("modalDiv", 100);
+
 

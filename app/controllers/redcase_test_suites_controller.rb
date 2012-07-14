@@ -16,18 +16,21 @@ class RedcaseTestSuitesController < ApplicationController
         @node = RedcaseTestSuite.new(params[:redcase_test_suite])
         @parent = @node.parent
         begin
-            @node.save!
-            respond_to do |format|
-                format.js { render :layout => false }
+            if @node.save!
+                respond_to do |format|
+                    format.js { render :layout => false }
+                end
+            else
+                raise
             end
         rescue
             flash.now[:error] = l(:redcase_i18n_error_suite_exists)
-            render :new
+            render :new, :layout => false, :content_type => 'text/javascript'
         end
     end
 
     def show
-        @node = RedcaseTestSuite.includes(:children).find(params[:id])
+        @node = RedcaseTestSuite.find(params[:id], :include => :children)
         @level = params[:level]
         respond_to do |format|
             format.js
@@ -45,13 +48,16 @@ class RedcaseTestSuitesController < ApplicationController
         @node = RedcaseTestSuite.find(params[:id])
         @node.name = params[:redcase_test_suite][:name]
         begin
-            @node.save!
-            respond_to do |format|
-                format.js
+            if @node.save!
+                respond_to do |format|
+                    format.js
+                end
+            else
+                raise
             end
         rescue
             flash.now[:error] = l(:redcase_i18n_error_suite_exists)
-            render :edit            
+            render :edit, :layout => false, :content_type => 'text/javascript'           
         end
     end
 

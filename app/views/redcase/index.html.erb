@@ -33,7 +33,19 @@
                 }
             }
         });
+        
+        Event.observe(document, "dom:loaded", function() {
+            $("closeModalDiv").observe('click', function() {
+                hideModal("modalDiv");
+                $$("#modalDiv form").first().remove();
+            });
+        } );
 </script>
 
-<div id="modalDiv" style="display: none"></div>
+<div id="modalDiv" style="display: none">
+    <%= image_tag '/images/false.png', :style => "float: right; cursor: pointer", :id => "closeModalDiv" %>
+    <br>
+    <hr>  
+    <br>  
+</div>
 <%= render_tabs get_redcase_inner_tabs(@project) %>

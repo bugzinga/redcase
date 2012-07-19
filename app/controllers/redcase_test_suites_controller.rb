@@ -40,7 +40,7 @@ class RedcaseTestSuitesController < ApplicationController
     def edit
         @node = RedcaseTestSuite.find(params[:id])
         respond_to do |format|
-            format.js
+            format.js { render :layout => false }
         end
     end
 
@@ -50,7 +50,7 @@ class RedcaseTestSuitesController < ApplicationController
         begin
             if @node.save!
                 respond_to do |format|
-                    format.js
+                    format.js { render :layout => false }
                 end
             else
                 raise

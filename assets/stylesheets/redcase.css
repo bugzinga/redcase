@@ -1,6 +1,7 @@
 
 #redcase-management-layout {
     width: 100%;
+    border: 1px #bbbbbb solid;
     border-collapse: collapse;
 }
 

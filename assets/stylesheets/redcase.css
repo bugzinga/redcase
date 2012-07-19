@@ -1,26 +1,15 @@
 
-#tab-content-Management div {
-  width: 33%; 
-  float: left;
-  padding: .1%;
-  min-height: 400px;
+#redcase-management-layout {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-#tab-content-Management .left {
-  border: 1px solid #bbbbbb;
-  border-right: 1px dashed #bbbbbb;
-  height: 100%;
+#redcase-management-layout > tbody >tr {
+    vertical-align: top;
 }
 
-#tab-content-Management .center {
-  border: 1px solid #bbbbbb;
-  border-left: none;
-  border-right: none;
-  height: 100%;
-}
-
-#tab-content-Management .right {
-  border: 1px solid #bbbbbb;
-  border-left: 1px dashed #bbbbbb;
-  height: 100%;
+#redcase-management-layout > tbody > tr > td {
+    padding: 8px;
+    width: 33%;
+    border: 1px #cccccc dashed;
 }

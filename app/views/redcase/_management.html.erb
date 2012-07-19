@@ -1,25 +1,15 @@
-<div id="redcaseManagenemtTestSuites" class="left">
-    <%= render :partial => 'test_suites_tree', :locals => { :root => @root } %>
-</div>
-<div id="redcaseManagementExecutionSuites" class="center">
-    <div class="autoscroll" style="width: 100%">
-        <pre>
-            ROOT
-            |
-            |
-            \_ SUITE
-             _ SUITE
-        </pre>
-    </div>
-</div>
-<div id="redcaseManagementEnvironments" class="right">
-    <div class="autoscroll" style="width: 100%">
-        <pre>
-            ROOT
-            |
-            |
-            \_ SUITE
-             _ SUITE
-        </pre>
-    </div>
-</div>
+<table id="redcase-management-layout">
+    <tbody>
+        <tr>
+            <td>
+                <%= render :partial => 'test_suites_tree', :locals => { :root => @root } %>
+            </td>
+            <td>
+                TODO: Execution trees
+            </td>
+            <td>
+                TODO: Environments
+            </td>
+        </tr>
+    </tbody>
+</table>

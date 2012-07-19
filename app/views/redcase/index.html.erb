@@ -33,19 +33,27 @@
                 }
             }
         });
-        
-        Event.observe(document, "dom:loaded", function() {
+    Event.observe(document, "dom:loaded", function() {
             $("closeModalDiv").observe('click', function() {
-                hideModal("modalDiv");
-                $$("#modalDiv form").first().remove();
-            });
-        } );
+                    hideModal("modalDiv");
+                    $$("#modalDiv form").first().remove();
+                });
+        });
 </script>
 
 <div id="modalDiv" style="display: none">
     <%= image_tag '/images/false.png', :style => "float: right; cursor: pointer", :id => "closeModalDiv" %>
     <br>
-    <hr>  
-    <br>  
+    <hr>
+    <br>
 </div>
+
+<h2>
+    Redcase
+    <!-- Show the plugin version; only for development purposes-->
+     <span style="color: gray">
+        (Plugin version: <%= Redmine::Plugin.all.detect { |x| x.name == 'Redcase' }.version %>)
+    </span>
+</h2>
+
 <%= render_tabs get_redcase_inner_tabs(@project) %>

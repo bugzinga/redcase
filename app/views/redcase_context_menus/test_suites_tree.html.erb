@@ -9,7 +9,7 @@
             else
                 link_to_remote "Add",
                                :url => { :controller => 'redcase_test_suites', :action => 'new', :parent_id => @node },
-                               :class => 'icon-add',
+                               :html => { :class => 'icon-add' },
                                :method => 'get'
             end
         %>
@@ -25,7 +25,7 @@
             else
                 link_to_remote "Rename",
                                :url => { :controller => 'redcase_test_suites', :action => 'edit', :id => @node },
-                               :class => 'icon-edit',
+                               :html => { :class => 'icon-edit' },
                                :method => 'get'
             end
         %>
@@ -42,7 +42,7 @@
             else
                 link_to_remote l(:redcase_i18n_delete),
                                :url => { :controller => 'redcase_test_suites', :action => 'destroy', :id => @node },
-                               :class => 'icon-del',
+                               :html => { :class => 'icon-del' },
                                :confirm => 'Yes?',
                                :method => 'delete'
             end

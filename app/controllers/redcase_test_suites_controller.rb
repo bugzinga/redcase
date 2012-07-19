@@ -33,7 +33,7 @@ class RedcaseTestSuitesController < ApplicationController
         @node = RedcaseTestSuite.find(params[:id], :include => :children)
         @level = params[:level]
         respond_to do |format|
-            format.js
+            format.js { render :layout => false }
         end
     end
 

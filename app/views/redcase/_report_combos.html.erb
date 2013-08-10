@@ -1,0 +1,15 @@
+<table><tr><td>
+<%= l('label_version') %>:</td><td>
+<%= select_tag(:versionx, options_from_collection_for_select(Version.find_all_by_project_id(@project.id), 'id', 'name', @version.id), :style => 'width: 225px') %>
+<%= observe_field :versionx, :url => { :action => 'update_combos', :project_id => @project.id, :environment_id => @environment.id}, :with => 'version_id', :update => 'combos_id' %>
+<%= observe_field :versionx, :url => { :action => 'get_graph', :project_id => @project.id, :environment_id => @environment.id}, :with => 'version_id', :update => 'chart_id' %>
+<%= observe_field :versionx, :url => { :action => 'get_advanced_execution', :project_id => @project.id, :environment_id => @environment.id}, :with => 'version_id', :update => 'report_results_table_id' %>
+<%= observe_field :versionx, :url => { :action => 'update_combos2', :project_id => @project.id, :time => Time.now, :environment_id => @environment.id}, :with => 'version_id', :update => 'download_button_id' %>
+</td></tr><tr><td>
+<%= l('label_environment') %>:</td><td>
+<%= select_tag :environment, options_from_collection_for_select(ExecutionEnvironment.find_all_by_project_id(@project.id), 'id', 'name', @environment.id), :style => 'width: 225px' %>
+<%= observe_field :environment, :url => { :action => 'update_combos', :project_id => @project.id, :version_id => @version.id }, :with => 'environment_id', :update => 'combos_id' %>
+<%= observe_field :environment, :url => { :action => 'get_graph', :project_id => @project.id, :version_id => @version.id }, :with => 'environment_id', :update => 'chart_id' %>
+<%= observe_field :environment, :url => { :action => 'get_advanced_execution', :project_id => @project.id, :version_id => @version.id }, :with => 'environment_id', :update => 'report_results_table_id' %>
+<%= observe_field :environment, :url => { :action => 'update_combos2', :project_id => @project.id, :time => Time.now, :version_id => @version.id}, :with => 'environment_id', :update => 'download_button_id' %>
+</td></tr></table>

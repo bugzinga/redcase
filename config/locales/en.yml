@@ -1,28 +1,26 @@
+# English strings go here for Rails i18n
 
 en:
 
-    redcase_i18n_tab : Test cases
-
-    redcase_i18n_tab_management : Management
-    redcase_i18n_tab_execution  : Execution
-    redcase_i18n_tab_report     : Report
-
-    redcase_i18n_tracker : Test case
-
-    redcase_i18n_status_new         : New
-    redcase_i18n_status_in_progress : In Progress
-    redcase_i18n_status_obsolete    : Obsolete
-
-    permission_redcase_manage_test_cases  : Manage test cases
-    permission_redcase_execute_test_cases : Execute test cases
-    permission_redcase_view_test_results  : View test results
-    
-    redcase_i18n_root       : Root
-    redcase_i18n_obsolete   : .Obsolete
-    redcase_i18n_unsorted   : .Unsorted
-    
-    redcase_i18n_add        : Add
-    redcase_i18n_rename     : Rename
-    redcase_i18n_delete     : Delete
-    
-    redcase_i18n_error_suite_exists :   Test suite already exists
+  label_test_case_management    : "Management"
+  label_test_case_execution     : "Execution"
+  label_test_case_report        : "Report"
+  label_test_suites             : "Test suites"
+  label_execution_suite         : "Execution suite"
+  label_environment             : "Environment"
+  label_version                 : "Version"
+  label_execution_info          : "Execution Info"
+  label_description             : "Description"
+  label_history                 : "History"
+  label_id                      : "ID"
+  label_name                    : "Name"
+  label_date                    : "Date"
+  label_result                  : "Result"
+  label_comments                : "Comments"
+  label_comment                 : "Comment"
+  label_executor                : "Executor"
+  label_not_available           : "Not Available"
+  label_report                  : "Report"
+  label_full_report             : "Full Report"
+  label_test_case_specification : "Test case specification"
+  label_button_save             : "save"

@@ -1,0 +1,6 @@
+
+<%= form_tag({ :action =>  :export_to_excel2, :project_id => @project.id, :time => Time.now, :environment_id => @environment.id, :version_id => @version.id}) do %>
+    <%= link_to image_tag('report.png', :plugin => 'redcase', :size => '95x36', :style => 'vertical-align: middle'),
+                { :action =>  :export_to_excel2, :project_id => @project.id, :time => Time.now, :environment_id => @environment.id, :version_id => @version.id },
+                { :class => 'no_underline', :submit => 'spec_id' } %>
+<% end %>

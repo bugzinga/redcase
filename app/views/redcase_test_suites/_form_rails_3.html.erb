@@ -1,8 +1,0 @@
-<%= form_for @node, :remote => true do |f| %>
-    <%= f.hidden_field :parent_id, :value => @node.parent.id %>
-    <%= f.label :name %>:
-    <%= f.text_field :name %>
-    <%= f.submit ' ', :type => :image, :src => '/images/true.png' %>
-    <br>
-    <%= errors_par %>
-<% end %>

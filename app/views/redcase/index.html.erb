@@ -1,59 +1,90 @@
-<%
-    content_for :header_tags do
-        if Redcase::System.rails2?
-%>
-            <%= javascript_include_tag 'prototype', :plugin => 'redcase' %>
-            <%= javascript_include_tag 'context_menu', :plugin => 'redcase' %>
-            <%= stylesheet_link_tag 'application', :plugin => 'redcase' %>
-<%
-        else
-%>
-            <%= javascript_include_tag 'context_menu' %>
-<%
-        end
-%>
-            <%= javascript_include_tag 'application', :plugin => 'redcase' %>
-            <%= stylesheet_link_tag 'context_menu' %>
-            <%= stylesheet_link_tag 'redcase', :plugin => 'redcase' %>
-<%
-    end
-%>
 
+<% content_for :header_tags do %>
+
+    <!-- ExtJS -->
+    <%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
+    <!-- Redmine -->
+    <%= stylesheet_link_tag 'application' %>
+    <!-- Redcase -->
+    <%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
+
+    <!-- Flash chart -->
+    <%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
+    <!-- ExtJS -->
+    <%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
+    <%= javascript_include_tag 'ext-3.1.1/ext-all', :plugin => 'redcase' %>
+    <!-- Redcase -->
+    <%= javascript_include_tag 'scripts', :plugin => 'redcase' %>
+    
+<% end %>
+
+<!--
+    1. We need to save for using in javascript part:
+       a) Project identifier;
+       b) User rights for this plugin;
+       c) Other projects information to use it in menu 'Copy to' to reassign
+          test case to another project;
+    2. We need to create trees of test cases for further management and execution.
+-->
 <script type="text/javascript">
-    Ajax.Responders.register({
-        onCreate: function(request) {
-                var csrf_meta_tag = $$('meta[name=csrf-token]')[0];
-                if (csrf_meta_tag) {
-                    var header = 'X-CSRF-Token',
-                    token = csrf_meta_tag.readAttribute('content');
-                    if (!request.options.requestHeaders) {
-                        request.options.requestHeaders = {};
-                    }
-                    request.options.requestHeaders[header] = token;
-                }
-            }
+
+    jsProjectId = <%= @project.id %>;
+    jsCanEdit = <%= User.current.allowed_to?(:edit_test_cases, @project) != false %>;
+    
+    Ext.onReady(function()
+    {
+        // Collecting information about other projects (to copy test cases)...
+        <% for op in @other_projects %>
+            jsCopyToMenuItems.push({ id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo });
+        <% end %>
+
+        // Creating ExtJS tree for test suite and case management ("Management" tab)...
+        buildTestSuiteTree(
+        {
+            url       : <%= get_url_for('index', @project.id) %>,
+            root      : <%= @root_json.to_json.html_safe %>,
+            tagId     : 'management_test_suite_tree_id',
+            draggable : true,
+            pre       : 'test-suite-tree'
         });
-    Event.observe(document, "dom:loaded", function() {
-            $("closeModalDiv").observe('click', function() {
-                    hideModal("modalDiv");
-                    $$("#modalDiv form").first().remove();
-                });
+
+        // Creating ExtJS tree for execution suite management ("Management" tab)...
+        buildExecutionSuiteTree(
+        {
+            url       : <%= get_url_for('execlist', @project.id) %>,
+            root      : <%= @exec_json.to_json.html_safe %>,
+            tagId     : 'management_execution_suite_tree_id',
+            draggable : true,
+            pre       : 'management_execution_suite_tree'
         });
+
+        // Creating ExtJS tree for test casees execution ("Execution" tab)...
+        buildExecutionTree(
+        {
+            url       : <%= get_url_for('execlist', @project.id) %>,
+            root      : <%= @exec_json.to_json.html_safe %>,
+            tagId     : 'execution_test_cases_tree_id',
+            draggable : false,
+            pre       : 'execution_test_cases_tree'
+        });
+    });
+
 </script>
 
-<div id="modalDiv" style="display: none">
-    <%= image_tag '/images/false.png', :style => "float: right; cursor: pointer", :id => "closeModalDiv" %>
-    <br>
-    <hr>
-    <br>
-</div>
+<% html_title "Test cases" %>
 
-<h2>
-    Redcase
-    <!-- Show the plugin version; only for development purposes-->
-     <span style="color: gray">
+<h2>Test cases
+    <!-- Temporary plugin version output (only for testing) -->
+    <span style="color: gray">
         (Plugin version: <%= Redmine::Plugin.all.detect { |x| x.name == 'Redcase' }.version %>)
     </span>
 </h2>
 
-<%= render_tabs get_redcase_inner_tabs(@project) %>
+<% if @version.nil? then %>
+    <div style="color: #bbbbbb; text-align: center">
+        (There is no <b>version</b> for this project. If you need to execute test cases please create some one...)
+    </div>
+<% end %>
+
+<!-- Creating plugin inner tabs -->
+<%= render_tabs get_plugin_tabs(@project) %>

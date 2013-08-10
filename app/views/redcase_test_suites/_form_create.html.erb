@@ -1,7 +1,0 @@
-<% if Redcase::System.rails2? %>
-    <%= render :partial => 'form_rails_2', :locals => { :form_action => 'create', :form_method => 'post' }  %>
-<% elsif Redcase::System.rails3? %>
-    <%= render :partial => 'form_rails_3' %>
-<% else %>
-    <%= "Rails version #{Redcase::System.rails_version} is not supported" %>
-<% end %>

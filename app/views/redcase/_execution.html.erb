@@ -1,1 +1,50 @@
-<h1>EXECUTION</h1>
+
+<!--table width="100%" style="table-layout: fixed"-->
+<table class="execution-layout-table">
+
+    <tr>
+
+        <td id="execution_test_cases_id">
+            <div id="execution_settings_id">
+                <%= render :partial => 'execution_list' %>
+            </div>
+            <div id='execution_test_cases_tree_id'/>
+        </td>
+
+        <td id="execution_test_case_info_id" class="last-cell">
+            <h3><%= l('label_execution_info') %></h3>
+            <div id="test-case-edit" style="display: none">
+                <div id="exec_descr_id" class="issue status-2 priority-2 created-by-me details">
+                    <h2>
+                        <div style="font-weight: bold" id="test-case-subj" class="wiki"></div>
+                    </h2>
+                    <div style="font-weight: bold"><%= l('label_description') %>:</div>
+                    <div id="test-case-desc" class="wiki"></div>
+                    <div id="test-case-attach" class="wiki"></div>
+                </div>
+                <%= l('label_comment') %>:
+                <br/>
+                <%= text_area_tag 'exec-comment', nil, :rows => 4, :style => 'width: 95%' %>
+                <br/>
+                <%= l('label_result') %>:
+                <%= select_tag 'results', options_for_select(ExecutionResult.find(:all, :order => 'order_number asc').collect { |res| res.name }) %>
+                &nbsp;
+                <%= submit_tag l(:label_button_save), :onclick => 'execute()' %>
+                <br/>
+            </div>
+        </td>
+
+    </tr>
+
+</table>
+
+<table id='all-results-d' width="100%" style="table-layout: fixed; display: none">
+    <tr>
+        <td>
+            <fieldset class="tabular redcase-content" style="height: auto">
+                <legend class="redcase-header"><%= l('label_history') %></legend>
+                <div id="all-results"/>
+            </fieldset>
+        </td>
+    </tr>
+</table>

@@ -2,6 +2,7 @@
 # Different help methods to use them anywhere
 
 require 'application_helper'
+require 'prototype_legacy'
 
 module RedcaseHelper
 

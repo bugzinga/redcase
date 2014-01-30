@@ -17,10 +17,10 @@ class RedcaseDefaultTracker < ActiveRecord::Migration
         obsoleted_st = IssueStatus.create(:name => "Obsoleted",  :is_closed => false, :is_default => false) if not obsoleted_st
     
         Role.find(:all).each{ |rl|
-            Workflow.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => new_st.id, :new_status_id => active_st.id)
-            Workflow.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => active_st.id, :new_status_id => new_st.id)
-            Workflow.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => active_st.id, :new_status_id => obsoleted_st.id)
-            Workflow.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => obsoleted_st.id, :new_status_id => new_st.id)
+            WorkflowRule.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => new_st.id, :new_status_id => active_st.id)
+            WorkflowRule.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => active_st.id, :new_status_id => new_st.id)
+            WorkflowRule.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => active_st.id, :new_status_id => obsoleted_st.id)
+            WorkflowRule.create!(:tracker_id => tc.id,  :role_id => rl.id , :old_status_id => obsoleted_st.id, :new_status_id => new_st.id)
         }
         
     end

@@ -19,6 +19,8 @@ class RedcaseController < ApplicationController
 	before_filter :find_project, :authorize
 
 	def index
+		@project = Project.find(params[:project_id])
+
 		redcase_performance = RedcasePerformance.new
 
 		#redcase_performance.start('Getting all test suites and links')

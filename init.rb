@@ -101,7 +101,6 @@ Redmine::Plugin.register :redcase do
                     :action     => 'index'
                 },
                 {
-                    :param   => :project_id,
                     :if      => proc { |p|
                         (User.current.allowed_to?(:view_test_cases, p) or User.current.allowed_to?(:edit_test_cases, p)) and (p.trackers.select { |t| t.name == 'Test case' }.length > 0)
                     },

@@ -19,8 +19,6 @@ class RedcaseController < ApplicationController
 	before_filter :find_project, :authorize
 
 	def index
-		@project = Project.find(params[:project_id])
-
 		redcase_performance = RedcasePerformance.new
 
 		#redcase_performance.start('Getting all test suites and links')
@@ -504,7 +502,7 @@ class RedcaseController < ApplicationController
 	private
 
 	def find_project
-		@project = Project.find(params[:project_id])
+		@project = Project.find(params[:id] || params[:project_id])
 		if !User.current.allowed_to?(:view_test_cases, @project) && !User.current.allowed_to?(:edit_test_cases, @project)
 			render_403
 		end

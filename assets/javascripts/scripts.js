@@ -170,20 +170,27 @@ function getTree(url, root, tagId, draggable, pre) {
 	return tree;
 }
 
-function request(method, params, success, failureMsg) {
+function request(method, params, success, failureMsg, httpMethod) {
 	params.format = 'json';
-	conn = new Ext.data.Connection();
+	if (!params.project_id) {
+		params.project_id = jsProjectId;
+	}
 	var csrf = Ext.select("meta[name='csrf-token']").first();
 	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
 		'X-CSRF-Token': csrf.getAttribute('content')
 	});
+	conn = new Ext.data.Connection();
 	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
 		'X-CSRF-Token': csrf.getAttribute('content')
 	});
+	Element.show('ajax-indicator');
 	conn.request({
 		url: context + method,
-		method: 'GET',
+		method: (htppMethod ? httpMethod : 'GET'),
 		params: params,
+		callback: function() {
+			Element.hide('ajax-indicator');
+		},
 		success: success,
 		failure: function() {
 			Ext.Msg.alert('Failure', failureMsg);
@@ -191,23 +198,14 @@ function request(method, params, success, failureMsg) {
 	});
 }
 
-/**
- * Moving test case inside 'Test cases' tree.
- */
-function onMove(dropEvent)
-{
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
+function onMove(dropEvent) {
 	if (dropEvent.dropNode.isLeaf()) {
-		request(
-			'test_suite_manager', {
-				'do': 'move_test_case',
-				'object_id': dropEvent.dropNode.attributes.issue_id,
-				'parent_id': dropEvent.target.attributes.suite_id,
-				'project_id': jsProjectId
-			}, function(responseObject) {
+		request('test_suite_manager', {
+			'do': 'move_test_case',
+			'object_id': dropEvent.dropNode.attributes.issue_id,
+			'parent_id': dropEvent.target.attributes.suite_id
+		},
+		function() {
 			dropEvent.target.attributes.children = null;
 			dropEvent.target.reload();
 			dropEvent.target.expand();
@@ -215,13 +213,11 @@ function onMove(dropEvent)
 		}, "Test case '" + dropEvent.dropNode.text + "' can't be moved"
 			);
 	} else {
-		request(
-			'test_suite_manager', {
-				'do': 'move',
-				'object_id': dropEvent.dropNode.attributes.suite_id,
-				'parent_id': dropEvent.target.attributes.suite_id,
-				'project_id': jsProjectId
-			}, function(responseObject) {
+		request('test_suite_manager', {
+			'do': 'move',
+			'object_id': dropEvent.dropNode.attributes.suite_id,
+			'parent_id': dropEvent.target.attributes.suite_id
+		}, function() {
 			dropEvent.target.attributes.children = null;
 			dropEvent.target.reload();
 			dropEvent.target.expand();
@@ -233,83 +229,33 @@ function onMove(dropEvent)
 }
 
 function onxMove(dropEvent) {
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
 	if (dropEvent.dropNode.isLeaf()) {
 		if (dropEvent.target.getOwnerTree() != dropEvent.dropNode.getOwnerTree()) {
 			if (dropEvent.dropNode.attributes.status.issue_status.name != "In Progress") {
 				dropEvent.cancel = true;
 				return;
 			}
-			conn.request({
-				url: 'redcase/copy_test_case_to_exec',
-				method: 'GET',
-				params: {
-					'object_id': dropEvent.dropNode.attributes.issue_id,
-					'parent_id': dropEvent.target.attributes.suite_id,
-					'project_id': jsProjectId,
-					'format': 'json'
-				},
-				success: function(responseObject) {
-					if (exec2Tree) {
-						exec2Tree.root.attributes.children = null;
-						exec2Tree.root.reload();
-						exec2Tree.root.expand();
-					}
-					dropEvent.target.attributes.children = null;
-					dropEvent.target.reload();
-					dropEvent.target.expand();
-				},
-				failure: function() {
-					Ext.Msg.alert('Status', "Test case '" + dropEvent.dropNode.text + "' can't be added");
+			request('redcase/copy_test_case_to_exec', {
+				'object_id': dropEvent.dropNode.attributes.issue_id,
+				'parent_id': dropEvent.target.attributes.suite_id
+			}, function() {
+				if (exec2Tree) {
+					exec2Tree.root.attributes.children = null;
+					exec2Tree.root.reload();
+					exec2Tree.root.expand();
 				}
-			});
+				dropEvent.target.attributes.children = null;
+				dropEvent.target.reload();
+				dropEvent.target.expand();
+			}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
+				);
 		} else {
-			conn.request({
-				url: 'redcase/execution_suite_manager',
-				method: 'GET',
-				params: {
-					'do': 'move_test_case',
-					'object_id': dropEvent.dropNode.attributes.issue_id,
-					'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
-					'parent_id': dropEvent.target.id,
-					'project_id': jsProjectId,
-					'format': 'json'
-				},
-				success: function(responseObject) {
-					if (exec2Tree) {
-						exec2Tree.root.attributes.children = null;
-						exec2Tree.root.reload();
-						exec2Tree.root.expand();
-					}
-					dropEvent.target.attributes.children = null;
-					dropEvent.target.reload();
-					dropEvent.target.expand();
-					dropEvent.dropNode.remove(true);
-				},
-				failure: function() {
-					Ext.Msg.alert('Status', "Test case '" + dropEvent.dropNode.text + "' can't be added");
-				}
-			});
-		}
-	} else {
-		conn.request({
-			url: 'redcase/execution_suite_manager',
-			method: 'GET',
-			params: {
-				'do': 'move',
-				'object_id': dropEvent.dropNode.attributes.suite_id,
-				'parent_id': dropEvent.target.attributes.suite_id,
-				'project_id': jsProjectId,
-				'format': 'json'
-			},
-			success: function(responseObject) {
+			request('redcase/execution_suite_manager', {
+				'do': 'move_test_case',
+				'object_id': dropEvent.dropNode.attributes.issue_id,
+				'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
+				'parent_id': dropEvent.target.id
+			}, function() {
 				if (exec2Tree) {
 					exec2Tree.root.attributes.children = null;
 					exec2Tree.root.reload();
@@ -319,11 +265,26 @@ function onxMove(dropEvent) {
 				dropEvent.target.reload();
 				dropEvent.target.expand();
 				dropEvent.dropNode.remove(true);
-			},
-			failure: function() {
-				Ext.Msg.alert('Status', "Execution suite '" + dropEvent.dropNode.text + "' can't be moved");
+			}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
+				);
+		}
+	} else {
+		request('redcase/execution_suite_manager', {
+			'do': 'move',
+			'object_id': dropEvent.dropNode.attributes.suite_id,
+			'parent_id': dropEvent.target.attributes.suite_id
+		}, function() {
+			if (exec2Tree) {
+				exec2Tree.root.attributes.children = null;
+				exec2Tree.root.reload();
+				exec2Tree.root.expand();
 			}
-		});
+			dropEvent.target.attributes.children = null;
+			dropEvent.target.reload();
+			dropEvent.target.expand();
+			dropEvent.dropNode.remove(true);
+		}, "Execution suite '" + dropEvent.dropNode.text + "' can't be moved"
+			);
 	}
 	dropEvent.cancel = true;
 }
@@ -331,33 +292,16 @@ function onxMove(dropEvent) {
 function onCreate(b, e) {
 	Ext.Msg.prompt('Creating test suite', 'Please enter test suite name:', function(btn, text) {
 		if (btn == 'ok') {
-			conn = new Ext.data.Connection();
-			var csrf = Ext.select("meta[name='csrf-token']").first();
-			Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-				'X-CSRF-Token': csrf.getAttribute('content')
-			});
-			conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-				'X-CSRF-Token': csrf.getAttribute('content')
-			});
-			conn.request({
-				url: 'redcase/test_suite_manager',
-				method: 'GET',
-				params: {
-					'do': 'create',
-					'name': text,
-					'parent_id': currentNode.attributes.suite_id,
-					'project_id': jsProjectId,
-					'format': 'json'
-				},
-				success: function(responseObject) {
-					currentNode.attributes.children = null;
-					currentNode.reload();
-					currentNode.expand();
-				},
-				failure: function() {
-					Ext.Msg.alert('Status', "Test suite '" + text + "' can't be created");
-				}
-			});
+			request('redcase/test_suite_manager', {
+				'do': 'create',
+				'name': text,
+				'parent_id': currentNode.attributes.suite_id
+			}, function() {
+				currentNode.attributes.children = null;
+				currentNode.reload();
+				currentNode.expand();
+			}, "Test suite '" + text + "' can't be created"
+				);
 		}
 	});
 }
@@ -367,47 +311,25 @@ function onDelete() {
 		return;
 	}
 	parentNode = currentNode.parentNode;
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
 	if (currentNode.isLeaf()) {
-		conn.request({
-			url: 'redcase/test_case_to_obsolete',
-			method: 'POST',
-			params: {
-				'id': currentNode.attributes.issue_id,
-				'project_id': jsProjectId
-			},
-			success: function(responseObject) {
-				suiteTree.root.attributes.children = null;
-				suiteTree.root.reload();
-			},
-			failure: function() {
-				Ext.Msg.alert('Status', "Test case '" + currentNode.text + "' can't be deleted");
-			}
-		});
+		request('redcase/test_case_to_obsolete', {
+			'id': currentNode.attributes.issue_id
+		}, function() {
+			suiteTree.root.attributes.children = null;
+			suiteTree.root.reload();
+		}, "Test case '" + currentNode.text + "' can't be deleted",
+			'POST'
+			);
 	} else {
-		conn.request({
-			url: 'redcase/test_suite_manager',
-			method: 'POST',
-			params: {
-				'do': 'delete',
-				'id': currentNode.attributes.suite_id,
-				'project_id': jsProjectId
-			},
-			success: function(responseObject) {
-				parentNode.attributes.children = null;
-				parentNode.reload();
-			},
-			failure: function() {
-				Ext.Msg.alert('Status', "Test suite '" + currentNode.text + "' can't be deleted");
-			}
-		});
+		request('redcase/test_suite_manager', {
+			'do': 'delete',
+			'id': currentNode.attributes.suite_id
+		}, function() {
+			parentNode.attributes.children = null;
+			parentNode.reload();
+		}, "Test suite '" + currentNode.text + "' can't be deleted",
+			'POST'
+			);
 	}
 }
 
@@ -416,84 +338,43 @@ function onCopyTo(b, e) {
 		return;
 	}
 	parentNode = currentNode.parentNode;
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.request({
-		url: 'redcase/reassign_test_case',
-		method: 'GET',
-		params: {
-			'id': currentNode.attributes.issue_id,
-			'suite': parentNode.attributes.suite_id,
-			'project_id': b.id,
-			'real_project_id': jsProjectId
-		},
-		success: function(responseObject) {
-		},
-		failure: function() {
-			Ext.Msg.alert('Status', "Test case '" + currentNode.text + "' can't be copied");
-		}
-	});
+	request('redcase/reassign_test_case', {
+		'id': currentNode.attributes.issue_id,
+		'suite': parentNode.attributes.suite_id,
+		'project_id': b.id,
+		'real_project_id': jsProjectId
+	}, function() {
+	}, "Test case '" + currentNode.text + "' can't be copied"
+		);
 }
 
 function onxCreate(b, e) {
 	Ext.Msg.prompt('Creating test suite', 'Please enter execution suite name:', function(btn, text) {
 		if (btn == 'ok') {
-			conn = new Ext.data.Connection();
-			var csrf = Ext.select("meta[name='csrf-token']").first();
-			Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-				'X-CSRF-Token': csrf.getAttribute('content')
-			});
-			conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-				'X-CSRF-Token': csrf.getAttribute('content')
-			});
-			conn.request({
-				url: 'redcase/execution_suite_manager',
-				method: 'GET',
-				params: {
-					'do': 'create',
-					'name': text,
-					'parent_id': xcurrentNode.attributes.suite_id,
-					'project_id': jsProjectId
-				},
-				success: function(responseObject) {
-					if (exec2Tree) {
-						exec2Tree.root.attributes.children = null;
-						exec2Tree.root.reload();
-						exec2Tree.root.expand();
-					}
-					xcurrentNode.attributes.children = null;
-					xcurrentNode.reload();
-					xcurrentNode.expand();
-				},
-				failure: function() {
-					Ext.Msg.alert('Status', "Execution suite '" + text + "' can't be created");
+			request('redcase/execution_suite_manager', {
+				'do': 'create',
+				'name': text,
+				'parent_id': xcurrentNode.attributes.suite_id
+			}, function() {
+				if (exec2Tree) {
+					exec2Tree.root.attributes.children = null;
+					exec2Tree.root.reload();
+					exec2Tree.root.expand();
 				}
-			});
+				xcurrentNode.attributes.children = null;
+				xcurrentNode.reload();
+				xcurrentNode.expand();
+			}, "Execution suite '" + text + "' can't be created"
+				);
 		}
 	});
 }
 
-function onxView()
-{
+function onxView() {
 	if (currentNode.parentNode == null) {
 		return;
 	}
 	parentNode = currentNode.parentNode;
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.disableCaching = false;
 	if (currentNode.isLeaf()) {
 		window.open('issues/' + currentNode.attributes.issue_id, 'test')
 	}
@@ -504,58 +385,37 @@ function onxDelete() {
 		return;
 	}
 	parentNode = xcurrentNode.parentNode;
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
 	if (xcurrentNode.isLeaf()) {
-		conn.request({
-			url: 'redcase/delete_test_case_from_execution_suite',
-			method: 'POST',
-			params: {
-				'id': xcurrentNode.attributes.issue_id,
-				'suite_id': parentNode.attributes.suite_id,
-				'project_id': jsProjectId
-			},
-			success: function(responseObject) {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				parentNode.attributes.children = null;
-				parentNode.reload();
-			},
-			failure: function() {
-				Ext.Msg.alert('Status', "Test case '" + xcurrentNode.text + "' can't be deleted");
+		request('redcase/delete_test_case_from_execution_suite', {
+			'id': xcurrentNode.attributes.issue_id,
+			'suite_id': parentNode.attributes.suite_id
+		}, function() {
+			if (exec2Tree) {
+				exec2Tree.root.attributes.children = null;
+				exec2Tree.root.reload();
+				exec2Tree.root.expand();
 			}
-		});
+			parentNode.attributes.children = null;
+			parentNode.reload();
+		}, "Test case '" + xcurrentNode.text + "' can't be deleted",
+			'POST'
+			);
 	}
 	else {
-		conn.request({
-			url: 'redcase/execution_suite_manager',
-			method: 'POST',
-			params: {
-				'do': 'delete',
-				'id': xcurrentNode.attributes.suite_id,
-				'project_id': jsProjectId
-			},
-			success: function(responseObject) {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				parentNode.attributes.children = null;
-				parentNode.reload();
-			}, failure: function() {
-				Ext.Msg.alert('Status', "Execution suite '" + xcurrentNode.text + "' can't be deleted");
+		request('redcase/execution_suite_manager', {
+			'do': 'delete',
+			'id': xcurrentNode.attributes.suite_id
+		}, function() {
+			if (exec2Tree) {
+				exec2Tree.root.attributes.children = null;
+				exec2Tree.root.reload();
+				exec2Tree.root.expand();
 			}
-		});
+			parentNode.attributes.children = null;
+			parentNode.reload();
+		}, "Execution suite '" + xcurrentNode.text + "' can't be deleted",
+			'POST'
+			);
 	}
 }
 
@@ -598,33 +458,16 @@ function execTreeContextHandler(node) {
 function getEditorSuite() {
 	editorSuite = new Ext.tree.TreeEditor(suiteTree);
 	editorSuite.on('beforecomplete', function(editor, newValue, originalValue) {
-		conn = new Ext.data.Connection();
-		var csrf = Ext.select("meta[name='csrf-token']").first();
-		Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-			'X-CSRF-Token': csrf.getAttribute('content')
-		});
-		conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-			'X-CSRF-Token': csrf.getAttribute('content')
-		});
-		conn.request({
-			url: 'redcase/test_suite_manager',
-			method: 'GET',
-			params: {
-				'do': 'rename',
-				"test_suite_id": editor.editNode.attributes.suite_id,
-				"new_name": newValue,
-				"project_id": jsProjectId,
-				"format": "json"
-			},
-			success: function(responseObject) {
-				editor.editNode.parentNode.attributes.children = null;
-				editor.editNode.parentNode.reload();
-				editor.editNode.parentNode.expand();
-			},
-			failure: function() {
-				Ext.Msg.alert("Status", "Test suite '" + originalValue + "' can't be renamed");
-			}
-		});
+		request('redcase/test_suite_manager', {
+			'do': 'rename',
+			"test_suite_id": editor.editNode.attributes.suite_id,
+			"new_name": newValue
+		}, function() {
+			editor.editNode.parentNode.attributes.children = null;
+			editor.editNode.parentNode.reload();
+			editor.editNode.parentNode.expand();
+		}, "Test suite '" + originalValue + "' can't be renamed"
+			);
 		editorSuite.cancelEdit(false);
 	});
 }
@@ -632,38 +475,21 @@ function getEditorSuite() {
 function getEditorExec() {
 	editorExec = new Ext.tree.TreeEditor(execTree);
 	editorExec.on('beforecomplete', function(editor, newValue, originalValue) {
-		conn = new Ext.data.Connection();
-		var csrf = Ext.select("meta[name='csrf-token']").first();
-		Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-			'X-CSRF-Token': csrf.getAttribute('content')
-		});
-		conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-			'X-CSRF-Token': csrf.getAttribute('content')
-		});
-		conn.request({
-			url: 'redcase/execution_suite_manager',
-			method: 'GET',
-			params: {
-				'do': 'rename',
-				"exec_suite_id": editor.editNode.attributes.suite_id,
-				"new_name": newValue,
-				"project_id": jsProjectId,
-				"format": "json"
-			},
-			success: function(responseObject) {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				editor.editNode.parentNode.attributes.children = null;
-				editor.editNode.parentNode.reload();
-				editor.editNode.parentNode.expand();
-			},
-			failure: function() {
-				Ext.Msg.alert("Status", "Execution suite '" + originalValue + "' can't be renamed");
+		request('redcase/execution_suite_manager', {
+			'do': 'rename',
+			"exec_suite_id": editor.editNode.attributes.suite_id,
+			"new_name": newValue
+		}, function() {
+			if (exec2Tree) {
+				exec2Tree.root.attributes.children = null;
+				exec2Tree.root.reload();
+				exec2Tree.root.expand();
 			}
-		});
+			editor.editNode.parentNode.attributes.children = null;
+			editor.editNode.parentNode.reload();
+			editor.editNode.parentNode.expand();
+		}, "Execution suite '" + originalValue + "' can't be renamed"
+			);
 		editorExec.cancelEdit(false);
 	});
 }
@@ -722,43 +548,25 @@ function execute() {
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');
 	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	Element.show('ajax-indicator');
-	conn.request({
-		url: 'redcase/execute',
-		method: 'POST',
-		params: {
-			"id": node.attributes.issue_id,
-			"project_id": jsProjectId,
-			"version": version.getValue(false),
-			"result": result.getValue(false),
-			"envs": envs.getValue(false),
-			"comment": comment.getValue(false),
-			"format": "json"
-		},
-		success: function(responseObject) {
-			rs = Ext.decode(responseObject.responseText);
-			Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
-			txt = getHistory(rs)
-			Ext.get('all-results').update(txt);
-			Element.hide('ajax-indicator');
-			next = findNext(node);
-			if (next) {
-				next.select();
-			}
-			Ext.get('exec-comment').dom.value = "";
-		},
-		failure: function() {
-			Ext.Msg.alert("Status", "Execution failed");
-			Element.hide('ajax-indicator');
+	request('redcase/execute', {
+		"id": node.attributes.issue_id,
+		"version": version.getValue(false),
+		"result": result.getValue(false),
+		"envs": envs.getValue(false),
+		"comment": comment.getValue(false)
+	}, function(responseObject) {
+		rs = Ext.decode(responseObject.responseText);
+		Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
+		txt = getHistory(rs)
+		Ext.get('all-results').update(txt);
+		next = findNext(node);
+		if (next) {
+			next.select();
 		}
-	});
+		Ext.get('exec-comment').dom.value = "";
+	}, "Execution failed",
+		'POST'
+		);
 }
 
 function onExecSelectionChange(model, node) {
@@ -767,92 +575,52 @@ function onExecSelectionChange(model, node) {
 	r = Ext.get('all-results-d');
 	r.setDisplayed('none');
 	if (node.isLeaf()) {
-		conn = new Ext.data.Connection();
-		var csrf = Ext.select("meta[name='csrf-token']").first();
-		Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-			'X-CSRF-Token': csrf.getAttribute('content')
-		});
-		Element.show('ajax-indicator');
-		conn.request({
-			waitMsg: 'loading test case info',
-			url: 'redcase/get_test_case',
-			method: 'GET',
-			params: {
-				"object_id": node.attributes.issue_id,
-				"project_id": jsProjectId,
-				"format": "json"
-			},
-			success: function(responseObject) {
-				Ext.get('exec_descr_id').setDisplayed(Ext.decode(responseObject.responseText).desc ? 'block' : 'none');
-				desc = Ext.get('test-case-desc');
-				subj = Ext.get('test-case-subj');
-				subj.update(Ext.decode(responseObject.responseText).text)
-				desc.update(Ext.decode(responseObject.responseText).desc);
-				edit.setVisible(true);
-				results = Ext.get('results');
-				results.set({
-					value: 'Passed'
-				}, false);
-				version = Ext.get('version');
-				conn.request({
-					url: 'redcase/get_executions',
-					method: 'GET',
-					params: {
-						"id": node.attributes.issue_id,
-						"project_id": jsProjectId,
-						"version": version.getValue(false),
-						"format": "json"
-					},
-					success: function(responseObject) {
-						rs = Ext.decode(responseObject.responseText);
-						Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
-						if (rs.length > 0) {
-							txt = getHistory(rs);
-							Ext.get('all-results').update(txt);
-						}
-						Element.hide('ajax-indicator');
-					},
-					failure: function() {
-						Ext.Msg.alert("Status", "Execution failed");
-						Element.hide('ajax-indicator');
+		request('redcase/get_test_case', {
+			"object_id": node.attributes.issue_id
+		}, function(responseObject) {
+			Ext.get('exec_descr_id').setDisplayed(Ext.decode(responseObject.responseText).desc ? 'block' : 'none');
+			desc = Ext.get('test-case-desc');
+			subj = Ext.get('test-case-subj');
+			subj.update(Ext.decode(responseObject.responseText).text)
+			desc.update(Ext.decode(responseObject.responseText).desc);
+			edit.setVisible(true);
+			results = Ext.get('results');
+			results.set({
+				value: 'Passed'
+			}, false);
+			version = Ext.get('version');
+			request('redcase/get_executions', {
+				"id": node.attributes.issue_id,
+				"version": version.getValue(false)
+			}, function(responseObject) {
+				rs = Ext.decode(responseObject.responseText);
+				Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
+				if (rs.length > 0) {
+					txt = getHistory(rs);
+					Ext.get('all-results').update(txt);
+				}
+			}, "Execution failed"
+				);
+			request('redcase/get_attachment_urls', {
+				"issue_id": node.attributes.issue_id
+			}, function(responseObject) {
+				rs = Ext.decode(responseObject.responseText);
+				Ext.get('test-case-attach').setDisplayed(rs.length > 0 ? 'block' : 'none');
+				if (rs.length > 0) {
+					txt = "";
+					for (i = 0; i < rs.length; i++) {
+						txt += "<a href='" + rs[i].url + "' target='_blank'>" + "<img src=" + '"' + "/images/attachment.png" + '"' + "></img>" + rs[i].name + "</a><br/>";
 					}
-				});
-				conn.request({
-					url: 'redcase/get_attachment_urls',
-					method: 'GET',
-					params: {
-						"issue_id": node.attributes.issue_id,
-						"project_id": jsProjectId,
-						"format": "json"
-					},
-					success: function(responseObject) {
-						rs = Ext.decode(responseObject.responseText);
-						Ext.get('test-case-attach').setDisplayed(rs.length > 0 ? 'block' : 'none');
-						if (rs.length > 0) {
-							txt = "";
-							for (i = 0; i < rs.length; i++) {
-								txt += "<a href='" + rs[i].url + "' target='_blank'>" + "<img src=" + '"' + "/images/attachment.png" + '"' + "></img>" + rs[i].name + "</a><br/>";
-							}
-							Ext.get('test-case-attach').update(txt);
-						}
-						Element.hide('ajax-indicator');
-					},
-					failure: function() {
-						Ext.Msg.alert("Status", "Getting attachments failed");
-						Element.hide('ajax-indicator');
-					}
-				});
-			},
-			failure: function() {
-				Ext.Msg.alert("Status", "Information about test case '" + node.text + "' can't be obtained");
-				Element.hide('ajax-indicator');
-			}
-		});
+					Ext.get('test-case-attach').update(txt);
+				}
+			}, "Getting attachments failed"
+				);
+		}, "Information about test case '" + node.text + "' can't be obtained"
+			);
 	}
 }
 
-function getHistory(rs)
-{
+function getHistory(rs) {
 	unique = {}
 	txt = "<table class='redcase-row' width='100%'>"
 	txt += "<tr style='font-weight: bold; background-color: #eeeeee'><td>date</td><td>result</td><td>comments</td><td>executor</td><td>environment</td><td>version</td></tr>";
@@ -891,19 +659,17 @@ function getHistory(rs)
 }
 
 function initSuiteContextMenu() {
-	items = [];
-	items.push({
-		text: 'Add suite',
-		handler: onCreate
-	});
-	items.push({
-		text: 'Delete',
-		handler: onDelete
-	});
-	items.push({
-		text: 'View',
-		handler: onxView
-	});
+	items = [{
+			text: 'Add suite',
+			handler: onCreate
+		}, {
+			text: 'Delete',
+			handler: onDelete
+		}, {
+			text: 'View',
+			handler: onxView
+		}
+	];
 	if (jsCopyToMenuItems.length > 0) {
 		items.push({
 			text: 'Copy to',
@@ -917,65 +683,31 @@ function initSuiteContextMenu() {
 
 function update_exe_tree() {
 	choosen = Ext.get('list_id').getValue(false);
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
 	nameEl = Ext.get('list_name');
-	Element.show('ajax-indicator');
-	conn.request({
-		url: 'redcase/index',
-		method: 'GET',
-		params: {
-			'ex': choosen,
-			'project_id': jsProjectId,
-			'format': 'json'
-		},
-		success: function(responseObject) {
-			rs = Ext.decode(responseObject.responseText);
-			rs['prefix'] = 'management_execution_suite_tree';
-			execTree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
-			execTree.getLoader().load(execTree.getRootNode());
-			execTree.getRootNode().expand();
-			nameEl.dom.setAttribute("value", execTree.getRootNode().text);
-			Element.hide('ajax-indicator');
-		},
-		failure: function() {
-			Element.hide('ajax-indicator');
-			Ext.Msg.alert('Status', "Execution list cannot be reloaded");
-		}
-	});
+	request('redcase/index', {
+		'ex': choosen
+	}, function(responseObject) {
+		rs = Ext.decode(responseObject.responseText);
+		rs['prefix'] = 'management_execution_suite_tree';
+		execTree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
+		execTree.getLoader().load(execTree.getRootNode());
+		execTree.getRootNode().expand();
+		nameEl.dom.setAttribute("value", execTree.getRootNode().text);
+	}, "Execution list cannot be reloaded"
+		);
 }
 
 function update_exe2_tree() {
 	choosen = Ext.get('list2_id').getValue(false);
-	conn = new Ext.data.Connection();
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	Element.show('ajax-indicator');
-	conn.request({
-		url: 'redcase/index',
-		method: 'GET',
-		params: {
-			'ex': choosen,
-			'project_id': jsProjectId,
-			'format': 'json'
-		},
-		success: function(responseObject) {
-			rs = Ext.decode(responseObject.responseText);
-			rs['prefix'] = 'execution_test_cases_tree';
-			exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
-			exec2Tree.getLoader().load(exec2Tree.getRootNode());
-			exec2Tree.getRootNode().expand();
-			Element.hide('ajax-indicator');
-			onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
-		},
-		failure: function() {
-			Element.hide('ajax-indicator');
-			Ext.Msg.alert('Status', "Execution list cannot be reloaded");
-		}
-	});
+	request('redcase/index', {
+		'ex': choosen
+	}, function(responseObject) {
+		rs = Ext.decode(responseObject.responseText);
+		rs['prefix'] = 'execution_test_cases_tree';
+		exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
+		exec2Tree.getLoader().load(exec2Tree.getRootNode());
+		exec2Tree.getRootNode().expand();
+		onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
+	}, "Execution list cannot be reloaded"
+		);
 }

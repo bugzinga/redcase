@@ -43,7 +43,7 @@
         // Creating ExtJS tree for test suite and case management ("Management" tab)...
         buildTestSuiteTree(
         {
-            url       : <%= get_url_for('index', @project.id) %>,
+            url       : '<%= get_url_for('index', @project.id) %>',
             root      : <%= @root_json.to_json.html_safe %>,
             tagId     : 'management_test_suite_tree_id',
             draggable : true,
@@ -53,7 +53,7 @@
         // Creating ExtJS tree for execution suite management ("Management" tab)...
         buildExecutionSuiteTree(
         {
-            url       : <%= get_url_for('execlist', @project.id) %>,
+            url       : '<%= get_url_for('execlist', @project.id) %>',
             root      : <%= @exec_json.to_json.html_safe %>,
             tagId     : 'management_execution_suite_tree_id',
             draggable : true,
@@ -63,7 +63,7 @@
         // Creating ExtJS tree for test casees execution ("Execution" tab)...
         buildExecutionTree(
         {
-            url       : <%= get_url_for('execlist', @project.id) %>,
+            url       : '<%= get_url_for('execlist', @project.id) %>',
             root      : <%= @exec_json.to_json.html_safe %>,
             tagId     : 'execution_test_cases_tree_id',
             draggable : false,

@@ -254,7 +254,7 @@ module RedcaseHelper
 	end
 
   def get_url_for(action, project_id)
-    "'#{url_for(:action => action, :project_id => project_id)}'"
+    "#{url_for(:action => action, :project_id => project_id)}"
   end
 	
 	def get_execution_suites_by_project_and_parent(project, parent = nil)

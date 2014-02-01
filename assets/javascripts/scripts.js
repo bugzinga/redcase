@@ -211,7 +211,7 @@ function onxMove(dropEvent) {
 				dropEvent.cancel = true;
 				return;
 			}
-			request('redcase/copy_test_case_to_exec', {
+			request('copy_test_case_to_exec', {
 				'object_id': dropEvent.dropNode.attributes.issue_id,
 				'parent_id': dropEvent.target.attributes.suite_id
 			}, function() {
@@ -226,7 +226,7 @@ function onxMove(dropEvent) {
 			}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
 				);
 		} else {
-			request('redcase/execution_suite_manager', {
+			request('execution_suite_manager', {
 				'do': 'move_test_case',
 				'object_id': dropEvent.dropNode.attributes.issue_id,
 				'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
@@ -245,7 +245,7 @@ function onxMove(dropEvent) {
 				);
 		}
 	} else {
-		request('redcase/execution_suite_manager', {
+		request('execution_suite_manager', {
 			'do': 'move',
 			'object_id': dropEvent.dropNode.attributes.suite_id,
 			'parent_id': dropEvent.target.attributes.suite_id
@@ -268,7 +268,7 @@ function onxMove(dropEvent) {
 function onCreate(b, e) {
 	Ext.Msg.prompt('Creating test suite', 'Please enter test suite name:', function(btn, text) {
 		if (btn == 'ok') {
-			request('redcase/test_suite_manager', {
+			request('test_suite_manager', {
 				'do': 'create',
 				'name': text,
 				'parent_id': currentNode.attributes.suite_id
@@ -288,7 +288,7 @@ function onDelete() {
 	}
 	parentNode = currentNode.parentNode;
 	if (currentNode.isLeaf()) {
-		request('redcase/test_case_to_obsolete', {
+		request('test_case_to_obsolete', {
 			'id': currentNode.attributes.issue_id
 		}, function() {
 			suiteTree.root.attributes.children = null;
@@ -297,7 +297,7 @@ function onDelete() {
 			'POST'
 			);
 	} else {
-		request('redcase/test_suite_manager', {
+		request('test_suite_manager', {
 			'do': 'delete',
 			'id': currentNode.attributes.suite_id
 		}, function() {
@@ -314,7 +314,7 @@ function onCopyTo(b, e) {
 		return;
 	}
 	parentNode = currentNode.parentNode;
-	request('redcase/reassign_test_case', {
+	request('reassign_test_case', {
 		'id': currentNode.attributes.issue_id,
 		'suite': parentNode.attributes.suite_id,
 		'project_id': b.id,
@@ -327,7 +327,7 @@ function onCopyTo(b, e) {
 function onxCreate(b, e) {
 	Ext.Msg.prompt('Creating test suite', 'Please enter execution suite name:', function(btn, text) {
 		if (btn == 'ok') {
-			request('redcase/execution_suite_manager', {
+			request('execution_suite_manager', {
 				'do': 'create',
 				'name': text,
 				'parent_id': xcurrentNode.attributes.suite_id
@@ -362,7 +362,7 @@ function onxDelete() {
 	}
 	parentNode = xcurrentNode.parentNode;
 	if (xcurrentNode.isLeaf()) {
-		request('redcase/delete_test_case_from_execution_suite', {
+		request('delete_test_case_from_execution_suite', {
 			'id': xcurrentNode.attributes.issue_id,
 			'suite_id': parentNode.attributes.suite_id
 		}, function() {
@@ -378,7 +378,7 @@ function onxDelete() {
 			);
 	}
 	else {
-		request('redcase/execution_suite_manager', {
+		request('execution_suite_manager', {
 			'do': 'delete',
 			'id': xcurrentNode.attributes.suite_id
 		}, function() {
@@ -434,7 +434,7 @@ function execTreeContextHandler(node) {
 function getEditorSuite() {
 	editorSuite = new Ext.tree.TreeEditor(suiteTree);
 	editorSuite.on('beforecomplete', function(editor, newValue, originalValue) {
-		request('redcase/test_suite_manager', {
+		request('test_suite_manager', {
 			'do': 'rename',
 			"test_suite_id": editor.editNode.attributes.suite_id,
 			"new_name": newValue
@@ -451,7 +451,7 @@ function getEditorSuite() {
 function getEditorExec() {
 	editorExec = new Ext.tree.TreeEditor(execTree);
 	editorExec.on('beforecomplete', function(editor, newValue, originalValue) {
-		request('redcase/execution_suite_manager', {
+		request('execution_suite_manager', {
 			'do': 'rename',
 			"exec_suite_id": editor.editNode.attributes.suite_id,
 			"new_name": newValue
@@ -524,7 +524,7 @@ function execute() {
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');
 	conn = new Ext.data.Connection();
-	request('redcase/execute', {
+	request('execute', {
 		"id": node.attributes.issue_id,
 		"version": version.getValue(false),
 		"result": result.getValue(false),
@@ -551,7 +551,7 @@ function onExecSelectionChange(model, node) {
 	r = Ext.get('all-results-d');
 	r.setDisplayed('none');
 	if (node.isLeaf()) {
-		request('redcase/get_test_case', {
+		request('get_test_case', {
 			"object_id": node.attributes.issue_id
 		}, function(responseObject) {
 			Ext.get('exec_descr_id').setDisplayed(Ext.decode(responseObject.responseText).desc ? 'block' : 'none');
@@ -565,7 +565,7 @@ function onExecSelectionChange(model, node) {
 				value: 'Passed'
 			}, false);
 			version = Ext.get('version');
-			request('redcase/get_executions', {
+			request('get_executions', {
 				"id": node.attributes.issue_id,
 				"version": version.getValue(false)
 			}, function(responseObject) {
@@ -577,7 +577,7 @@ function onExecSelectionChange(model, node) {
 				}
 			}, "Execution failed"
 				);
-			request('redcase/get_attachment_urls', {
+			request('get_attachment_urls', {
 				"issue_id": node.attributes.issue_id
 			}, function(responseObject) {
 				rs = Ext.decode(responseObject.responseText);
@@ -660,7 +660,7 @@ function initSuiteContextMenu() {
 function update_exe_tree() {
 	choosen = Ext.get('list_id').getValue(false);
 	nameEl = Ext.get('list_name');
-	request('redcase/index', {
+	request('index', {
 		'ex': choosen
 	}, function(responseObject) {
 		rs = Ext.decode(responseObject.responseText);
@@ -675,7 +675,7 @@ function update_exe_tree() {
 
 function update_exe2_tree() {
 	choosen = Ext.get('list2_id').getValue(false);
-	request('redcase/index', {
+	request('index', {
 		'ex': choosen
 	}, function(responseObject) {
 		rs = Ext.decode(responseObject.responseText);

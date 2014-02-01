@@ -2,11 +2,11 @@
 <script type="text/javascript">
 
     update2exe = function() {
-        <%= remote_function :url => { :action => 'update_exelists2', :project_id => @project.id }, :update => "execution_settings_id", :complete => "update_exe2_tree()" %>
+        <%= remote_function :url => { :action => 'update_exelists2', :project_id => @project.id }, :update => "execution_settings_id", :complete => "updateExe2Tree()" %>
     }
 
     full = function() {
-        update_exe_tree();
+        updateExeTree();
         update2exe();
         updateReport();
     }
@@ -28,7 +28,7 @@
 <%= form_for :list, :remote => true, :url => { :action => 'update_exelists', :project_id => @project.id, :act => 'save' }, :update => :management_execution_suites_id, :complete => 'full()', :html => { :id => 'list_form' } do |f| %>
 	<h3>
         <%= l('label_execution_suite') %>: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
-        <%= observe_field :list_id, :function => 'update_exe_tree()', :with => 'list_id' %>
+        <%= observe_field :list_id, :function => 'updateExeTree()', :with => 'list_id' %>
     </h3>
     <p>
         <%= f.text_field :name %>

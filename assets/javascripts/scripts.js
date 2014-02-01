@@ -13,10 +13,76 @@ var editorSuite;
 var editorExec;
 
 var currentNode;
-var xcurrentNode;
+var xCurrentNode;
 
 var contextMenu;
-var xcontextMenu;
+
+var xContextMenu = new Ext.menu.Menu({
+	items: [{
+			text: 'Add suite',
+			handler: function(b, e) {
+				Ext.Msg.prompt('Creating test suite', 'Please enter execution suite name:', function(btn, text) {
+					if (btn == 'ok') {
+						request('execution_suite_manager', {
+							'do': 'create',
+							'name': text,
+							'parent_id': xCurrentNode.attributes.suite_id
+						}, function() {
+							if (exec2Tree) {
+								exec2Tree.root.attributes.children = null;
+								exec2Tree.root.reload();
+								exec2Tree.root.expand();
+							}
+							xCurrentNode.attributes.children = null;
+							xCurrentNode.reload();
+							xCurrentNode.expand();
+						}, "Execution suite '" + text + "' can't be created"
+							);
+					}
+				});
+			}
+		}, {
+			text: 'Delete',
+			handler: function() {
+				if (xCurrentNode.parentNode == null) {
+					return;
+				}
+				parentNode = xCurrentNode.parentNode;
+				if (xCurrentNode.isLeaf()) {
+					request('delete_test_case_from_execution_suite', {
+						'id': xCurrentNode.attributes.issue_id,
+						'suite_id': parentNode.attributes.suite_id
+					}, function() {
+						if (exec2Tree) {
+							exec2Tree.root.attributes.children = null;
+							exec2Tree.root.reload();
+							exec2Tree.root.expand();
+						}
+						parentNode.attributes.children = null;
+						parentNode.reload();
+					}, "Test case '" + xCurrentNode.text + "' can't be deleted",
+						'POST'
+						);
+				}
+				else {
+					request('execution_suite_manager', {
+						'do': 'delete',
+						'id': xCurrentNode.attributes.suite_id
+					}, function() {
+						if (exec2Tree) {
+							exec2Tree.root.attributes.children = null;
+							exec2Tree.root.reload();
+							exec2Tree.root.expand();
+						}
+						parentNode.attributes.children = null;
+						parentNode.reload();
+					}, "Execution suite '" + xCurrentNode.text + "' can't be deleted",
+						'POST'
+						);
+				}
+			}
+		}]
+});
 
 Ext.dd.StatusProxy.prototype.animRepair = false;
 
@@ -94,8 +160,48 @@ function buildTestSuiteTree(params) {
 	getEditorSuite();
 	if (jsCanEdit) {
 		initSuiteContextMenu();
-		suiteTree.on('contextmenu', suiteTreeContextHandler);
-		suiteTree.on('beforenodedrop', onMove);
+		suiteTree.on('contextmenu', function(node) {
+			currentNode = node;
+			node.select();
+			contextMenu.items.get(0).setVisible(!node.isLeaf());
+			isNotDeletable = (node.parentNode == null)
+				|| ((node.parentNode.parentNode == null) && (node.text == ".Unsorted" || node.text == ".Obsolete"));
+			contextMenu.items.get(1).setVisible(!isNotDeletable);
+			contextMenu.items.get(2).setVisible(node.isLeaf());
+			if (contextMenu.items.getCount() == 4) {
+				contextMenu.items.get(3).setVisible(node.isLeaf());
+			}
+			contextMenu.show(node.ui.getAnchor());
+		});
+		suiteTree.on('beforenodedrop', function(dropEvent) {
+			if (dropEvent.dropNode.isLeaf()) {
+				request('test_suite_manager', {
+					'do': 'move_test_case',
+					'object_id': dropEvent.dropNode.attributes.issue_id,
+					'parent_id': dropEvent.target.attributes.suite_id
+				},
+				function() {
+					dropEvent.target.attributes.children = null;
+					dropEvent.target.reload();
+					dropEvent.target.expand();
+					dropEvent.dropNode.remove(true);
+				}, "Test case '" + dropEvent.dropNode.text + "' can't be moved"
+					);
+			} else {
+				request('test_suite_manager', {
+					'do': 'move',
+					'object_id': dropEvent.dropNode.attributes.suite_id,
+					'parent_id': dropEvent.target.attributes.suite_id
+				}, function() {
+					dropEvent.target.attributes.children = null;
+					dropEvent.target.reload();
+					dropEvent.target.expand();
+					dropEvent.dropNode.remove(true);
+				}, "Test suite '" + dropEvent.dropNode.text + "' can't be moved"
+					);
+			}
+			dropEvent.cancel = true;
+		});
 		suiteTree.on('nodedragover', function(event) {
 			event.cancel = (event.target.getOwnerTree() != event.dropNode.getOwnerTree())
 				|| (event.target == event.dropNode.parentNode);
@@ -103,13 +209,81 @@ function buildTestSuiteTree(params) {
 	}
 }
 
-function buildExecutionSuiteTree(params)
-{
+function buildExecutionSuiteTree(params) {
 	execTree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	getEditorExec();
 	if (jsCanEdit) {
-		execTree.on('contextmenu', execTreeContextHandler);
-		execTree.on('beforenodedrop', onxMove);
+		execTree.on('contextmenu', function(node) {
+			xCurrentNode = node;
+			node.select();
+			if (node.isLeaf()) {
+				xContextMenu.items.get(0).setVisible(false);
+			} else {
+				xContextMenu.items.get(0).setVisible(true);
+			}
+			xContextMenu.items.get(1).setVisible(node.parentNode != null);
+			xContextMenu.show(node.ui.getAnchor());
+		});
+		execTree.on('beforenodedrop', function(dropEvent) {
+			if (dropEvent.dropNode.isLeaf()) {
+				if (dropEvent.target.getOwnerTree() != dropEvent.dropNode.getOwnerTree()) {
+					if (dropEvent.dropNode.attributes.status.issue_status.name != "In Progress") {
+						dropEvent.cancel = true;
+						return;
+					}
+					request('copy_test_case_to_exec', {
+						'object_id': dropEvent.dropNode.attributes.issue_id,
+						'parent_id': dropEvent.target.attributes.suite_id
+					}, function() {
+						if (exec2Tree) {
+							exec2Tree.root.attributes.children = null;
+							exec2Tree.root.reload();
+							exec2Tree.root.expand();
+						}
+						dropEvent.target.attributes.children = null;
+						dropEvent.target.reload();
+						dropEvent.target.expand();
+					}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
+						);
+				} else {
+					request('execution_suite_manager', {
+						'do': 'move_test_case',
+						'object_id': dropEvent.dropNode.attributes.issue_id,
+						'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
+						'parent_id': dropEvent.target.id
+					}, function() {
+						if (exec2Tree) {
+							exec2Tree.root.attributes.children = null;
+							exec2Tree.root.reload();
+							exec2Tree.root.expand();
+						}
+						dropEvent.target.attributes.children = null;
+						dropEvent.target.reload();
+						dropEvent.target.expand();
+						dropEvent.dropNode.remove(true);
+					}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
+						);
+				}
+			} else {
+				request('execution_suite_manager', {
+					'do': 'move',
+					'object_id': dropEvent.dropNode.attributes.suite_id,
+					'parent_id': dropEvent.target.attributes.suite_id
+				}, function() {
+					if (exec2Tree) {
+						exec2Tree.root.attributes.children = null;
+						exec2Tree.root.reload();
+						exec2Tree.root.expand();
+					}
+					dropEvent.target.attributes.children = null;
+					dropEvent.target.reload();
+					dropEvent.target.expand();
+					dropEvent.dropNode.remove(true);
+				}, "Execution suite '" + dropEvent.dropNode.text + "' can't be moved"
+					);
+			}
+			dropEvent.cancel = true;
+		});
 		execTree.on('nodedragover', function(event) {
 			event.cancel = ((event.target.getOwnerTree() != event.dropNode.getOwnerTree()) && !event.dropNode.isLeaf())
 				|| (event.target == event.dropNode.parentNode);
@@ -117,8 +291,7 @@ function buildExecutionSuiteTree(params)
 	}
 }
 
-function buildExecutionTree(params)
-{
+function buildExecutionTree(params) {
 	exec2Tree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	exec2Tree.getSelectionModel().on('selectionchange', onExecSelectionChange);
 }
@@ -174,141 +347,6 @@ function request(method, params, success, failureMsg, httpMethod) {
 	});
 }
 
-function onMove(dropEvent) {
-	if (dropEvent.dropNode.isLeaf()) {
-		request('test_suite_manager', {
-			'do': 'move_test_case',
-			'object_id': dropEvent.dropNode.attributes.issue_id,
-			'parent_id': dropEvent.target.attributes.suite_id
-		},
-		function() {
-			dropEvent.target.attributes.children = null;
-			dropEvent.target.reload();
-			dropEvent.target.expand();
-			dropEvent.dropNode.remove(true);
-		}, "Test case '" + dropEvent.dropNode.text + "' can't be moved"
-			);
-	} else {
-		request('test_suite_manager', {
-			'do': 'move',
-			'object_id': dropEvent.dropNode.attributes.suite_id,
-			'parent_id': dropEvent.target.attributes.suite_id
-		}, function() {
-			dropEvent.target.attributes.children = null;
-			dropEvent.target.reload();
-			dropEvent.target.expand();
-			dropEvent.dropNode.remove(true);
-		}, "Test suite '" + dropEvent.dropNode.text + "' can't be moved"
-			);
-	}
-	dropEvent.cancel = true;
-}
-
-function onxMove(dropEvent) {
-	if (dropEvent.dropNode.isLeaf()) {
-		if (dropEvent.target.getOwnerTree() != dropEvent.dropNode.getOwnerTree()) {
-			if (dropEvent.dropNode.attributes.status.issue_status.name != "In Progress") {
-				dropEvent.cancel = true;
-				return;
-			}
-			request('copy_test_case_to_exec', {
-				'object_id': dropEvent.dropNode.attributes.issue_id,
-				'parent_id': dropEvent.target.attributes.suite_id
-			}, function() {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				dropEvent.target.attributes.children = null;
-				dropEvent.target.reload();
-				dropEvent.target.expand();
-			}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
-				);
-		} else {
-			request('execution_suite_manager', {
-				'do': 'move_test_case',
-				'object_id': dropEvent.dropNode.attributes.issue_id,
-				'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
-				'parent_id': dropEvent.target.id
-			}, function() {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				dropEvent.target.attributes.children = null;
-				dropEvent.target.reload();
-				dropEvent.target.expand();
-				dropEvent.dropNode.remove(true);
-			}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
-				);
-		}
-	} else {
-		request('execution_suite_manager', {
-			'do': 'move',
-			'object_id': dropEvent.dropNode.attributes.suite_id,
-			'parent_id': dropEvent.target.attributes.suite_id
-		}, function() {
-			if (exec2Tree) {
-				exec2Tree.root.attributes.children = null;
-				exec2Tree.root.reload();
-				exec2Tree.root.expand();
-			}
-			dropEvent.target.attributes.children = null;
-			dropEvent.target.reload();
-			dropEvent.target.expand();
-			dropEvent.dropNode.remove(true);
-		}, "Execution suite '" + dropEvent.dropNode.text + "' can't be moved"
-			);
-	}
-	dropEvent.cancel = true;
-}
-
-function onCreate(b, e) {
-	Ext.Msg.prompt('Creating test suite', 'Please enter test suite name:', function(btn, text) {
-		if (btn == 'ok') {
-			request('test_suite_manager', {
-				'do': 'create',
-				'name': text,
-				'parent_id': currentNode.attributes.suite_id
-			}, function() {
-				currentNode.attributes.children = null;
-				currentNode.reload();
-				currentNode.expand();
-			}, "Test suite '" + text + "' can't be created"
-				);
-		}
-	});
-}
-
-function onDelete() {
-	if (currentNode.parentNode == null) {
-		return;
-	}
-	parentNode = currentNode.parentNode;
-	if (currentNode.isLeaf()) {
-		request('test_case_to_obsolete', {
-			'id': currentNode.attributes.issue_id
-		}, function() {
-			suiteTree.root.attributes.children = null;
-			suiteTree.root.reload();
-		}, "Test case '" + currentNode.text + "' can't be deleted",
-			'POST'
-			);
-	} else {
-		request('test_suite_manager', {
-			'do': 'delete',
-			'id': currentNode.attributes.suite_id
-		}, function() {
-			parentNode.attributes.children = null;
-			parentNode.reload();
-		}, "Test suite '" + currentNode.text + "' can't be deleted",
-			'POST'
-			);
-	}
-}
-
 function onCopyTo(b, e) {
 	if (!currentNode.isLeaf()) {
 		return;
@@ -322,113 +360,6 @@ function onCopyTo(b, e) {
 	}, function() {
 	}, "Test case '" + currentNode.text + "' can't be copied"
 		);
-}
-
-function onxCreate(b, e) {
-	Ext.Msg.prompt('Creating test suite', 'Please enter execution suite name:', function(btn, text) {
-		if (btn == 'ok') {
-			request('execution_suite_manager', {
-				'do': 'create',
-				'name': text,
-				'parent_id': xcurrentNode.attributes.suite_id
-			}, function() {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				xcurrentNode.attributes.children = null;
-				xcurrentNode.reload();
-				xcurrentNode.expand();
-			}, "Execution suite '" + text + "' can't be created"
-				);
-		}
-	});
-}
-
-function onxView() {
-	if (currentNode.parentNode == null) {
-		return;
-	}
-	parentNode = currentNode.parentNode;
-	if (currentNode.isLeaf()) {
-		window.open('issues/' + currentNode.attributes.issue_id, 'test')
-	}
-}
-
-function onxDelete() {
-	if (xcurrentNode.parentNode == null) {
-		return;
-	}
-	parentNode = xcurrentNode.parentNode;
-	if (xcurrentNode.isLeaf()) {
-		request('delete_test_case_from_execution_suite', {
-			'id': xcurrentNode.attributes.issue_id,
-			'suite_id': parentNode.attributes.suite_id
-		}, function() {
-			if (exec2Tree) {
-				exec2Tree.root.attributes.children = null;
-				exec2Tree.root.reload();
-				exec2Tree.root.expand();
-			}
-			parentNode.attributes.children = null;
-			parentNode.reload();
-		}, "Test case '" + xcurrentNode.text + "' can't be deleted",
-			'POST'
-			);
-	}
-	else {
-		request('execution_suite_manager', {
-			'do': 'delete',
-			'id': xcurrentNode.attributes.suite_id
-		}, function() {
-			if (exec2Tree) {
-				exec2Tree.root.attributes.children = null;
-				exec2Tree.root.reload();
-				exec2Tree.root.expand();
-			}
-			parentNode.attributes.children = null;
-			parentNode.reload();
-		}, "Execution suite '" + xcurrentNode.text + "' can't be deleted",
-			'POST'
-			);
-	}
-}
-
-xcontextMenu = new Ext.menu.Menu({
-	items: [{
-			text: 'Add suite',
-			handler: onxCreate
-		}, {
-			text: 'Delete',
-			handler: onxDelete
-		}]
-});
-
-function suiteTreeContextHandler(node) {
-	currentNode = node;
-	node.select();
-	contextMenu.items.get(0).setVisible(!node.isLeaf());
-	isNotDeletable = (node.parentNode == null)
-		|| ((node.parentNode.parentNode == null) && (node.text == ".Unsorted" || node.text == ".Obsolete"));
-	contextMenu.items.get(1).setVisible(!isNotDeletable);
-	contextMenu.items.get(2).setVisible(node.isLeaf());
-	if (contextMenu.items.getCount() == 4) {
-		contextMenu.items.get(3).setVisible(node.isLeaf());
-	}
-	contextMenu.show(node.ui.getAnchor());
-}
-
-function execTreeContextHandler(node) {
-	xcurrentNode = node;
-	node.select();
-	if (node.isLeaf()) {
-		xcontextMenu.items.get(0).setVisible(false);
-	} else {
-		xcontextMenu.items.get(0).setVisible(true);
-	}
-	xcontextMenu.items.get(1).setVisible(node.parentNode != null);
-	xcontextMenu.show(node.ui.getAnchor());
 }
 
 function getEditorSuite() {
@@ -637,13 +568,61 @@ function getHistory(rs) {
 function initSuiteContextMenu() {
 	items = [{
 			text: 'Add suite',
-			handler: onCreate
+			handler: function(b, e) {
+				Ext.Msg.prompt('Creating test suite', 'Please enter test suite name:', function(btn, text) {
+					if (btn == 'ok') {
+						request('test_suite_manager', {
+							'do': 'create',
+							'name': text,
+							'parent_id': currentNode.attributes.suite_id
+						}, function() {
+							currentNode.attributes.children = null;
+							currentNode.reload();
+							currentNode.expand();
+						}, "Test suite '" + text + "' can't be created"
+							);
+					}
+				});
+			}
 		}, {
 			text: 'Delete',
-			handler: onDelete
+			handler: function() {
+				if (currentNode.parentNode == null) {
+					return;
+				}
+				parentNode = currentNode.parentNode;
+				if (currentNode.isLeaf()) {
+					request('test_case_to_obsolete', {
+						'id': currentNode.attributes.issue_id
+					}, function() {
+						suiteTree.root.attributes.children = null;
+						suiteTree.root.reload();
+					}, "Test case '" + currentNode.text + "' can't be deleted",
+						'POST'
+						);
+				} else {
+					request('test_suite_manager', {
+						'do': 'delete',
+						'id': currentNode.attributes.suite_id
+					}, function() {
+						parentNode.attributes.children = null;
+						parentNode.reload();
+					}, "Test suite '" + currentNode.text + "' can't be deleted",
+						'POST'
+						);
+				}
+			}
 		}, {
 			text: 'View',
-			handler: onxView
+			handler: function() {
+				if (currentNode.parentNode == null) {
+					return;
+				}
+				parentNode = currentNode.parentNode;
+				if (currentNode.isLeaf()) {
+					window.open('issues/' + currentNode.attributes.issue_id, 'test')
+				}
+			}
 		}
 	];
 	if (jsCopyToMenuItems.length > 0) {
@@ -657,7 +636,7 @@ function initSuiteContextMenu() {
 	});
 }
 
-function update_exe_tree() {
+function updateExeTree() {
 	choosen = Ext.get('list_id').getValue(false);
 	nameEl = Ext.get('list_name');
 	request('index', {
@@ -673,7 +652,7 @@ function update_exe_tree() {
 		);
 }
 
-function update_exe2_tree() {
+function updateExe2Tree() {
 	choosen = Ext.get('list2_id').getValue(false);
 	request('index', {
 		'ex': choosen

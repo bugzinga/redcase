@@ -119,32 +119,8 @@ function buildExecutionSuiteTree(params)
 
 function buildExecutionTree(params)
 {
-	exec2Tree = getCheckedTree(params.url, params.root, params.tagId, params.draggable, params.pre);
+	exec2Tree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	exec2Tree.getSelectionModel().on('selectionchange', onExecSelectionChange);
-}
-
-function getCheckedTree(url, root, tagId, draggable, pre)
-{
-	tree = new Ext.tree.TreePanel({
-		useArrows: false,
-		autoScroll: true,
-		animate: false,
-		enableDD: draggable,
-		containerScroll: true,
-		border: false,
-		root: new Ext.tree.AsyncTreeNode(root),
-		loader: new Ext.tree.TreeLoader({
-			url: url,
-			preloadChildren: true,
-			baseParams: {
-				format: 'json'
-			}
-		})
-	});
-	tree.getRootNode().attributes.prefix = pre;
-	tree.render(tagId);
-	tree.root.expand();
-	return tree;
 }
 
 function getTree(url, root, tagId, draggable, pre) {

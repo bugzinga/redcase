@@ -1,6 +1,5 @@
 
-#report_results_table_id
-{
+#report_results_table_id {
 	text-align: center;
 	background-image: url('../images/y.jpg');
 	background-repeat: repeat-x;
@@ -9,25 +8,21 @@
 	padding: 0px;
 }
 
-.report-layout-table
-{
+.report-layout-table {
 	border-collapse: collapse;
 	width: 100%;
 }
 
-#execution_test_cases_tree_id
-{
+#execution_test_cases_tree_id {
 	overflow: auto;
 	max-height: 400px;
 }
 
-.no-border
-{
+.no-border {
 	border-width: 0px;
 }
 
-.execution-layout-table
-{
+.execution-layout-table {
 	border-collapse: collapse;
 	border: 1px #bbbbbb solid;
 	width: 100%;
@@ -35,86 +30,71 @@
 	table-layout: fixed
 }
 
-.execution-layout-table h3 select
-{
+.execution-layout-table h3 select {
 	width: 100px;
 }
 
-.execution-layout-table h3
-{
+.execution-layout-table h3 {
 	border-width: 0px;
 }
 
-.execution-layout-table tr td
-{
+.execution-layout-table tr td {
 	padding: 8px;
 	width: 50%;
 	border: 1px #cccccc dashed;
 	vertical-align: top;
 }
 
-.execution-layout-table .last-cell
-{
+.execution-layout-table .last-cell {
 	border-right-width: 0px;
 }
 
-#execution_test_cases_id h3
-{
+#execution_test_cases_id h3 {
 	display: inline;
 }
 
-#execution-settings-suite
-{
+#execution-settings-suite {
 	color: navy;
 }
 
-#execution-settings-suite select
-{
+#execution-settings-suite select {
 	border: 1px navy solid;
-        width: 250px; 
+	width: 250px; 
 }
 
-#execution-settings-version
-{
+#execution-settings-version {
 	color: purple;
 }
 
-#execution-settings-version select
-{
+#execution-settings-version select {
 	border: 1px purple solid;
-        width: 250px;
+	width: 250px;
 }
 
-#execution-settings-environment
-{
+#execution-settings-environment {
 	color: maroon;
 }
 
-#execution-settings-environment select
-{
+#execution-settings-environment select {
 	border: 1px maroon solid;
-        width: 250px;
+	width: 250px;
 }
 
-#execution_test_case_info_id h3
-{
+#execution_test_case_info_id h3 {
 	color: rgb(48, 96, 48);
 }
 
-.management-layout-table
-{
+.management-layout-table {
 	border-collapse: collapse;
 	border: 1px #bbbbbb solid;
 	width: 100%;
 }
 
-.management-layout-table input[type=text]
-{
+.management-layout-table input[type=text] {
 	color: #bbbbbb;
 }
 
-.management-layout-table textarea
-{
+.management-layout-table textarea {
 	font-family: inherit;
 	font-size: inherit;
 	width: 100%;
@@ -123,94 +103,77 @@
 	margin: 0px;
 }
 
-.management-layout-table h3
-{
+.management-layout-table h3 {
 	border-width: 0px;
 }
 
-.management-layout-table h3 select
-{
+.management-layout-table h3 select {
 	width: 150px;
 }
 
-#management_execution_suites_id h3
-{
+#management_execution_suites_id h3 {
 	color: maroon;
 }
 
-#management_test_suites_id h3
-{
+#management_test_suites_id h3 {
 	color: navy;
 }
 
-#management_execution_suites_id h3 select
-{
+#management_execution_suites_id h3 select {
 	border: 1px maroon solid;
 }
 
-#management_environments_id
-{
+#management_environments_id {
 	border-right-width: 0px;
 }
 
-#management_environments_id h3
-{
+#management_environments_id h3 {
 	color: purple;
 }
 
-#management_environments_id h3 select
-{
+#management_environments_id h3 select {
 	border: 1px purple solid;
 }
 
-.management-layout-table tr
-{
+.management-layout-table tr {
 	vertical-align: top;
 }
 
-.management-layout-table tr td
-{
+.management-layout-table tr td {
 	padding: 8px;
 	width: 33%;
 	border: 1px #cccccc dashed;
 }
 
-.no_underline:hover
-{
+.no_underline:hover {
 	text-decoration: none;
 }
 
-.rc-link
-{
+.rc-link {
 	display: inline-table;
 }
 
-.rc-link-tr
-{
+.rc-link-tr {
 	padding: 0px;
 	margin: 0px;
 }
 
-.rc-link-tr td
-{
+.rc-link-tr td {
 	padding: 1px;
 	margin: 1px;
 }
 
-.rc-link-tr td img
-{
+.rc-link-tr td img {
 	background: url("../images/save.png");
 }
 
 /*
-.rc-link-tr:hover td img
-{
+.rc-link-tr:hover td img {
 	background: url("../images/save_on.png");
 }
 */
 
-.test
-{
+.test {
 	white-space: pre-wrap; /* css-3 */
 	white-space: -moz-pre-wrap; /* Mozilla, начиная с 1999 года */
 	white-space: -pre-wrap; /* Opera 4-6 */
@@ -218,77 +181,64 @@
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-.redcase-row a
-{
+.redcase-row a {
 	color: inherit;
 }
 
-.redcase-row a:visited
-{
+.redcase-row a:visited {
 	color: inherit;
 }
 
-.graph div
-{
+.graph div {
 	border: 1px #bbbbbb solid;
 	background-color: white;
 }
 
-.y-back
-{
+.y-back {
 	background-image: url('../images/y.jpg');
 	background-repeat: repeat-x;
 }
 
-.back
-{
+.back {
 	background-image: url('../images/b.jpg');
 	background-repeat: repeat-x;
 }
 
-.tabular p
-{
+.tabular p {
 	padding: 5px;
 }
 
-.x-tree-node-leaf .x-tree-node-icon.in-progress
-{
+.x-tree-node-leaf .x-tree-node-icon.in-progress {
 	background-image: url('../images/1.png') ;
 }
 
-.x-tree-node-leaf .x-tree-node-icon.others
-{
+.x-tree-node-leaf .x-tree-node-icon.others {
 	background-image: url('../images/2.png') ;
 }
 
-.redcase-row
-{
+.redcase-row {
 	border-collapse: collapse;
 }
 
-.redcase-row tr
-{
+.redcase-row tr {
 	margin: 0px;
 	paddig: 0px;
 }
 
-.redcase-row td
-{
+.redcase-row td {
 	border: 1px #bbbbbb solid;
 	margin: 0px;
 	paddig: 0px;
 }
 
-.redcase-header
-{
+.redcase-header {
 	font-size    : inherit;
 	font-weight  : bold;
 	/* color        : #2A5685; */
 	color        : #507aaa;
 }
 
-.redcase-content
-{
+.redcase-content {
 	border-color : #bbbbbb;
 	overflow     : auto;
 	height       : 450px;
@@ -299,14 +249,12 @@
 	margin       : 2px;
 }
 
-td .x-tree-node
-{
+td .x-tree-node {
 	font-family  : inherit;
 	font-size    : inherit;
 }
 
-.x-panel-header
-{
+.x-panel-header {
 	font-family  : inherit;
 	font-size    : inherit;
 	color        : white;
@@ -315,23 +263,19 @@ td .x-tree-node
 	border-width : 0px;
 }
 
-.x-panel-body
-{
+.x-panel-body {
 	border-color : #bbbbbb;
 }
 
-.x-tip .x-tip-tc, .x-tip .x-tip-tl, .x-tip .x-tip-tr, .x-tip .x-tip-bc, .x-tip .x-tip-bl, .x-tip .x-tip-br, .x-tip .x-tip-ml, .x-tip .x-tip-mr
-{
+.x-tip .x-tip-tc, .x-tip .x-tip-tl, .x-tip .x-tip-tr, .x-tip .x-tip-bc, .x-tip .x-tip-bl, .x-tip .x-tip-br, .x-tip .x-tip-ml, .x-tip .x-tip-mr {
 	background: #FFFFDD;
 }
 
-.x-tip
-{
+.x-tip {
 	border: 1px #bbbbbb solid;
 }
 
-code
-{
+code {
 	white-space: pre-wrap; /* css-3 */
 	white-space: -moz-pre-wrap; /* Mozilla, начиная с 1999 года */
 	white-space: -pre-wrap; /* Opera 4-6 */
@@ -339,8 +283,7 @@ code
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-pre
-{
+pre {
 	white-space: pre-wrap; /* css-3 */
 	white-space: -moz-pre-wrap; /* Mozilla, начиная с 1999 года */
 	white-space: -pre-wrap; /* Opera 4-6 */
@@ -348,34 +291,27 @@ pre
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-.x-tip-header *
-{
+.x-tip-header * {
 	font-size: 12px;
 }
 
-.x-tip-header
-{
+.x-tip-header {
 	font-size: 12px;
 }
 
-
-.x-tip .x-tip-header-text
-{
+.x-tip .x-tip-header-text {
 	font-size: 12px;
 }
 
-.x-tip .x-tip-body
-{
-        font-size: 12px;
-}
-
-.x-tip-body *
-{
+.x-tip .x-tip-body {
 	font-size: 12px;
 }
 
-.x-tip-body
-{
+.x-tip-body * {
+	font-size: 12px;
+}
+
+.x-tip-body {
 	font-size: 12px;
 	white-space: pre-line; /* css-3 */
 	white-space: -moz-pre-wrap; /* Mozilla, начиная с 1999 года */
@@ -384,16 +320,15 @@ pre
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 }
 
-.x-tip-body ol
-{
+.x-tip-body ol {
 	padding-left: 40px;
 	-moz-padding-start: 40px;
 	display :block;
 	margin: 1em 0;
 	list-style-type: decimal;
 }
-.x-tip-body ul
-{
+
+.x-tip-body ul {
 	padding-left: 40px;
 	-moz-padding-start: 40px;
 	display: block;
@@ -401,28 +336,23 @@ pre
 	list-style-type: disc;
 }
 
-.x-tip-body b
-{
+.x-tip-body b {
 	font-weight:bolder;
 }
 
-.x-tip-body strong
-{
+.x-tip-body strong {
 	font-weight:bolder;
 }
 
-.x-tip-body i
-{
+.x-tip-body i {
 	font-style:italic;
 }
 
-.x-tip-body em
-{
+.x-tip-body em {
 	font-style:italic;
 }
 
-.wiki ol
-{
+.wiki ol {
 	padding-left:40px;
 	-moz-padding-start:40px;
 	display:block;
@@ -430,8 +360,7 @@ pre
 	list-style-type:decimal;
 }
 
-.wiki ul
-{
+.wiki ul {
 	padding-left:40px;
 	-moz-padding-start:40px;
 	display:block;
@@ -439,33 +368,27 @@ pre
 	list-style-type:disc;
 }
 
-.wiki b
-{
+.wiki b {
 	font-weight:bolder;
 }
 
-.wiki strong
-{
+.wiki strong {
 	font-weight:bolder;
 }
 
-.wiki i
-{
+.wiki i {
 	font-style:italic;
 }
 
-.wiki em
-{
+.wiki em {
 	font-style:italic;
 }
 
-a:hover img
-{
-        text-decoration:none;
+a:hover img {
+	text-decoration:none;
 }
 
-.ext-ie UL.x-tree-node-ct
-{
+.ext-ie UL.x-tree-node-ct {
 	line-height:inherit;
-        font-size:inherit;
+	font-size:inherit;
 }

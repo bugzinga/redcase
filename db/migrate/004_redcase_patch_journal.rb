@@ -1,4 +1,3 @@
-#
 
 class RedcasePatchJournal < ActiveRecord::Migration
 

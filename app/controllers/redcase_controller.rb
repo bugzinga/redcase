@@ -506,7 +506,7 @@ class RedcaseController < ApplicationController
 		end
 		@results = @results.compact
 		@all['Not Executed'] = un_count
-		@graph = open_flash_chart_object(500, 500, url_for(:action => 'graph', :project_id => @project.id, :all => @all), true, 'plugin_assets/redcase/')
+		@graph = open_flash_chart_object(500, 500, url_for(:action => 'graph', :project_id => @project.id, :all => @all), true, '/plugin_assets/redcase/')
 	end
 	
 end

@@ -23,21 +23,25 @@ var xContextMenu = new Ext.menu.Menu({
 			handler: function(b, e) {
 				Ext.Msg.prompt('Creating test suite', 'Please enter execution suite name:', function(btn, text) {
 					if (btn == 'ok') {
-						request('execution_suite_manager', {
-							'do': 'create',
-							'name': text,
-							'parent_id': xCurrentNode.attributes.suite_id
-						}, function() {
-							if (exec2Tree) {
-								exec2Tree.root.attributes.children = null;
-								exec2Tree.root.reload();
-								exec2Tree.root.expand();
-							}
-							xCurrentNode.attributes.children = null;
-							xCurrentNode.reload();
-							xCurrentNode.expand();
-						}, "Execution suite '" + text + "' can't be created"
-							);
+						apiCall({
+							method: 'execution_suite_manager',
+							params: {
+								'do': 'create',
+								'name': text,
+								'parent_id': xCurrentNode.attributes.suite_id
+							},
+							success: function() {
+								if (exec2Tree) {
+									exec2Tree.root.attributes.children = null;
+									exec2Tree.root.reload();
+									exec2Tree.root.expand();
+								}
+								xCurrentNode.attributes.children = null;
+								xCurrentNode.reload();
+								xCurrentNode.expand();
+							},
+							errorMessage: "Execution suite '" + text + "' can't be created"
+						});
 					}
 				});
 			}
@@ -49,36 +53,44 @@ var xContextMenu = new Ext.menu.Menu({
 				}
 				parentNode = xCurrentNode.parentNode;
 				if (xCurrentNode.isLeaf()) {
-					request('delete_test_case_from_execution_suite', {
-						'id': xCurrentNode.attributes.issue_id,
-						'suite_id': parentNode.attributes.suite_id
-					}, function() {
-						if (exec2Tree) {
-							exec2Tree.root.attributes.children = null;
-							exec2Tree.root.reload();
-							exec2Tree.root.expand();
-						}
-						parentNode.attributes.children = null;
-						parentNode.reload();
-					}, "Test case '" + xCurrentNode.text + "' can't be deleted",
-						'POST'
-						);
+					apiCall({
+						httpMethod: 'POST',
+						method: 'delete_test_case_from_execution_suite',
+						params: {
+							'id': xCurrentNode.attributes.issue_id,
+							'suite_id': parentNode.attributes.suite_id
+						},
+						success: function() {
+							if (exec2Tree) {
+								exec2Tree.root.attributes.children = null;
+								exec2Tree.root.reload();
+								exec2Tree.root.expand();
+							}
+							parentNode.attributes.children = null;
+							parentNode.reload();
+						},
+						errorMessage: "Test case '" + xCurrentNode.text + "' can't be deleted"
+					});
 				}
 				else {
-					request('execution_suite_manager', {
-						'do': 'delete',
-						'id': xCurrentNode.attributes.suite_id
-					}, function() {
-						if (exec2Tree) {
-							exec2Tree.root.attributes.children = null;
-							exec2Tree.root.reload();
-							exec2Tree.root.expand();
-						}
-						parentNode.attributes.children = null;
-						parentNode.reload();
-					}, "Execution suite '" + xCurrentNode.text + "' can't be deleted",
-						'POST'
-						);
+					apiCall({
+						httpMethod: 'POST',
+						method: 'execution_suite_manager',
+						params: {
+							'do': 'delete',
+							'id': xCurrentNode.attributes.suite_id
+						},
+						success: function() {
+							if (exec2Tree) {
+								exec2Tree.root.attributes.children = null;
+								exec2Tree.root.reload();
+								exec2Tree.root.expand();
+							}
+							parentNode.attributes.children = null;
+							parentNode.reload();
+						},
+						errorMessage: "Execution suite '" + xCurrentNode.text + "' can't be deleted"
+					});
 				}
 			}
 		}]
@@ -175,30 +187,37 @@ function buildTestSuiteTree(params) {
 		});
 		suiteTree.on('beforenodedrop', function(dropEvent) {
 			if (dropEvent.dropNode.isLeaf()) {
-				request('test_suite_manager', {
-					'do': 'move_test_case',
-					'object_id': dropEvent.dropNode.attributes.issue_id,
-					'parent_id': dropEvent.target.attributes.suite_id
-				},
-				function() {
-					dropEvent.target.attributes.children = null;
-					dropEvent.target.reload();
-					dropEvent.target.expand();
-					dropEvent.dropNode.remove(true);
-				}, "Test case '" + dropEvent.dropNode.text + "' can't be moved"
-					);
+				apiCall({
+					method: 'test_suite_manager',
+					params: {
+						'do': 'move_test_case',
+						'object_id': dropEvent.dropNode.attributes.issue_id,
+						'parent_id': dropEvent.target.attributes.suite_id
+					},
+					success: function() {
+						dropEvent.target.attributes.children = null;
+						dropEvent.target.reload();
+						dropEvent.target.expand();
+						dropEvent.dropNode.remove(true);
+					},
+					errorMessage: "Test case '" + dropEvent.dropNode.text + "' can't be moved"
+				});
 			} else {
-				request('test_suite_manager', {
-					'do': 'move',
-					'object_id': dropEvent.dropNode.attributes.suite_id,
-					'parent_id': dropEvent.target.attributes.suite_id
-				}, function() {
-					dropEvent.target.attributes.children = null;
-					dropEvent.target.reload();
-					dropEvent.target.expand();
-					dropEvent.dropNode.remove(true);
-				}, "Test suite '" + dropEvent.dropNode.text + "' can't be moved"
-					);
+				apiCall({
+					method: 'test_suite_manager',
+					params: {
+						'do': 'move',
+						'object_id': dropEvent.dropNode.attributes.suite_id,
+						'parent_id': dropEvent.target.attributes.suite_id
+					},
+					success: function() {
+						dropEvent.target.attributes.children = null;
+						dropEvent.target.reload();
+						dropEvent.target.expand();
+						dropEvent.dropNode.remove(true);
+					},
+					errorMessage: "Test suite '" + dropEvent.dropNode.text + "' can't be moved"
+				});
 			}
 			dropEvent.cancel = true;
 		});
@@ -231,27 +250,56 @@ function buildExecutionSuiteTree(params) {
 						dropEvent.cancel = true;
 						return;
 					}
-					request('copy_test_case_to_exec', {
-						'object_id': dropEvent.dropNode.attributes.issue_id,
-						'parent_id': dropEvent.target.attributes.suite_id
-					}, function() {
-						if (exec2Tree) {
-							exec2Tree.root.attributes.children = null;
-							exec2Tree.root.reload();
-							exec2Tree.root.expand();
-						}
-						dropEvent.target.attributes.children = null;
-						dropEvent.target.reload();
-						dropEvent.target.expand();
-					}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
-						);
+					apiCall({
+						method: 'copy_test_case_to_exec',
+						params: {
+							'object_id': dropEvent.dropNode.attributes.issue_id,
+							'parent_id': dropEvent.target.attributes.suite_id
+						},
+						success: function() {
+							if (exec2Tree) {
+								exec2Tree.root.attributes.children = null;
+								exec2Tree.root.reload();
+								exec2Tree.root.expand();
+							}
+							dropEvent.target.attributes.children = null;
+							dropEvent.target.reload();
+							dropEvent.target.expand();
+						},
+						errorMessage: "Test case '" + dropEvent.dropNode.text + "' can't be added"
+					});
 				} else {
-					request('execution_suite_manager', {
-						'do': 'move_test_case',
-						'object_id': dropEvent.dropNode.attributes.issue_id,
-						'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
-						'parent_id': dropEvent.target.id
-					}, function() {
+					apiCall({
+						method: 'execution_suite_manager',
+						params: {
+							'do': 'move_test_case',
+							'object_id': dropEvent.dropNode.attributes.issue_id,
+							'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
+							'parent_id': dropEvent.target.id
+						},
+						success: function() {
+							if (exec2Tree) {
+								exec2Tree.root.attributes.children = null;
+								exec2Tree.root.reload();
+								exec2Tree.root.expand();
+							}
+							dropEvent.target.attributes.children = null;
+							dropEvent.target.reload();
+							dropEvent.target.expand();
+							dropEvent.dropNode.remove(true);
+						},
+						errorMessage: "Test case '" + dropEvent.dropNode.text + "' can't be added"
+					});
+				}
+			} else {
+				apiCall({
+					method: 'execution_suite_manager',
+					params: {
+						'do': 'move',
+						'object_id': dropEvent.dropNode.attributes.suite_id,
+						'parent_id': dropEvent.target.attributes.suite_id
+					},
+					success: function() {
 						if (exec2Tree) {
 							exec2Tree.root.attributes.children = null;
 							exec2Tree.root.reload();
@@ -261,26 +309,9 @@ function buildExecutionSuiteTree(params) {
 						dropEvent.target.reload();
 						dropEvent.target.expand();
 						dropEvent.dropNode.remove(true);
-					}, "Test case '" + dropEvent.dropNode.text + "' can't be added"
-						);
-				}
-			} else {
-				request('execution_suite_manager', {
-					'do': 'move',
-					'object_id': dropEvent.dropNode.attributes.suite_id,
-					'parent_id': dropEvent.target.attributes.suite_id
-				}, function() {
-					if (exec2Tree) {
-						exec2Tree.root.attributes.children = null;
-						exec2Tree.root.reload();
-						exec2Tree.root.expand();
-					}
-					dropEvent.target.attributes.children = null;
-					dropEvent.target.reload();
-					dropEvent.target.expand();
-					dropEvent.dropNode.remove(true);
-				}, "Execution suite '" + dropEvent.dropNode.text + "' can't be moved"
-					);
+					},
+					errorMessage: "Execution suite '" + dropEvent.dropNode.text + "' can't be moved"
+				});
 			}
 			dropEvent.cancel = true;
 		});
@@ -319,7 +350,8 @@ function getTree(url, root, tagId, draggable, pre) {
 	return tree;
 }
 
-function request(method, params, success, failureMsg, httpMethod) {
+function apiCall(parameters) {
+	var params = parameters.params;
 	params.format = 'json';
 	if (!params.project_id) {
 		params.project_id = jsProjectId;
@@ -334,15 +366,15 @@ function request(method, params, success, failureMsg, httpMethod) {
 	});
 	Element.show('ajax-indicator');
 	conn.request({
-		url: context + method,
-		method: (htppMethod ? httpMethod : 'GET'),
+		url: context + parameters.method,
+		method: (parameters.htppMethod ? parameters.httpMethod : 'GET'),
 		params: params,
 		callback: function() {
 			Element.hide('ajax-indicator');
 		},
-		success: success,
+		success: parameters.success,
 		failure: function() {
-			Ext.Msg.alert('Failure', failureMsg);
+			Ext.Msg.alert('Failure', parameters.errorMessage);
 		}
 	});
 }
@@ -352,29 +384,35 @@ function onCopyTo(b, e) {
 		return;
 	}
 	parentNode = currentNode.parentNode;
-	request('reassign_test_case', {
-		'id': currentNode.attributes.issue_id,
-		'suite': parentNode.attributes.suite_id,
-		'project_id': b.id,
-		'real_project_id': jsProjectId
-	}, function() {
-	}, "Test case '" + currentNode.text + "' can't be copied"
-		);
+	apiCall({
+		method: 'reassign_test_case',
+		params: {
+			'id': currentNode.attributes.issue_id,
+			'suite': parentNode.attributes.suite_id,
+			'project_id': b.id,
+			'real_project_id': jsProjectId
+		},
+		errorMessage: "Test case '" + currentNode.text + "' can't be copied"
+	});
 }
 
 function getEditorSuite() {
 	editorSuite = new Ext.tree.TreeEditor(suiteTree);
 	editorSuite.on('beforecomplete', function(editor, newValue, originalValue) {
-		request('test_suite_manager', {
-			'do': 'rename',
-			"test_suite_id": editor.editNode.attributes.suite_id,
-			"new_name": newValue
-		}, function() {
-			editor.editNode.parentNode.attributes.children = null;
-			editor.editNode.parentNode.reload();
-			editor.editNode.parentNode.expand();
-		}, "Test suite '" + originalValue + "' can't be renamed"
-			);
+		apiCall({
+			method: 'test_suite_manager',
+			params: {
+				'do': 'rename',
+				"test_suite_id": editor.editNode.attributes.suite_id,
+				"new_name": newValue
+			},
+			success: function() {
+				editor.editNode.parentNode.attributes.children = null;
+				editor.editNode.parentNode.reload();
+				editor.editNode.parentNode.expand();
+			},
+			errorMessage: "Test suite '" + originalValue + "' can't be renamed"
+		});
 		editorSuite.cancelEdit(false);
 	});
 }
@@ -382,21 +420,25 @@ function getEditorSuite() {
 function getEditorExec() {
 	editorExec = new Ext.tree.TreeEditor(execTree);
 	editorExec.on('beforecomplete', function(editor, newValue, originalValue) {
-		request('execution_suite_manager', {
-			'do': 'rename',
-			"exec_suite_id": editor.editNode.attributes.suite_id,
-			"new_name": newValue
-		}, function() {
-			if (exec2Tree) {
-				exec2Tree.root.attributes.children = null;
-				exec2Tree.root.reload();
-				exec2Tree.root.expand();
-			}
-			editor.editNode.parentNode.attributes.children = null;
-			editor.editNode.parentNode.reload();
-			editor.editNode.parentNode.expand();
-		}, "Execution suite '" + originalValue + "' can't be renamed"
-			);
+		apiCall({
+			method: 'execution_suite_manager',
+			params: {
+				'do': 'rename',
+				"exec_suite_id": editor.editNode.attributes.suite_id,
+				"new_name": newValue
+			},
+			success: function() {
+				if (exec2Tree) {
+					exec2Tree.root.attributes.children = null;
+					exec2Tree.root.reload();
+					exec2Tree.root.expand();
+				}
+				editor.editNode.parentNode.attributes.children = null;
+				editor.editNode.parentNode.reload();
+				editor.editNode.parentNode.expand();
+			},
+			errorMessage: "Execution suite '" + originalValue + "' can't be renamed"
+		});
 		editorExec.cancelEdit(false);
 	});
 }
@@ -455,25 +497,29 @@ function execute() {
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');
 	conn = new Ext.data.Connection();
-	request('execute', {
-		"id": node.attributes.issue_id,
-		"version": version.getValue(false),
-		"result": result.getValue(false),
-		"envs": envs.getValue(false),
-		"comment": comment.getValue(false)
-	}, function(responseObject) {
-		rs = Ext.decode(responseObject.responseText);
-		Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
-		txt = getHistory(rs)
-		Ext.get('all-results').update(txt);
-		next = findNext(node);
-		if (next) {
-			next.select();
-		}
-		Ext.get('exec-comment').dom.value = "";
-	}, "Execution failed",
-		'POST'
-		);
+	apiCall({
+		httpMethod: 'POST',
+		method: 'execute',
+		params: {
+			"id": node.attributes.issue_id,
+			"version": version.getValue(false),
+			"result": result.getValue(false),
+			"envs": envs.getValue(false),
+			"comment": comment.getValue(false)
+		},
+		success: function(responseObject) {
+			rs = Ext.decode(responseObject.responseText);
+			Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
+			txt = getHistory(rs)
+			Ext.get('all-results').update(txt);
+			next = findNext(node);
+			if (next) {
+				next.select();
+			}
+			Ext.get('exec-comment').dom.value = "";
+		},
+		errorMessage: "Execution failed"
+	});
 }
 
 function onExecSelectionChange(model, node) {
@@ -482,48 +528,60 @@ function onExecSelectionChange(model, node) {
 	r = Ext.get('all-results-d');
 	r.setDisplayed('none');
 	if (node.isLeaf()) {
-		request('get_test_case', {
-			"object_id": node.attributes.issue_id
-		}, function(responseObject) {
-			Ext.get('exec_descr_id').setDisplayed(Ext.decode(responseObject.responseText).desc ? 'block' : 'none');
-			desc = Ext.get('test-case-desc');
-			subj = Ext.get('test-case-subj');
-			subj.update(Ext.decode(responseObject.responseText).text)
-			desc.update(Ext.decode(responseObject.responseText).desc);
-			edit.setVisible(true);
-			results = Ext.get('results');
-			results.set({
-				value: 'Passed'
-			}, false);
-			version = Ext.get('version');
-			request('get_executions', {
-				"id": node.attributes.issue_id,
-				"version": version.getValue(false)
-			}, function(responseObject) {
-				rs = Ext.decode(responseObject.responseText);
-				Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
-				if (rs.length > 0) {
-					txt = getHistory(rs);
-					Ext.get('all-results').update(txt);
-				}
-			}, "Execution failed"
-				);
-			request('get_attachment_urls', {
-				"issue_id": node.attributes.issue_id
-			}, function(responseObject) {
-				rs = Ext.decode(responseObject.responseText);
-				Ext.get('test-case-attach').setDisplayed(rs.length > 0 ? 'block' : 'none');
-				if (rs.length > 0) {
-					txt = "";
-					for (i = 0; i < rs.length; i++) {
-						txt += "<a href='" + rs[i].url + "' target='_blank'>" + "<img src=" + '"' + "/images/attachment.png" + '"' + "></img>" + rs[i].name + "</a><br/>";
-					}
-					Ext.get('test-case-attach').update(txt);
-				}
-			}, "Getting attachments failed"
-				);
-		}, "Information about test case '" + node.text + "' can't be obtained"
-			);
+		apiCall({
+			method: 'get_test_case',
+			params: {
+				"object_id": node.attributes.issue_id
+			},
+			success: function(responseObject) {
+				Ext.get('exec_descr_id').setDisplayed(Ext.decode(responseObject.responseText).desc ? 'block' : 'none');
+				desc = Ext.get('test-case-desc');
+				subj = Ext.get('test-case-subj');
+				subj.update(Ext.decode(responseObject.responseText).text)
+				desc.update(Ext.decode(responseObject.responseText).desc);
+				edit.setVisible(true);
+				results = Ext.get('results');
+				results.set({
+					value: 'Passed'
+				}, false);
+				version = Ext.get('version');
+				apiCall({
+					method: 'get_executions',
+					params: {
+						"id": node.attributes.issue_id,
+						"version": version.getValue(false)
+					},
+					success: function(responseObject) {
+						rs = Ext.decode(responseObject.responseText);
+						Ext.get('all-results-d').setDisplayed(rs.length > 0 ? 'inline-table' : 'none');
+						if (rs.length > 0) {
+							txt = getHistory(rs);
+							Ext.get('all-results').update(txt);
+						}
+					},
+					errorMessage: "Execution failed"
+				});
+				apiCall({
+					method: 'get_attachment_urls',
+					params: {
+						"issue_id": node.attributes.issue_id
+					},
+					success: function(responseObject) {
+						rs = Ext.decode(responseObject.responseText);
+						Ext.get('test-case-attach').setDisplayed(rs.length > 0 ? 'block' : 'none');
+						if (rs.length > 0) {
+							txt = "";
+							for (i = 0; i < rs.length; i++) {
+								txt += "<a href='" + rs[i].url + "' target='_blank'>" + "<img src=" + '"' + "/images/attachment.png" + '"' + "></img>" + rs[i].name + "</a><br/>";
+							}
+							Ext.get('test-case-attach').update(txt);
+						}
+					},
+					errorMessage: "Getting attachments failed"
+				});
+			},
+			errorMessage: "Information about test case '" + node.text + "' can't be obtained"
+		});
 	}
 }
 
@@ -571,16 +629,20 @@ function initSuiteContextMenu() {
 			handler: function(b, e) {
 				Ext.Msg.prompt('Creating test suite', 'Please enter test suite name:', function(btn, text) {
 					if (btn == 'ok') {
-						request('test_suite_manager', {
-							'do': 'create',
-							'name': text,
-							'parent_id': currentNode.attributes.suite_id
-						}, function() {
-							currentNode.attributes.children = null;
-							currentNode.reload();
-							currentNode.expand();
-						}, "Test suite '" + text + "' can't be created"
-							);
+						apiCall({
+							method: 'test_suite_manager',
+							params: {
+								'do': 'create',
+								'name': text,
+								'parent_id': currentNode.attributes.suite_id
+							},
+							success: function() {
+								currentNode.attributes.children = null;
+								currentNode.reload();
+								currentNode.expand();
+							},
+							errorMessage: "Test suite '" + text + "' can't be created"
+						});
 					}
 				});
 			}
@@ -592,24 +654,32 @@ function initSuiteContextMenu() {
 				}
 				parentNode = currentNode.parentNode;
 				if (currentNode.isLeaf()) {
-					request('test_case_to_obsolete', {
-						'id': currentNode.attributes.issue_id
-					}, function() {
-						suiteTree.root.attributes.children = null;
-						suiteTree.root.reload();
-					}, "Test case '" + currentNode.text + "' can't be deleted",
-						'POST'
-						);
+					apiCall({
+						httpMethod: 'POST',
+						method: 'test_case_to_obsolete',
+						params: {
+							'id': currentNode.attributes.issue_id
+						},
+						success: function() {
+							suiteTree.root.attributes.children = null;
+							suiteTree.root.reload();
+						},
+						errorMessage: "Test case '" + currentNode.text + "' can't be deleted"
+					});
 				} else {
-					request('test_suite_manager', {
-						'do': 'delete',
-						'id': currentNode.attributes.suite_id
-					}, function() {
-						parentNode.attributes.children = null;
-						parentNode.reload();
-					}, "Test suite '" + currentNode.text + "' can't be deleted",
-						'POST'
-						);
+					apiCall({
+						httpMethod: 'POST',
+						method: 'test_suite_manager',
+						params: {
+							'do': 'delete',
+							'id': currentNode.attributes.suite_id
+						},
+						success: function() {
+							parentNode.attributes.children = null;
+							parentNode.reload();
+						},
+						errorMessage: "Test suite '" + currentNode.text + "' can't be deleted"
+					});
 				}
 			}
 		}, {
@@ -639,30 +709,38 @@ function initSuiteContextMenu() {
 function updateExeTree() {
 	choosen = Ext.get('list_id').getValue(false);
 	nameEl = Ext.get('list_name');
-	request('index', {
-		'ex': choosen
-	}, function(responseObject) {
-		rs = Ext.decode(responseObject.responseText);
-		rs['prefix'] = 'management_execution_suite_tree';
-		execTree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
-		execTree.getLoader().load(execTree.getRootNode());
-		execTree.getRootNode().expand();
-		nameEl.dom.setAttribute("value", execTree.getRootNode().text);
-	}, "Execution list cannot be reloaded"
-		);
+	apiCall({
+		method: 'index',
+		params: {
+			'ex': choosen
+		},
+		success: function(responseObject) {
+			rs = Ext.decode(responseObject.responseText);
+			rs['prefix'] = 'management_execution_suite_tree';
+			execTree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
+			execTree.getLoader().load(execTree.getRootNode());
+			execTree.getRootNode().expand();
+			nameEl.dom.setAttribute("value", execTree.getRootNode().text);
+		},
+		errorMessage: "Execution list cannot be reloaded"
+	});
 }
 
 function updateExe2Tree() {
 	choosen = Ext.get('list2_id').getValue(false);
-	request('index', {
-		'ex': choosen
-	}, function(responseObject) {
-		rs = Ext.decode(responseObject.responseText);
-		rs['prefix'] = 'execution_test_cases_tree';
-		exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
-		exec2Tree.getLoader().load(exec2Tree.getRootNode());
-		exec2Tree.getRootNode().expand();
-		onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
-	}, "Execution list cannot be reloaded"
-		);
+	apiCall({
+		method: 'index',
+		params: {
+			'ex': choosen
+		},
+		success: function(responseObject) {
+			rs = Ext.decode(responseObject.responseText);
+			rs['prefix'] = 'execution_test_cases_tree';
+			exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
+			exec2Tree.getLoader().load(exec2Tree.getRootNode());
+			exec2Tree.getRootNode().expand();
+			onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
+		},
+		errorMessage: "Execution list cannot be reloaded"
+	});
 }

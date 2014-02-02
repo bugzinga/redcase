@@ -1,6 +1,34 @@
 
 var context = 'redcase/';
 
+var apiMethods = {
+	
+	main: {
+		method: 'index'
+	},
+	
+	testSuite: {
+		method: 'test_suite_manager',
+		actions: {
+			create: 'create',
+			delete: 'delete',
+			moveTestSuite: 'move',
+			moveTestCase: 'move_test_case'
+		}
+	},
+	
+	executionSuite: {
+		method: 'execution_suite_manager',
+		actions: {
+			create: 'create',
+			delete: 'delete',
+			moveTestSuite: 'move',
+			moveTestCase: 'move_test_case'
+		}
+	}
+
+};
+
 var jsProjectId;
 var jsCanEdit;
 var jsCopyToMenuItems = [];
@@ -34,9 +62,9 @@ var xContextMenu = new Ext.menu.Menu({
 							var name = jQuery('#redcase-dialog-value').val();
 							debug('User confirmed execution suite creation');
 							apiCall({
-								method: 'execution_suite_manager',
+								method: apiMethods.executionSuite.method,
 								params: {
-									'do': 'create',
+									'do': apiMethods.executionSuite.actions.create,
 									'name': name,
 									'parent_id': xCurrentNode.attributes.suite_id
 								},
@@ -79,6 +107,7 @@ var xContextMenu = new Ext.menu.Menu({
 					debug('Current node is a leaf: ' + xCurrentNode.attributes.issue_id);
 					apiCall({
 						httpMethod: 'POST',
+						// TODO: Fix this, most likely broken!
 						method: 'delete_test_case_from_execution_suite',
 						params: {
 							'id': xCurrentNode.attributes.issue_id,
@@ -101,9 +130,9 @@ var xContextMenu = new Ext.menu.Menu({
 					debug('Current node is a leaf: ' + xCurrentNode.attributes.suite_id);
 					apiCall({
 						httpMethod: 'POST',
-						method: 'execution_suite_manager',
+						method: apiMethods.executionSuite.method,
 						params: {
-							'do': 'delete',
+							'do': apiMethods.executionSuite.actions.delete,
 							'suite_id': xCurrentNode.attributes.suite_id
 						},
 						success: function() {
@@ -220,9 +249,9 @@ function buildTestSuiteTree(params) {
 			if (dropEvent.dropNode.isLeaf()) {
 				log('Dropping node is a leaf');
 				apiCall({
-					method: 'test_suite_manager',
+					method: apiMethods.testSuite.method,
 					params: {
-						'do': 'move_test_case',
+						'do': apiMethods.testSuite.actions.moveTestCase,
 						'object_id': dropEvent.dropNode.attributes.issue_id,
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
@@ -237,9 +266,9 @@ function buildTestSuiteTree(params) {
 			} else {
 				log('Dropping node is NOT a leaf');
 				apiCall({
-					method: 'test_suite_manager',
+					method: apiMethods.testSuite.method,
 					params: {
-						'do': 'move',
+						'do': apiMethods.testSuite.actions.moveTestSuite,
 						'object_id': dropEvent.dropNode.attributes.suite_id,
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
@@ -313,9 +342,9 @@ function buildExecutionSuiteTree(params) {
 				} else {
 					log('Node is NOT a leaf');
 					apiCall({
-						method: 'execution_suite_manager',
+						method: apiMethods.executionSuite.method,
 						params: {
-							'do': 'move_test_case',
+							'do': apiMethods.executionSuite.actions.moveTestCase,
 							'object_id': dropEvent.dropNode.attributes.issue_id,
 							'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
 							'parent_id': dropEvent.target.id
@@ -337,9 +366,9 @@ function buildExecutionSuiteTree(params) {
 			} else {
 				log('Node is NOT a leaf');
 				apiCall({
-					method: 'execution_suite_manager',
+					method: apiMethods.executionSuite.method,
 					params: {
-						'do': 'move',
+						'do': apiMethods.executionSuite.actions.moveTestSuite,
 						'object_id': dropEvent.dropNode.attributes.suite_id,
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
@@ -446,9 +475,12 @@ function onCopyTo(b, e) {
 }
 
 function getEditorSuite() {
-	log('(?) getEditorSuite()');
+	log('(?) getEditorSuite(): ' + suiteTree);
+	// TODO: Fix me, most likely broken!
 	editorSuite = new Ext.tree.TreeEditor(suiteTree);
+	/*
 	editorSuite.on('beforecomplete', function(editor, newValue, originalValue) {
+		debug('Renaming suite');
 		apiCall({
 			method: 'test_suite_manager',
 			params: {
@@ -465,6 +497,7 @@ function getEditorSuite() {
 		});
 		editorSuite.cancelEdit(false);
 	});
+	*/
 }
 
 function getEditorExec() {
@@ -522,11 +555,12 @@ function findNested(node) {
 	log('Finding the nested node');
 	next = node;
 	if (!next) {
-		return node.parentNode ? findNext(node.parentNode) : null;
+		return node.parentNode
+			? findNext(node.parentNode)
+			: null;
 	} else if (next.isLeaf()) {
 		return next;
-	}
-	else {
+	} else {
 		next.expand();
 		for (i = 0; i < next.childNodes.length; i++) {
 			child = next.childNodes[i];
@@ -698,9 +732,9 @@ function initSuiteContextMenu() {
 							var name = jQuery('#redcase-dialog-value').val();
 							debug('User confirmed test suite creation');
 							apiCall({
-								method: 'test_suite_manager',
+								method: apiMethods.testSuite.method,
 								params: {
-									'do': 'create',
+									'do': apiMethods.testSuite.actions.create,
 									'name': name,
 									'parent_id': currentNode.attributes.suite_id
 								},
@@ -738,9 +772,10 @@ function initSuiteContextMenu() {
 					debug('Node is a leaf');
 					apiCall({
 						httpMethod: 'POST',
+						// TODO: Fix it, most likely broken!
 						method: 'test_case_to_obsolete',
 						params: {
-							'id': currentNode.attributes.issue_id
+							'issue_id': currentNode.attributes.issue_id
 						},
 						success: function() {
 							suiteTree.root.attributes.children = null;
@@ -752,9 +787,9 @@ function initSuiteContextMenu() {
 					debug('Node is NOT a leaf');
 					apiCall({
 						httpMethod: 'POST',
-						method: 'test_suite_manager',
+						method: apiMethods.testSuite.method,
 						params: {
-							'do': 'delete',
+							'do': apiMethods.testSuite.actions.delete,
 							'test_suite_id': currentNode.attributes.suite_id
 						},
 						success: function() {
@@ -795,7 +830,9 @@ function updateExeTree() {
 	choosen = Ext.get('list_id').getValue(false);
 	nameEl = Ext.get('list_name');
 	apiCall({
-		method: 'index',
+		// TODO: Wrong, there should be a call to ExecutionSuite
+		//       entity/controller.
+		method: apiMethods.main.method,
 		params: {
 			'ex': choosen
 		},
@@ -815,7 +852,9 @@ function updateExe2Tree() {
 	log('Updating the execution tree on Execution tab');
 	choosen = Ext.get('list2_id').getValue(false);
 	apiCall({
-		method: 'index',
+		// TODO: Wrong, there should be a call to ExecutionSuite
+		//       entity/controller.
+		method: apiMethods.main.method,
 		params: {
 			'ex': choosen
 		},

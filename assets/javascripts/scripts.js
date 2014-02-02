@@ -4,11 +4,9 @@ var context = 'redcase/';
 var log = LogFactory.getLog('redcase');
 
 var apiMethods = {
-	
 	main: {
 		method: 'index'
 	},
-	
 	testSuite: {
 		method: 'test_suite_manager',
 		actions: {
@@ -18,17 +16,16 @@ var apiMethods = {
 			moveTestCase: 'move_test_case'
 		}
 	},
-	
 	executionSuite: {
 		method: 'execution_suite_manager',
 		actions: {
 			create: 'create',
 			delete: 'delete',
+			rename: 'rename',
 			moveTestSuite: 'move',
 			moveTestCase: 'move_test_case'
 		}
 	},
-	
 	legacy: {
 		executionSuite: {
 			deleteTestCase: 'delete_test_case_from_execution_suite'
@@ -77,11 +74,6 @@ var xContextMenu = new Ext.menu.Menu({
 									'parent_id': xCurrentNode.attributes.suite_id
 								},
 								success: function() {
-									if (exec2Tree) {
-										exec2Tree.root.attributes.children = null;
-										exec2Tree.root.reload();
-										exec2Tree.root.expand();
-									}
 									xCurrentNode.attributes.children = null;
 									xCurrentNode.reload();
 									xCurrentNode.expand();
@@ -121,11 +113,6 @@ var xContextMenu = new Ext.menu.Menu({
 							'suite_id': parentNode.attributes.suite_id
 						},
 						success: function() {
-							if (exec2Tree) {
-								exec2Tree.root.attributes.children = null;
-								exec2Tree.root.reload();
-								exec2Tree.root.expand();
-							}
 							parentNode.attributes.children = null;
 							parentNode.reload();
 						},
@@ -143,17 +130,67 @@ var xContextMenu = new Ext.menu.Menu({
 							'suite_id': xCurrentNode.attributes.suite_id
 						},
 						success: function() {
-							if (exec2Tree) {
-								exec2Tree.root.attributes.children = null;
-								exec2Tree.root.reload();
-								exec2Tree.root.expand();
-							}
 							parentNode.attributes.children = null;
 							parentNode.reload();
 						},
 						errorMessage: "Execution suite '" + xCurrentNode.text + "' can't be deleted"
 					});
 				}
+			}
+		}, {
+			text: 'Rename',
+			handler: function(b, e) {
+				log.debug('Trying to rename the execution suite');
+				// TODO: Right now it's not handled if any error happened
+				//       after clicking OK, so the dialog with keep showing
+				//       which is not expected.
+				if (xCurrentNode.parentNode == null) {
+					return;
+				}
+				parentNode = xCurrentNode.parentNode;
+				jQuery('#redcase-dialog').dialog({
+					title: 'Renaming execution suite',
+					modal: true,
+					resizable: false,
+					buttons: {
+						'OK': function() {
+							var name = jQuery('#redcase-dialog-value').val();
+							log.debug('User confirmed execution suite name change');
+							apiCall({
+								method: apiMethods.executionSuite.method,
+								params: {
+									'do': apiMethods.executionSuite.actions.rename,
+									'new_name': name,
+									'exec_suite_id': xCurrentNode.attributes.suite_id
+								},
+								success: function() {
+									log.info('Renaming: Success');
+									try {
+										parentNode.attributes.children = null;
+										parentNode.reload();
+										parentNode.expand();
+									} catch (error) {
+										log.debug(error.message);
+									}
+									log.info('Renaming: Closing');
+									jQuery('#redcase-dialog').dialog('close');
+									log.info('Renaming: Closed');
+								},
+								errorMessage: "Execution suite '" + name + "' can't be created"
+							});
+						}
+					},
+					open: function() {
+						var dialog = jQuery(this);
+						dialog.keydown(function(event) {
+							if (event.keyCode === 13) {
+								log.debug('Key pressed: ' + event.keyCode);
+								event.preventDefault();
+								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
+							}
+						});
+					}
+				});
 			}
 		}]
 });
@@ -333,11 +370,6 @@ function buildExecutionSuiteTree(params) {
 							'parent_id': dropEvent.target.attributes.suite_id
 						},
 						success: function() {
-							if (exec2Tree) {
-								exec2Tree.root.attributes.children = null;
-								exec2Tree.root.reload();
-								exec2Tree.root.expand();
-							}
 							dropEvent.target.attributes.children = null;
 							dropEvent.target.reload();
 							dropEvent.target.expand();
@@ -355,11 +387,6 @@ function buildExecutionSuiteTree(params) {
 							'parent_id': dropEvent.target.id
 						},
 						success: function() {
-							if (exec2Tree) {
-								exec2Tree.root.attributes.children = null;
-								exec2Tree.root.reload();
-								exec2Tree.root.expand();
-							}
 							dropEvent.target.attributes.children = null;
 							dropEvent.target.reload();
 							dropEvent.target.expand();
@@ -378,11 +405,6 @@ function buildExecutionSuiteTree(params) {
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
 					success: function() {
-						if (exec2Tree) {
-							exec2Tree.root.attributes.children = null;
-							exec2Tree.root.reload();
-							exec2Tree.root.expand();
-						}
 						dropEvent.target.attributes.children = null;
 						dropEvent.target.reload();
 						dropEvent.target.expand();
@@ -443,7 +465,7 @@ function apiCall(parameters) {
 	jQuery.ajax(url, {
 		type: (parameters.htppMethod ? parameters.httpMethod : 'GET'),
 		data: params,
-		success: function (data, textStatus, jqXHR) {
+		success: function(data, textStatus, jqXHR) {
 			log.debug('Success');
 			try {
 				parameters.success(data, textStatus, jqXHR);
@@ -452,7 +474,7 @@ function apiCall(parameters) {
 			}
 			log.debug('Done');
 		},
-		error: function(){
+		error: function() {
 			Ext.Msg.alert('Failure', parameters.errorMessage);
 		},
 		complete: function() {
@@ -781,22 +803,19 @@ function initSuiteContextMenu() {
 
 function updateExeTree() {
 	log.info('Updating the execution tree');
-	choosen = Ext.get('list_id').getValue(false);
-	nameEl = Ext.get('list_name');
 	apiCall({
 		// TODO: Wrong, there should be a call to ExecutionSuite
 		//       entity/controller.
 		method: apiMethods.main.method,
 		params: {
-			'ex': choosen
+			'ex': jQuery('#list_id').val()
 		},
-		success: function(responseObject) {
-			rs = Ext.decode(responseObject.responseText);
-			rs['prefix'] = 'management_execution_suite_tree';
-			execTree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
+		success: function(data) {
+			data['prefix'] = 'management_execution_suite_tree';
+			execTree.setRootNode(new Ext.tree.AsyncTreeNode(data));
 			execTree.getLoader().load(execTree.getRootNode());
 			execTree.getRootNode().expand();
-			nameEl.dom.setAttribute("value", execTree.getRootNode().text);
+			jQuery('#list_name').val(execTree.getRootNode().text);
 		},
 		errorMessage: "Execution list cannot be reloaded"
 	});
@@ -810,12 +829,11 @@ function updateExe2Tree() {
 		//       entity/controller.
 		method: apiMethods.main.method,
 		params: {
-			'ex': choosen
+			'ex': jQuery('#list2_id').val()
 		},
-		success: function(responseObject) {
-			rs = Ext.decode(responseObject.responseText);
-			rs['prefix'] = 'execution_test_cases_tree';
-			exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(rs));
+		success: function(data) {
+			data['prefix'] = 'execution_test_cases_tree';
+			exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(data));
 			exec2Tree.getLoader().load(exec2Tree.getRootNode());
 			exec2Tree.getRootNode().expand();
 			onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());

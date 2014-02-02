@@ -1,38 +1,7 @@
 
-var context = 'redcase/';
-
 var log = LogFactory.getLog('redcase');
 
-var apiMethods = {
-	main: {
-		method: 'index'
-	},
-	testSuite: {
-		method: 'test_suite_manager',
-		actions: {
-			create: 'create',
-			delete: 'delete',
-			moveTestSuite: 'move',
-			moveTestCase: 'move_test_case'
-		}
-	},
-	executionSuite: {
-		method: 'execution_suite_manager',
-		actions: {
-			create: 'create',
-			delete: 'delete',
-			rename: 'rename',
-			moveTestSuite: 'move',
-			moveTestCase: 'move_test_case'
-		}
-	},
-	legacy: {
-		executionSuite: {
-			deleteTestCase: 'delete_test_case_from_execution_suite'
-		}
-	}
-
-};
+var context = 'redcase/';
 
 var jsProjectId;
 var jsCanEdit;
@@ -41,9 +10,6 @@ var jsCopyToMenuItems = [];
 var suiteTree;
 var execTree;
 var exec2Tree;
-
-var editorSuite;
-var editorExec;
 
 var currentNode;
 var xCurrentNode;
@@ -66,10 +32,10 @@ var xContextMenu = new Ext.menu.Menu({
 						'OK': function() {
 							var name = jQuery('#redcase-dialog-value').val();
 							log.debug('User confirmed execution suite creation');
-							apiCall({
-								method: apiMethods.executionSuite.method,
+							Redcase.apiCall({
+								method: Redcase.methods.executionSuite.method,
 								params: {
-									'do': apiMethods.executionSuite.actions.create,
+									'do': Redcase.methods.executionSuite.actions.create,
 									'name': name,
 									'parent_id': xCurrentNode.attributes.suite_id
 								},
@@ -105,9 +71,9 @@ var xContextMenu = new Ext.menu.Menu({
 				parentNode = xCurrentNode.parentNode;
 				if (xCurrentNode.isLeaf()) {
 					log.debug('Current node is a leaf: ' + xCurrentNode.attributes.issue_id);
-					apiCall({
+					Redcase.apiCall({
 						httpMethod: 'POST',
-						method: apiMethods.legacy.executionSuite.deleteTestCase,
+						method: Redcase.methods.legacy.executionSuite.deleteTestCase,
 						params: {
 							'issue_id': xCurrentNode.attributes.issue_id,
 							'suite_id': parentNode.attributes.suite_id
@@ -122,11 +88,11 @@ var xContextMenu = new Ext.menu.Menu({
 				else {
 					log.debug('Current node is NOT a leaf');
 					log.debug('Current node is a leaf: ' + xCurrentNode.attributes.suite_id);
-					apiCall({
+					Redcase.apiCall({
 						httpMethod: 'POST',
-						method: apiMethods.executionSuite.method,
+						method: Redcase.methods.executionSuite.method,
 						params: {
-							'do': apiMethods.executionSuite.actions.delete,
+							'do': Redcase.methods.executionSuite.actions.delete,
 							'suite_id': xCurrentNode.attributes.suite_id
 						},
 						success: function() {
@@ -156,10 +122,10 @@ var xContextMenu = new Ext.menu.Menu({
 						'OK': function() {
 							var name = jQuery('#redcase-dialog-value').val();
 							log.debug('User confirmed execution suite name change');
-							apiCall({
-								method: apiMethods.executionSuite.method,
+							Redcase.apiCall({
+								method: Redcase.methods.executionSuite.method,
 								params: {
-									'do': apiMethods.executionSuite.actions.rename,
+									'do': Redcase.methods.executionSuite.actions.rename,
 									'new_name': name,
 									'exec_suite_id': xCurrentNode.attributes.suite_id
 								},
@@ -291,10 +257,10 @@ function buildTestSuiteTree(params) {
 			log.info('Before dropping a node');
 			if (dropEvent.dropNode.isLeaf()) {
 				log.info('Dropping node is a leaf');
-				apiCall({
-					method: apiMethods.testSuite.method,
+				Redcase.apiCall({
+					method: Redcase.methods.testSuite.method,
 					params: {
-						'do': apiMethods.testSuite.actions.moveTestCase,
+						'do': Redcase.methods.testSuite.actions.moveTestCase,
 						'object_id': dropEvent.dropNode.attributes.issue_id,
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
@@ -308,10 +274,10 @@ function buildTestSuiteTree(params) {
 				});
 			} else {
 				log.info('Dropping node is NOT a leaf');
-				apiCall({
-					method: apiMethods.testSuite.method,
+				Redcase.apiCall({
+					method: Redcase.methods.testSuite.method,
 					params: {
-						'do': apiMethods.testSuite.actions.moveTestSuite,
+						'do': Redcase.methods.testSuite.actions.moveTestSuite,
 						'object_id': dropEvent.dropNode.attributes.suite_id,
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
@@ -346,6 +312,7 @@ function buildExecutionSuiteTree(params) {
 			if (node.isLeaf()) {
 				log.debug('Node is a leaf');
 				xContextMenu.items.get(0).setVisible(false);
+				xContextMenu.items.get(2).setVisible(false);
 			} else {
 				log.debug('Node is NOT a leaf');
 				xContextMenu.items.get(0).setVisible(true);
@@ -363,7 +330,7 @@ function buildExecutionSuiteTree(params) {
 						dropEvent.cancel = true;
 						return;
 					}
-					apiCall({
+					Redcase.apiCall({
 						method: 'copy_test_case_to_exec',
 						params: {
 							'object_id': dropEvent.dropNode.attributes.issue_id,
@@ -378,10 +345,10 @@ function buildExecutionSuiteTree(params) {
 					});
 				} else {
 					log.info('Node is NOT a leaf');
-					apiCall({
-						method: apiMethods.executionSuite.method,
+					Redcase.apiCall({
+						method: Redcase.methods.executionSuite.method,
 						params: {
-							'do': apiMethods.executionSuite.actions.moveTestCase,
+							'do': Redcase.methods.executionSuite.actions.moveTestCase,
 							'object_id': dropEvent.dropNode.attributes.issue_id,
 							'owner_id': dropEvent.dropNode.parentNode.attributes.suite_id,
 							'parent_id': dropEvent.target.id
@@ -397,10 +364,10 @@ function buildExecutionSuiteTree(params) {
 				}
 			} else {
 				log.info('Node is NOT a leaf');
-				apiCall({
-					method: apiMethods.executionSuite.method,
+				Redcase.apiCall({
+					method: Redcase.methods.executionSuite.method,
 					params: {
-						'do': apiMethods.executionSuite.actions.moveTestSuite,
+						'do': Redcase.methods.executionSuite.actions.moveTestSuite,
 						'object_id': dropEvent.dropNode.attributes.suite_id,
 						'parent_id': dropEvent.target.attributes.suite_id
 					},
@@ -453,45 +420,13 @@ function getTree(url, root, tagId, draggable, pre) {
 	return tree;
 }
 
-function apiCall(parameters) {
-	var url = context + parameters.method
-	log.info('API call: ' + url);
-	var params = parameters.params;
-	params.format = 'json';
-	if (!params.project_id) {
-		params.project_id = jsProjectId;
-	}
-	Element.show('ajax-indicator');
-	jQuery.ajax(url, {
-		type: (parameters.htppMethod ? parameters.httpMethod : 'GET'),
-		data: params,
-		success: function(data, textStatus, jqXHR) {
-			log.debug('Success');
-			try {
-				parameters.success(data, textStatus, jqXHR);
-			} catch (error) {
-				log.debug(error.message);
-			}
-			log.debug('Done');
-		},
-		error: function() {
-			Ext.Msg.alert('Failure', parameters.errorMessage);
-		},
-		complete: function() {
-			log.debug('Complete');
-			Element.hide('ajax-indicator');
-			log.debug('Done');
-		}
-	});
-}
-
 function onCopyTo(b, e) {
 	log.info('Copying a node');
 	if (!currentNode.isLeaf()) {
 		return;
 	}
 	parentNode = currentNode.parentNode;
-	apiCall({
+	Redcase.apiCall({
 		method: 'reassign_test_case',
 		params: {
 			'id': currentNode.attributes.issue_id,
@@ -561,7 +496,7 @@ function execute() {
 	version = Ext.get('version');
 	comment = Ext.get('exec-comment');
 	conn = new Ext.data.Connection();
-	apiCall({
+	Redcase.apiCall({
 		httpMethod: 'POST',
 		method: 'execute',
 		params: {
@@ -594,7 +529,7 @@ function onExecSelectionChange(model, node) {
 	r.setDisplayed('none');
 	if (node.isLeaf()) {
 		log.info('Node is a leaf');
-		apiCall({
+		Redcase.apiCall({
 			method: 'get_test_case',
 			params: {
 				"object_id": node.attributes.issue_id
@@ -611,7 +546,7 @@ function onExecSelectionChange(model, node) {
 					value: 'Passed'
 				}, false);
 				version = Ext.get('version');
-				apiCall({
+				Redcase.apiCall({
 					method: 'get_executions',
 					params: {
 						"issue_id": node.attributes.issue_id,
@@ -627,7 +562,7 @@ function onExecSelectionChange(model, node) {
 					},
 					errorMessage: "Execution failed"
 				});
-				apiCall({
+				Redcase.apiCall({
 					method: 'get_attachment_urls',
 					params: {
 						"issue_id": node.attributes.issue_id
@@ -707,10 +642,10 @@ function initSuiteContextMenu() {
 						'OK': function() {
 							var name = jQuery('#redcase-dialog-value').val();
 							log.debug('User confirmed test suite creation');
-							apiCall({
-								method: apiMethods.testSuite.method,
+							Redcase.apiCall({
+								method: Redcase.methods.testSuite.method,
 								params: {
-									'do': apiMethods.testSuite.actions.create,
+									'do': Redcase.methods.testSuite.actions.create,
 									'name': name,
 									'parent_id': currentNode.attributes.suite_id
 								},
@@ -746,7 +681,7 @@ function initSuiteContextMenu() {
 				parentNode = currentNode.parentNode;
 				if (currentNode.isLeaf()) {
 					log.debug('Node is a leaf');
-					apiCall({
+					Redcase.apiCall({
 						httpMethod: 'POST',
 						// TODO: Fix it, most likely broken!
 						method: 'test_case_to_obsolete',
@@ -761,11 +696,11 @@ function initSuiteContextMenu() {
 					});
 				} else {
 					log.debug('Node is NOT a leaf');
-					apiCall({
+					Redcase.apiCall({
 						httpMethod: 'POST',
-						method: apiMethods.testSuite.method,
+						method: Redcase.methods.testSuite.method,
 						params: {
-							'do': apiMethods.testSuite.actions.delete,
+							'do': Redcase.methods.testSuite.actions.delete,
 							'test_suite_id': currentNode.attributes.suite_id
 						},
 						success: function() {
@@ -804,10 +739,10 @@ function initSuiteContextMenu() {
 var managementTab = {
 	updateTree: function() {
 		log.info('Updating the execution tree');
-		apiCall({
+		Redcase.apiCall({
 			// TODO: Wrong, there should be a call to ExecutionSuite
 			//       entity/controller.
-			method: apiMethods.main.method,
+			method: Redcase.methods.main.method,
 			params: {
 				'ex': jQuery('#list_id').val()
 			},
@@ -821,16 +756,16 @@ var managementTab = {
 			errorMessage: "Execution list cannot be reloaded"
 		});
 	}
-}
+};
 
 var executionTab = {
 	updateTree: function() {
 		log.info('Updating the execution tree on Execution tab');
 		choosen = Ext.get('list2_id').getValue(false);
-		apiCall({
+		Redcase.apiCall({
 			// TODO: Wrong, there should be a call to ExecutionSuite
 			//       entity/controller.
-			method: apiMethods.main.method,
+			method: Redcase.methods.main.method,
 			params: {
 				'ex': jQuery('#list2_id').val()
 			},

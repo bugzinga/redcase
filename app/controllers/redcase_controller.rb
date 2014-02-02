@@ -264,7 +264,7 @@ class RedcaseController < ApplicationController
   def execute
     version = params[:version].blank? ? nil : Version.find_by_name_and_project_id(params[:version], params[:project_id])
     comment = params[:comment].blank? ? nil : params[:comment]
-    test_case = TestCase.find_by_issue_id(params[:id])
+    test_case = TestCase.find_by_issue_id(params[:issue_id])
     result = ExecutionResult.find_by_name(params[:result])
     env = ExecutionEnvironment.find(params[:envs])
     ExecutionJournal.create(:version => version, :comment => comment, :test_case => test_case, :result => result, :executor => User.current, :environment => env)
@@ -274,7 +274,7 @@ class RedcaseController < ApplicationController
   end
 
   def get_executions
-    test_case = TestCase.find_by_issue_id(params[:id])
+    test_case = TestCase.find_by_issue_id(params[:issue_id])
     respond_to do |format|
       format.json { render :json =>  ExecutionJournal.find(:all, :order => 'created_on desc', :conditions => 'test_case_id = ' + test_case.id.to_s).collect { |j| execution_journal_to_json(j) } }
     end

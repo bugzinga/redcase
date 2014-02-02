@@ -53,7 +53,7 @@ class RedcaseController < ApplicationController
     obsoleted_issues.each { |issue|
       if not issue.test_case.nil?
         if not issue.test_case.test_suite.name == ".Obsolete"
-          issue.test_case.test_suite = test_suite_obsolete(Project.find(params[:project_id]))
+          issue.test_case.test_suite = test_suite_obsolete(@project)
           issue.test_case.save();
         end
         if not issue.test_case.execution_suites.nil?
@@ -231,7 +231,7 @@ class RedcaseController < ApplicationController
   end
 
   def test_case_to_obsolete
-    tc = TestCase.find(:first, :conditions => 'issue_id = ' + params[:id])
+    tc = TestCase.find(:first, :conditions => 'issue_id = ' + params[:issue_id])
     tc.test_suite = test_suite_obsolete(Project.find(params[:project_id]))
     tc.save
     respond_to do |format|

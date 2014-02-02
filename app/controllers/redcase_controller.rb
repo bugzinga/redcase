@@ -125,7 +125,7 @@ class RedcaseController < ApplicationController
         format.json { render :json => test_suite_to_json(@created) }
       end
     elsif params[:do] == 'delete' then
-      TestSuite.destroy(params[:id])
+      TestSuite.destroy(params[:test_suite_id])
       redirect_to :action => "index", :params => { "project_id" => params[:project_id] }
     elsif params[:do] == 'move' then
       x = TestSuite.find(params[:object_id])

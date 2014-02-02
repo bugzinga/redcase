@@ -26,7 +26,7 @@ var xContextMenu = new Ext.menu.Menu({
 				//       after clicking OK, so the dialog with keep showing
 				//       which is not expected.
 				jQuery('#redcase-dialog').dialog({
-					title: 'Creating test suite',
+					title: 'Creating execution suite',
 					modal: true,
 					resizable: false,
 					buttons: {
@@ -686,22 +686,42 @@ function initSuiteContextMenu() {
 			text: 'Add suite',
 			handler: function(b, e) {
 				debug('Adding a new test suite');
-				Ext.Msg.prompt('Creating test suite', 'Please enter test suite name:', function(btn, text) {
-					if (btn == 'ok') {
-						debug('User confirmed');
-						apiCall({
-							method: 'test_suite_manager',
-							params: {
-								'do': 'create',
-								'name': text,
-								'parent_id': currentNode.attributes.suite_id
-							},
-							success: function() {
-								currentNode.attributes.children = null;
-								currentNode.reload();
-								currentNode.expand();
-							},
-							errorMessage: "Test suite '" + text + "' can't be created"
+				// TODO: Right now it's not handled if any error happened
+				//       after clicking OK, so the dialog with keep showing
+				//       which is not expected.
+				jQuery('#redcase-dialog').dialog({
+					title: 'Creating test suite',
+					modal: true,
+					resizable: false,
+					buttons: {
+						'OK': function() {
+							var name = jQuery('#redcase-dialog-value').val();
+							debug('User confirmed test suite creation');
+							apiCall({
+								method: 'test_suite_manager',
+								params: {
+									'do': 'create',
+									'name': name,
+									'parent_id': currentNode.attributes.suite_id
+								},
+								success: function() {
+									currentNode.attributes.children = null;
+									currentNode.reload();
+									currentNode.expand();
+									jQuery('#redcase-dialog').dialog('close');
+								},
+								errorMessage: "Test suite '" + name + "' can't be created"
+							});
+						}
+					},
+					open: function() {
+						var dialog = jQuery(this);
+						dialog.keydown(function(event) {
+							debug('Key pressed: ' + event.keyCode);
+							if (event.keyCode === 13) {
+								event.preventDefault();
+								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
+							}
 						});
 					}
 				});
@@ -735,7 +755,7 @@ function initSuiteContextMenu() {
 						method: 'test_suite_manager',
 						params: {
 							'do': 'delete',
-							'id': currentNode.attributes.suite_id
+							'test_suite_id': currentNode.attributes.suite_id
 						},
 						success: function() {
 							parentNode.attributes.children = null;

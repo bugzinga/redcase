@@ -226,7 +226,6 @@ Ext.override(Ext.tree.TreeNodeUI, {
 function buildTestSuiteTree(params) {
 	log('Building the test suite tree');
 	suiteTree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
-	getEditorSuite();
 	if (jsCanEdit) {
 		log('User is allowed to edit this tree');
 		initSuiteContextMenu();
@@ -294,7 +293,6 @@ function buildTestSuiteTree(params) {
 function buildExecutionSuiteTree(params) {
 	log('Building the execution suite tree');
 	execTree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
-	getEditorExec();
 	if (jsCanEdit) {
 		log('User is allowed to edit');
 		execTree.on('contextmenu', function(node) {
@@ -471,59 +469,6 @@ function onCopyTo(b, e) {
 			'real_project_id': jsProjectId
 		},
 		errorMessage: "Test case '" + currentNode.text + "' can't be copied"
-	});
-}
-
-function getEditorSuite() {
-	log('(?) getEditorSuite(): ' + suiteTree);
-	// TODO: Fix me, most likely broken!
-	editorSuite = new Ext.tree.TreeEditor(suiteTree);
-	/*
-	editorSuite.on('beforecomplete', function(editor, newValue, originalValue) {
-		debug('Renaming suite');
-		apiCall({
-			method: 'test_suite_manager',
-			params: {
-				'do': 'rename',
-				"test_suite_id": editor.editNode.attributes.suite_id,
-				"new_name": newValue
-			},
-			success: function() {
-				editor.editNode.parentNode.attributes.children = null;
-				editor.editNode.parentNode.reload();
-				editor.editNode.parentNode.expand();
-			},
-			errorMessage: "Test suite '" + originalValue + "' can't be renamed"
-		});
-		editorSuite.cancelEdit(false);
-	});
-	*/
-}
-
-function getEditorExec() {
-	log('(?) getEditorExec()');
-	editorExec = new Ext.tree.TreeEditor(execTree);
-	editorExec.on('beforecomplete', function(editor, newValue, originalValue) {
-		apiCall({
-			method: 'execution_suite_manager',
-			params: {
-				'do': 'rename',
-				"exec_suite_id": editor.editNode.attributes.suite_id,
-				"new_name": newValue
-			},
-			success: function() {
-				if (exec2Tree) {
-					exec2Tree.root.attributes.children = null;
-					exec2Tree.root.reload();
-					exec2Tree.root.expand();
-				}
-				editor.editNode.parentNode.attributes.children = null;
-				editor.editNode.parentNode.reload();
-				editor.editNode.parentNode.expand();
-			},
-			errorMessage: "Execution suite '" + originalValue + "' can't be renamed"
-		});
-		editorExec.cancelEdit(false);
 	});
 }
 

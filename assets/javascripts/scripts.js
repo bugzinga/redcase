@@ -27,6 +27,12 @@ var apiMethods = {
 			moveTestSuite: 'move',
 			moveTestCase: 'move_test_case'
 		}
+	},
+	
+	legacy: {
+		executionSuite: {
+			deleteTestCase: 'delete_test_case_from_execution_suite'
+		}
 	}
 
 };
@@ -109,10 +115,9 @@ var xContextMenu = new Ext.menu.Menu({
 					log.debug('Current node is a leaf: ' + xCurrentNode.attributes.issue_id);
 					apiCall({
 						httpMethod: 'POST',
-						// TODO: Fix this, most likely broken!
-						method: 'delete_test_case_from_execution_suite',
+						method: apiMethods.legacy.executionSuite.deleteTestCase,
 						params: {
-							'id': xCurrentNode.attributes.issue_id,
+							'issue_id': xCurrentNode.attributes.issue_id,
 							'suite_id': parentNode.attributes.suite_id
 						},
 						success: function() {

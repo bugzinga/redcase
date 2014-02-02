@@ -10,5 +10,6 @@ match 'projects/:id/redcase/get_attachment_urls', :to => 'redcase#get_attachment
 match 'projects/:id/redcase/execute', :to => 'redcase#execute'
 match 'projects/:id/redcase/test_case_to_obsolete', :to => 'redcase#test_case_to_obsolete'
 match 'projects/:id/redcase/get_advanced_execution', :to => 'redcase#get_advanced_execution'
+match 'projects/:id/redcase/delete_test_case_from_execution_suite', :to => 'redcase#delete_test_case_from_execution_suite'
 
 match ':controller(/:action(/:id))(.:format)'

@@ -801,43 +801,47 @@ function initSuiteContextMenu() {
 	});
 }
 
-function updateExeTree() {
-	log.info('Updating the execution tree');
-	apiCall({
-		// TODO: Wrong, there should be a call to ExecutionSuite
-		//       entity/controller.
-		method: apiMethods.main.method,
-		params: {
-			'ex': jQuery('#list_id').val()
-		},
-		success: function(data) {
-			data['prefix'] = 'management_execution_suite_tree';
-			execTree.setRootNode(new Ext.tree.AsyncTreeNode(data));
-			execTree.getLoader().load(execTree.getRootNode());
-			execTree.getRootNode().expand();
-			jQuery('#list_name').val(execTree.getRootNode().text);
-		},
-		errorMessage: "Execution list cannot be reloaded"
-	});
+var managementTab = {
+	updateTree: function() {
+		log.info('Updating the execution tree');
+		apiCall({
+			// TODO: Wrong, there should be a call to ExecutionSuite
+			//       entity/controller.
+			method: apiMethods.main.method,
+			params: {
+				'ex': jQuery('#list_id').val()
+			},
+			success: function(data) {
+				data['prefix'] = 'management_execution_suite_tree';
+				execTree.setRootNode(new Ext.tree.AsyncTreeNode(data));
+				execTree.getLoader().load(execTree.getRootNode());
+				execTree.getRootNode().expand();
+				jQuery('#list_name').val(execTree.getRootNode().text);
+			},
+			errorMessage: "Execution list cannot be reloaded"
+		});
+	}
 }
 
-function updateExe2Tree() {
-	log.info('Updating the execution tree on Execution tab');
-	choosen = Ext.get('list2_id').getValue(false);
-	apiCall({
-		// TODO: Wrong, there should be a call to ExecutionSuite
-		//       entity/controller.
-		method: apiMethods.main.method,
-		params: {
-			'ex': jQuery('#list2_id').val()
-		},
-		success: function(data) {
-			data['prefix'] = 'execution_test_cases_tree';
-			exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(data));
-			exec2Tree.getLoader().load(exec2Tree.getRootNode());
-			exec2Tree.getRootNode().expand();
-			onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
-		},
-		errorMessage: "Execution list cannot be reloaded"
-	});
-}
+var executionTab = {
+	updateTree: function() {
+		log.info('Updating the execution tree on Execution tab');
+		choosen = Ext.get('list2_id').getValue(false);
+		apiCall({
+			// TODO: Wrong, there should be a call to ExecutionSuite
+			//       entity/controller.
+			method: apiMethods.main.method,
+			params: {
+				'ex': jQuery('#list2_id').val()
+			},
+			success: function(data) {
+				data['prefix'] = 'execution_test_cases_tree';
+				exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(data));
+				exec2Tree.getLoader().load(exec2Tree.getRootNode());
+				exec2Tree.getRootNode().expand();
+				onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
+			},
+			errorMessage: "Execution list cannot be reloaded"
+		});
+	}
+};

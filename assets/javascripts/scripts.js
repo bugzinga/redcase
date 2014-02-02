@@ -809,7 +809,7 @@ function initSuiteContextMenu() {
 				}
 				parentNode = currentNode.parentNode;
 				if (currentNode.isLeaf()) {
-					window.open('issues/' + currentNode.attributes.issue_id, 'test')
+					window.open('/issues/' + currentNode.attributes.issue_id, 'test')
 				}
 			}
 		}

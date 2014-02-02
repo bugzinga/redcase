@@ -1,6 +1,8 @@
 
 var context = 'redcase/';
 
+var log = LogFactory.getLog('redcase');
+
 var apiMethods = {
 	
 	main: {
@@ -49,7 +51,7 @@ var xContextMenu = new Ext.menu.Menu({
 	items: [{
 			text: 'Add suite',
 			handler: function(b, e) {
-				debug('Trying to add new execution suite');
+				log.debug('Trying to add new execution suite');
 				// TODO: Right now it's not handled if any error happened
 				//       after clicking OK, so the dialog with keep showing
 				//       which is not expected.
@@ -60,7 +62,7 @@ var xContextMenu = new Ext.menu.Menu({
 					buttons: {
 						'OK': function() {
 							var name = jQuery('#redcase-dialog-value').val();
-							debug('User confirmed execution suite creation');
+							log.debug('User confirmed execution suite creation');
 							apiCall({
 								method: apiMethods.executionSuite.method,
 								params: {
@@ -86,7 +88,7 @@ var xContextMenu = new Ext.menu.Menu({
 					open: function() {
 						var dialog = jQuery(this);
 						dialog.keydown(function(event) {
-							debug('Key pressed: ' + event.keyCode);
+							log.debug('Key pressed: ' + event.keyCode);
 							if (event.keyCode === 13) {
 								event.preventDefault();
 								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
@@ -98,13 +100,13 @@ var xContextMenu = new Ext.menu.Menu({
 		}, {
 			text: 'Delete',
 			handler: function() {
-				debug('Trying to remove an execution suite');
+				log.debug('Trying to remove an execution suite');
 				if (xCurrentNode.parentNode == null) {
 					return;
 				}
 				parentNode = xCurrentNode.parentNode;
 				if (xCurrentNode.isLeaf()) {
-					debug('Current node is a leaf: ' + xCurrentNode.attributes.issue_id);
+					log.debug('Current node is a leaf: ' + xCurrentNode.attributes.issue_id);
 					apiCall({
 						httpMethod: 'POST',
 						// TODO: Fix this, most likely broken!
@@ -126,8 +128,8 @@ var xContextMenu = new Ext.menu.Menu({
 					});
 				}
 				else {
-					debug('Current node is NOT a leaf');
-					debug('Current node is a leaf: ' + xCurrentNode.attributes.suite_id);
+					log.debug('Current node is NOT a leaf');
+					log.debug('Current node is a leaf: ' + xCurrentNode.attributes.suite_id);
 					apiCall({
 						httpMethod: 'POST',
 						method: apiMethods.executionSuite.method,
@@ -159,7 +161,7 @@ Ext.chart.Chart.CHART_URL = '/plugin_assets/redcase/javascripts/ext-3.1.1/resour
 
 Ext.override(Ext.tree.TreeNodeUI, {
 	renderElements: function(n, a, targetNode, bulkRender) {
-		log('Rendering elements of the hacked ExtJS tree');
+		log.info('Rendering elements of the hacked ExtJS tree');
 		tree = n.getOwnerTree();
 		root = tree.getRootNode();
 		var color;
@@ -224,13 +226,13 @@ Ext.override(Ext.tree.TreeNodeUI, {
 });
 
 function buildTestSuiteTree(params) {
-	log('Building the test suite tree');
+	log.info('Building the test suite tree');
 	suiteTree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	if (jsCanEdit) {
-		log('User is allowed to edit this tree');
+		log.info('User is allowed to edit this tree');
 		initSuiteContextMenu();
 		suiteTree.on('contextmenu', function(node) {
-			debug('Context menu is opening');
+			log.debug('Context menu is opening');
 			currentNode = node;
 			node.select();
 			contextMenu.items.get(0).setVisible(!node.isLeaf());
@@ -244,9 +246,9 @@ function buildTestSuiteTree(params) {
 			contextMenu.show(node.ui.getAnchor());
 		});
 		suiteTree.on('beforenodedrop', function(dropEvent) {
-			log('Before dropping a node');
+			log.info('Before dropping a node');
 			if (dropEvent.dropNode.isLeaf()) {
-				log('Dropping node is a leaf');
+				log.info('Dropping node is a leaf');
 				apiCall({
 					method: apiMethods.testSuite.method,
 					params: {
@@ -263,7 +265,7 @@ function buildTestSuiteTree(params) {
 					errorMessage: "Test case '" + dropEvent.dropNode.text + "' can't be moved"
 				});
 			} else {
-				log('Dropping node is NOT a leaf');
+				log.info('Dropping node is NOT a leaf');
 				apiCall({
 					method: apiMethods.testSuite.method,
 					params: {
@@ -283,7 +285,7 @@ function buildTestSuiteTree(params) {
 			dropEvent.cancel = true;
 		});
 		suiteTree.on('nodedragover', function(event) {
-			log('Dragging over a node');
+			log.info('Dragging over a node');
 			event.cancel = (event.target.getOwnerTree() != event.dropNode.getOwnerTree())
 				|| (event.target == event.dropNode.parentNode);
 		});
@@ -291,30 +293,30 @@ function buildTestSuiteTree(params) {
 }
 
 function buildExecutionSuiteTree(params) {
-	log('Building the execution suite tree');
+	log.info('Building the execution suite tree');
 	execTree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	if (jsCanEdit) {
-		log('User is allowed to edit');
+		log.info('User is allowed to edit');
 		execTree.on('contextmenu', function(node) {
-			debug('Context menu is opening');
+			log.debug('Context menu is opening');
 			xCurrentNode = node;
 			node.select();
 			if (node.isLeaf()) {
-				debug('Node is a leaf');
+				log.debug('Node is a leaf');
 				xContextMenu.items.get(0).setVisible(false);
 			} else {
-				debug('Node is NOT a leaf');
+				log.debug('Node is NOT a leaf');
 				xContextMenu.items.get(0).setVisible(true);
 			}
 			xContextMenu.items.get(1).setVisible(node.parentNode != null);
 			xContextMenu.show(node.ui.getAnchor());
 		});
 		execTree.on('beforenodedrop', function(dropEvent) {
-			log('Before dropping a node');
+			log.info('Before dropping a node');
 			if (dropEvent.dropNode.isLeaf()) {
-				log('Node is a leaf');
+				log.info('Node is a leaf');
 				if (dropEvent.target.getOwnerTree() != dropEvent.dropNode.getOwnerTree()) {
-					log('Source and target tree are different');
+					log.info('Source and target tree are different');
 					if (dropEvent.dropNode.attributes.status.issue_status.name != "In Progress") {
 						dropEvent.cancel = true;
 						return;
@@ -338,7 +340,7 @@ function buildExecutionSuiteTree(params) {
 						errorMessage: "Test case '" + dropEvent.dropNode.text + "' can't be added"
 					});
 				} else {
-					log('Node is NOT a leaf');
+					log.info('Node is NOT a leaf');
 					apiCall({
 						method: apiMethods.executionSuite.method,
 						params: {
@@ -362,7 +364,7 @@ function buildExecutionSuiteTree(params) {
 					});
 				}
 			} else {
-				log('Node is NOT a leaf');
+				log.info('Node is NOT a leaf');
 				apiCall({
 					method: apiMethods.executionSuite.method,
 					params: {
@@ -387,7 +389,7 @@ function buildExecutionSuiteTree(params) {
 			dropEvent.cancel = true;
 		});
 		execTree.on('nodedragover', function(event) {
-			log('Dragging over a node');
+			log.info('Dragging over a node');
 			event.cancel = ((event.target.getOwnerTree() != event.dropNode.getOwnerTree()) && !event.dropNode.isLeaf())
 				|| (event.target == event.dropNode.parentNode);
 		});
@@ -395,13 +397,13 @@ function buildExecutionSuiteTree(params) {
 }
 
 function buildExecutionTree(params) {
-	log('Building the execution tree');
+	log.info('Building the execution tree');
 	exec2Tree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
 	exec2Tree.getSelectionModel().on('selectionchange', onExecSelectionChange);
 }
 
 function getTree(url, root, tagId, draggable, pre) {
-	log('Building a tree');
+	log.info('Building a tree');
 	tree = new Ext.tree.TreePanel({
 		useArrows: false,
 		autoScroll: true,
@@ -426,7 +428,7 @@ function getTree(url, root, tagId, draggable, pre) {
 
 function apiCall(parameters) {
 	var url = context + parameters.method
-	log('API call: ' + url);
+	log.info('API call: ' + url);
 	var params = parameters.params;
 	params.format = 'json';
 	if (!params.project_id) {
@@ -437,27 +439,27 @@ function apiCall(parameters) {
 		type: (parameters.htppMethod ? parameters.httpMethod : 'GET'),
 		data: params,
 		success: function (data, textStatus, jqXHR) {
-			debug('Success');
+			log.debug('Success');
 			try {
 				parameters.success(data, textStatus, jqXHR);
 			} catch (error) {
-				debug(error.message);
+				log.debug(error.message);
 			}
-			debug('Done');
+			log.debug('Done');
 		},
 		error: function(){
 			Ext.Msg.alert('Failure', parameters.errorMessage);
 		},
 		complete: function() {
-			debug('Complete');
+			log.debug('Complete');
 			Element.hide('ajax-indicator');
-			debug('Done');
+			log.debug('Done');
 		}
 	});
 }
 
 function onCopyTo(b, e) {
-	log('Copying a node');
+	log.info('Copying a node');
 	if (!currentNode.isLeaf()) {
 		return;
 	}
@@ -475,7 +477,7 @@ function onCopyTo(b, e) {
 }
 
 function findNext(node) {
-	log('Finding the next node');
+	log.info('Finding the next node');
 	next = node.nextSibling;
 	if (!next) {
 		return node.parentNode ? findNext(node.parentNode) : null;
@@ -499,7 +501,7 @@ function findNext(node) {
 }
 
 function findNested(node) {
-	log('Finding the nested node');
+	log.info('Finding the nested node');
 	next = node;
 	if (!next) {
 		return node.parentNode
@@ -525,7 +527,7 @@ function findNested(node) {
 }
 
 function execute() {
-	log('Executing a test case');
+	log.info('Executing a test case');
 	node = exec2Tree.getSelectionModel().getSelectedNode();
 	result = Ext.get('results');
 	envs = Ext.get('environments');
@@ -558,13 +560,13 @@ function execute() {
 }
 
 function onExecSelectionChange(model, node) {
-	log('Execution tree selection changed');
+	log.info('Execution tree selection changed');
 	edit = Ext.get('test-case-edit');
 	edit.setVisible(false);
 	r = Ext.get('all-results-d');
 	r.setDisplayed('none');
 	if (node.isLeaf()) {
-		log('Node is a leaf');
+		log.info('Node is a leaf');
 		apiCall({
 			method: 'get_test_case',
 			params: {
@@ -623,7 +625,7 @@ function onExecSelectionChange(model, node) {
 }
 
 function getHistory(rs) {
-	log('Showing test case history');
+	log.info('Showing test case history');
 	unique = {}
 	txt = "<table class='redcase-row' width='100%'>"
 	txt += "<tr style='font-weight: bold; background-color: #eeeeee'><td>date</td><td>result</td><td>comments</td><td>executor</td><td>environment</td><td>version</td></tr>";
@@ -662,11 +664,11 @@ function getHistory(rs) {
 }
 
 function initSuiteContextMenu() {
-	log('Test suite contect menu initialization');
+	log.info('Test suite contect menu initialization');
 	items = [{
 			text: 'Add suite',
 			handler: function(b, e) {
-				debug('Adding a new test suite');
+				log.debug('Adding a new test suite');
 				// TODO: Right now it's not handled if any error happened
 				//       after clicking OK, so the dialog with keep showing
 				//       which is not expected.
@@ -677,7 +679,7 @@ function initSuiteContextMenu() {
 					buttons: {
 						'OK': function() {
 							var name = jQuery('#redcase-dialog-value').val();
-							debug('User confirmed test suite creation');
+							log.debug('User confirmed test suite creation');
 							apiCall({
 								method: apiMethods.testSuite.method,
 								params: {
@@ -698,7 +700,7 @@ function initSuiteContextMenu() {
 					open: function() {
 						var dialog = jQuery(this);
 						dialog.keydown(function(event) {
-							debug('Key pressed: ' + event.keyCode);
+							log.debug('Key pressed: ' + event.keyCode);
 							if (event.keyCode === 13) {
 								event.preventDefault();
 								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
@@ -710,13 +712,13 @@ function initSuiteContextMenu() {
 		}, {
 			text: 'Delete',
 			handler: function() {
-				debug('Deleting a test suite');
+				log.debug('Deleting a test suite');
 				if (currentNode.parentNode == null) {
 					return;
 				}
 				parentNode = currentNode.parentNode;
 				if (currentNode.isLeaf()) {
-					debug('Node is a leaf');
+					log.debug('Node is a leaf');
 					apiCall({
 						httpMethod: 'POST',
 						// TODO: Fix it, most likely broken!
@@ -731,7 +733,7 @@ function initSuiteContextMenu() {
 						errorMessage: "Test case '" + currentNode.text + "' can't be deleted"
 					});
 				} else {
-					debug('Node is NOT a leaf');
+					log.debug('Node is NOT a leaf');
 					apiCall({
 						httpMethod: 'POST',
 						method: apiMethods.testSuite.method,
@@ -750,7 +752,7 @@ function initSuiteContextMenu() {
 		}, {
 			text: 'View',
 			handler: function() {
-				debug('Showing a test case as a Redmine issue');
+				log.debug('Showing a test case as a Redmine issue');
 				if (currentNode.parentNode == null) {
 					return;
 				}
@@ -773,7 +775,7 @@ function initSuiteContextMenu() {
 }
 
 function updateExeTree() {
-	log('Updating the execution tree');
+	log.info('Updating the execution tree');
 	choosen = Ext.get('list_id').getValue(false);
 	nameEl = Ext.get('list_name');
 	apiCall({
@@ -796,7 +798,7 @@ function updateExeTree() {
 }
 
 function updateExe2Tree() {
-	log('Updating the execution tree on Execution tab');
+	log.info('Updating the execution tree on Execution tab');
 	choosen = Ext.get('list2_id').getValue(false);
 	apiCall({
 		// TODO: Wrong, there should be a call to ExecutionSuite
@@ -815,30 +817,4 @@ function updateExe2Tree() {
 		},
 		errorMessage: "Execution list cannot be reloaded"
 	});
-}
-
-function log(parameters) {
-	var level = parameters.level || 'INFO';
-	while (level.length < 5) {
-		level += ' ';
-	}
-	while (level.length > 5) {
-		level = level.substring(0, level.length - 1);
-	}
-	var trace = function(message) {
-		return (level.indexOf('INFO') === 0)
-			? console.log(message)
-			: console.trace(message);
-	};
-	trace('[redcase] ' + level + ' > ' + (parameters.message || parameters));
-}
-
-function debug(parameters) {
-	if (!parameters.message) {
-		parameters = {
-			message: parameters
-		};
-	}
-	parameters.level = 'DEBUG';
-	log(parameters);
 }

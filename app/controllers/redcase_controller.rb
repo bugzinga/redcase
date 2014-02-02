@@ -480,6 +480,11 @@ class RedcaseController < ApplicationController
     render :partial => 'report_download_button'
   end
 
+
+  def api_request?
+    false
+  end
+
   private
 
   def find_project

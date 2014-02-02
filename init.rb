@@ -4,7 +4,6 @@ require 'issue_patch'
 require 'project_patch'
 require 'version_patch'
 require 'user_patch'
-require 'application_controller_patch'
 require 'redcase_override'
 
 Redmine::Plugin.register :redcase do
@@ -112,7 +111,6 @@ Redmine::Plugin.register :redcase do
     Project.send :include, ProjectPatch
     Version.send :include, VersionPatch
     User.send :include, UserPatch
-    ApplicationController.send :include, ApplicationControllerPatch
   end
   
 end

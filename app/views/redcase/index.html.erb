@@ -1,23 +1,23 @@
 
 <% content_for :header_tags do %>
 
-    <!-- ExtJS -->
-    <%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
-    <!-- Redmine -->
-    <%= stylesheet_link_tag 'application' %>
-    <!-- Redcase -->
-    <%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
+	<!-- ExtJS -->
+	<%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
+	<!-- Redmine -->
+	<%= stylesheet_link_tag 'application' %>
+	<!-- Redcase -->
+	<%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
 
-    <!-- Flash chart -->
-    <%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
-    <!-- ExtJS -->
-    <%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
-    <%= javascript_include_tag 'ext-3.1.1/ext-all', :plugin => 'redcase' %>
-    <!-- Prototype -->
-    <%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
-    <!-- Redcase -->
-    <%= javascript_include_tag 'scripts', :plugin => 'redcase' %>
-    
+	<!-- Flash chart -->
+	<%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
+	<!-- ExtJS -->
+	<%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
+	<%= javascript_include_tag 'ext-3.1.1/ext-all-debug', :plugin => 'redcase' %>
+	<!-- Prototype -->
+	<%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
+	<!-- Redcase -->
+	<%= javascript_include_tag 'scripts', :plugin => 'redcase' %>
+
 <% end %>
 
 <!--
@@ -30,46 +30,46 @@
 -->
 <script type="text/javascript">
 
-    jsProjectId = <%= @project.id %>;
-    jsCanEdit = <%= User.current.allowed_to?(:edit_test_cases, @project) != false %>;
-    
-    Ext.onReady(function()
-    {
-        // Collecting information about other projects (to copy test cases)...
-        <% for op in @other_projects %>
-            jsCopyToMenuItems.push({ id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo });
-        <% end %>
+	jsProjectId = <%= @project.id %>;
+	jsCanEdit = <%= User.current.allowed_to?(:edit_test_cases, @project) != false %>;
 
-        // Creating ExtJS tree for test suite and case management ("Management" tab)...
-        buildTestSuiteTree(
-        {
-            url       : '<%= get_url_for('index', @project.id) %>',
-            root      : <%= @root_json.to_json.html_safe %>,
-            tagId     : 'management_test_suite_tree_id',
-            draggable : true,
-            pre       : 'test-suite-tree'
-        });
+	Ext.onReady(function()
+	{
+		// Collecting information about other projects (to copy test cases)...
+<% for op in @other_projects %>
+			jsCopyToMenuItems.push({id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo});
+<% end %>
 
-        // Creating ExtJS tree for execution suite management ("Management" tab)...
-        buildExecutionSuiteTree(
-        {
-            url       : '<%= get_url_for('execlist', @project.id) %>',
-            root      : <%= @exec_json.to_json.html_safe %>,
-            tagId     : 'management_execution_suite_tree_id',
-            draggable : true,
-            pre       : 'management_execution_suite_tree'
-        });
+		// Creating ExtJS tree for test suite and case management ("Management" tab)...
+		buildTestSuiteTree(
+			{
+				url: '<%= get_url_for('index', @project.id) %>',
+				root: <%= @root_json.to_json.html_safe %>,
+				tagId: 'management_test_suite_tree_id',
+				draggable: true,
+				pre: 'test-suite-tree'
+			});
 
-        // Creating ExtJS tree for test casees execution ("Execution" tab)...
-        buildExecutionTree(
-        {
-            url       : '<%= get_url_for('execlist', @project.id) %>',
-            root      : <%= @exec_json.to_json.html_safe %>,
-            tagId     : 'execution_test_cases_tree_id',
-            draggable : false,
-            pre       : 'execution_test_cases_tree'
-        });
-    });
+		// Creating ExtJS tree for execution suite management ("Management" tab)...
+		buildExecutionSuiteTree(
+			{
+				url: '<%= get_url_for('execlist', @project.id) %>',
+				root: <%= @exec_json.to_json.html_safe %>,
+				tagId: 'management_execution_suite_tree_id',
+				draggable: true,
+				pre: 'management_execution_suite_tree'
+			});
+
+		// Creating ExtJS tree for test casees execution ("Execution" tab)...
+		buildExecutionTree(
+			{
+				url: '<%= get_url_for('execlist', @project.id) %>',
+				root: <%= @exec_json.to_json.html_safe %>,
+				tagId: 'execution_test_cases_tree_id',
+				draggable: false,
+				pre: 'execution_test_cases_tree'
+			});
+	});
 
 </script>
 
@@ -83,10 +83,15 @@
 </h2>
 
 <% if @version.nil? then %>
-    <div style="color: #bbbbbb; text-align: center">
-        (There is no <b>version</b> for this project. If you need to execute test cases please create some one...)
-    </div>
+	<div style="color: #bbbbbb; text-align: center">
+		(There is no <b>version</b> for this project. If you need to execute test cases please create some one...)
+	</div>
 <% end %>
 
 <!-- Creating plugin inner tabs -->
 <%= render_tabs get_plugin_tabs(@project) %>
+
+<div id="redcase-dialog" style="display: none">
+	<label for="name">Name:</label>
+	<input type="text" name="redcase-dialog-value" id="redcase-dialog-value" class="text ui-widget-content ui-corner-all">
+</div>

@@ -22,27 +22,46 @@ var xContextMenu = new Ext.menu.Menu({
 			text: 'Add suite',
 			handler: function(b, e) {
 				debug('Trying to add new execution suite');
-				Ext.Msg.prompt('Creating test suite', 'Please enter execution suite name:', function(btn, text) {
-					if (btn == 'ok') {
-						debug('User confirmed execution suite creation');
-						apiCall({
-							method: 'execution_suite_manager',
-							params: {
-								'do': 'create',
-								'name': text,
-								'parent_id': xCurrentNode.attributes.suite_id
-							},
-							success: function() {
-								if (exec2Tree) {
-									exec2Tree.root.attributes.children = null;
-									exec2Tree.root.reload();
-									exec2Tree.root.expand();
-								}
-								xCurrentNode.attributes.children = null;
-								xCurrentNode.reload();
-								xCurrentNode.expand();
-							},
-							errorMessage: "Execution suite '" + text + "' can't be created"
+				// TODO: Right now it's not handled if any error happened
+				//       after clicking OK, so the dialog with keep showing
+				//       which is not expected.
+				jQuery('#redcase-dialog').dialog({
+					title: 'Creating test suite',
+					modal: true,
+					resizable: false,
+					buttons: {
+						'OK': function() {
+							var name = jQuery('#redcase-dialog-value').val();
+							debug('User confirmed execution suite creation');
+							apiCall({
+								method: 'execution_suite_manager',
+								params: {
+									'do': 'create',
+									'name': name,
+									'parent_id': xCurrentNode.attributes.suite_id
+								},
+								success: function() {
+									if (exec2Tree) {
+										exec2Tree.root.attributes.children = null;
+										exec2Tree.root.reload();
+										exec2Tree.root.expand();
+									}
+									xCurrentNode.attributes.children = null;
+									xCurrentNode.reload();
+									xCurrentNode.expand();
+									jQuery('#redcase-dialog').dialog('close');
+								},
+								errorMessage: "Execution suite '" + name + "' can't be created"
+							});
+						}
+					},
+					open: function() {
+						var dialog = jQuery(this);
+						dialog.keydown(function(event) {
+							debug('Key pressed: ' + event.keyCode);
+							if (event.keyCode === 13) {
+								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').trigger('click');
+							}
 						});
 					}
 				});
@@ -56,7 +75,7 @@ var xContextMenu = new Ext.menu.Menu({
 				}
 				parentNode = xCurrentNode.parentNode;
 				if (xCurrentNode.isLeaf()) {
-					debug('Current node is a leaf');
+					debug('Current node is a leaf: ' + xCurrentNode.attributes.issue_id);
 					apiCall({
 						httpMethod: 'POST',
 						method: 'delete_test_case_from_execution_suite',
@@ -78,6 +97,7 @@ var xContextMenu = new Ext.menu.Menu({
 				}
 				else {
 					debug('Current node is NOT a leaf');
+					debug('Current node is a leaf: ' + xCurrentNode.attributes.suite_id);
 					apiCall({
 						httpMethod: 'POST',
 						method: 'execution_suite_manager',
@@ -377,7 +397,7 @@ function getTree(url, root, tagId, draggable, pre) {
 }
 
 function apiCall(parameters) {
-	log('API call: ' + parameters);
+	log('API call: ' + context + parameters.method);
 	var params = parameters.params;
 	params.format = 'json';
 	if (!params.project_id) {
@@ -799,10 +819,10 @@ function log(parameters) {
 		level = level.substring(0, level.length - 1);
 	}
 	var trace = function(message) {
-		return (level.indexOf('INFO') === 0) 
+		return (level.indexOf('INFO') === 0)
 			? console.log(message)
 			: console.trace(message);
-		};
+	};
 	trace('[redcase] ' + level + ' > ' + (parameters.message || parameters));
 }
 

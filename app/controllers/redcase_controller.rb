@@ -213,12 +213,14 @@ class RedcaseController < ApplicationController
   end
 
   def copy_test_case_to_exec
-    tc = TestCase.find(:first, :conditions => 'issue_id = ' + params[:object_id])
+    tc = TestCase.where(:issue_id => params[:object_id]).first
     y = ExecutionSuite.find(params[:parent_id])
     y.test_cases << tc
     respond_to do |format|
       format.json { render :json => execution_suite_to_json(y) }
     end
+  rescue ActiveRecord::RecordNotUnique
+    head :not_acceptable
   end
 
   def delete_test_case_from_execution_suite

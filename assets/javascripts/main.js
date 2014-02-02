@@ -438,56 +438,6 @@ function onCopyTo(b, e) {
 	});
 }
 
-function findNext(node) {
-	log.info('Finding the next node');
-	next = node.nextSibling;
-	if (!next) {
-		return node.parentNode ? findNext(node.parentNode) : null;
-	} else if (next.isLeaf()) {
-		return next;
-	} else {
-		next.expand();
-		for (i = 0; i < next.childNodes.length; i++) {
-			child = next.childNodes[i];
-			if (child.isLeaf()) {
-				return child;
-			}
-			child.expand();
-			nextChild = findNested(child);
-			if (nextChild) {
-				return nextChild;
-			}
-		}
-		return findNext(next);
-	}
-}
-
-function findNested(node) {
-	log.info('Finding the nested node');
-	next = node;
-	if (!next) {
-		return node.parentNode
-			? findNext(node.parentNode)
-			: null;
-	} else if (next.isLeaf()) {
-		return next;
-	} else {
-		next.expand();
-		for (i = 0; i < next.childNodes.length; i++) {
-			child = next.childNodes[i];
-			if (child.isLeaf()) {
-				return child;
-			}
-			child.expand();
-			nextChild = findNext(child);
-			if (nextChild) {
-				return nextChild;
-			}
-		}
-		return findNext(next);
-	}
-}
-
 function execute() {
 	log.info('Executing a test case');
 	node = exec2Tree.getSelectionModel().getSelectedNode();
@@ -510,7 +460,7 @@ function execute() {
 			Ext.get('all-results-d').setDisplayed(data.length > 0 ? 'inline-table' : 'none');
 			txt = executionTab.getHistory(data);
 			Ext.get('all-results').update(txt);
-			next = findNext(node);
+			next = treeHelper.findNext(node);
 			if (next) {
 				next.select();
 			}
@@ -774,5 +724,56 @@ var executionTab = {
 		}
 		txt += "</table>";
 		return txt;
+	}
+};
+
+var treeHelper = {
+	findNext: function(node) {
+		log.info('Finding the next node');
+		next = node.nextSibling;
+		if (!next) {
+			return node.parentNode ? this.findNext(node.parentNode) : null;
+		} else if (next.isLeaf()) {
+			return next;
+		} else {
+			next.expand();
+			for (i = 0; i < next.childNodes.length; i++) {
+				child = next.childNodes[i];
+				if (child.isLeaf()) {
+					return child;
+				}
+				child.expand();
+				nextChild = this.findNested(child);
+				if (nextChild) {
+					return nextChild;
+				}
+			}
+			return this.findNext(next);
+		}
+	},
+	findNested: function(node) {
+		log.info('Finding the nested node');
+		next = node;
+		if (!next) {
+			return node.parentNode
+				? this.findNext(node.parentNode)
+				: null;
+		} else if (next.isLeaf()) {
+			return next;
+		} else {
+			next.expand();
+			for (i = 0; i < next.childNodes.length; i++) {
+				child = next.childNodes[i];
+				if (child.isLeaf()) {
+					return child;
+				}
+				child.expand();
+				nextChild = this.findNext(child);
+				if (nextChild) {
+					return nextChild;
+				}
+			}
+			return this.findNext(next);
+		}
 	}
 };

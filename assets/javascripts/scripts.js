@@ -555,7 +555,7 @@ function execute() {
 		httpMethod: 'POST',
 		method: 'execute',
 		params: {
-			"id": node.attributes.issue_id,
+			"issue_id": node.attributes.issue_id,
 			"version": version.getValue(false),
 			"result": result.getValue(false),
 			"envs": envs.getValue(false),
@@ -604,7 +604,7 @@ function onExecSelectionChange(model, node) {
 				apiCall({
 					method: 'get_executions',
 					params: {
-						"id": node.attributes.issue_id,
+						"issue_id": node.attributes.issue_id,
 						"version": version.getValue(false)
 					},
 					success: function(responseObject) {

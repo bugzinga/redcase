@@ -156,7 +156,7 @@ class RedcaseController < ApplicationController
       ExecutionSuite.create(:name => params[:name], :parent_id => params[:parent_id])
       redirect_to :action => "index", :params => { "project_id" => params[:project_id] }
     elsif params[:do] == 'delete' then
-      ExecutionSuite.destroy(params[:id])
+      ExecutionSuite.destroy(params[:suite_id])
       redirect_to :action => "index", :params => { "project_id" => params[:project_id] }
     elsif params[:do] == 'move' then
       x = ExecutionSuite.find(params[:object_id])

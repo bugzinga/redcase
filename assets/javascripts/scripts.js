@@ -60,7 +60,8 @@ var xContextMenu = new Ext.menu.Menu({
 						dialog.keydown(function(event) {
 							debug('Key pressed: ' + event.keyCode);
 							if (event.keyCode === 13) {
-								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').trigger('click');
+								event.preventDefault();
+								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
 							}
 						});
 					}
@@ -103,7 +104,7 @@ var xContextMenu = new Ext.menu.Menu({
 						method: 'execution_suite_manager',
 						params: {
 							'do': 'delete',
-							'id': xCurrentNode.attributes.suite_id
+							'suite_id': xCurrentNode.attributes.suite_id
 						},
 						success: function() {
 							if (exec2Tree) {

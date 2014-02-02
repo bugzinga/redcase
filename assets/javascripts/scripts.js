@@ -425,31 +425,33 @@ function getTree(url, root, tagId, draggable, pre) {
 }
 
 function apiCall(parameters) {
-	log('API call: ' + context + parameters.method);
+	var url = context + parameters.method
+	log('API call: ' + url);
 	var params = parameters.params;
 	params.format = 'json';
 	if (!params.project_id) {
 		params.project_id = jsProjectId;
 	}
-	var csrf = Ext.select("meta[name='csrf-token']").first();
-	Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
-	conn = new Ext.data.Connection();
-	conn.defaultHeaders = Ext.apply(conn.defaultHeaders || {}, {
-		'X-CSRF-Token': csrf.getAttribute('content')
-	});
 	Element.show('ajax-indicator');
-	conn.request({
-		url: context + parameters.method,
-		method: (parameters.htppMethod ? parameters.httpMethod : 'GET'),
-		params: params,
-		callback: function() {
-			Element.hide('ajax-indicator');
+	jQuery.ajax(url, {
+		type: (parameters.htppMethod ? parameters.httpMethod : 'GET'),
+		data: params,
+		success: function (data, textStatus, jqXHR) {
+			debug('Success');
+			try {
+				parameters.success(data, textStatus, jqXHR);
+			} catch (error) {
+				debug(error.message);
+			}
+			debug('Done');
 		},
-		success: parameters.success,
-		failure: function() {
+		error: function(){
 			Ext.Msg.alert('Failure', parameters.errorMessage);
+		},
+		complete: function() {
+			debug('Complete');
+			Element.hide('ajax-indicator');
+			debug('Done');
 		}
 	});
 }

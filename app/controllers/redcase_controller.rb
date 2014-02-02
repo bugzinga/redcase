@@ -224,7 +224,7 @@ class RedcaseController < ApplicationController
   end
 
   def delete_test_case_from_execution_suite
-    tc = TestCase.find(:first, :conditions => 'issue_id = ' + params[:id])
+    tc = TestCase.find(:first, :conditions => 'issue_id = ' + params[:issue_id])
     x = ExecutionSuite.find(params[:suite_id])
     x.test_cases.delete(tc)
     respond_to do |format|

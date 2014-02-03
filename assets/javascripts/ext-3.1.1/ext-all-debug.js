@@ -49469,7 +49469,12 @@ Ext.extend(Ext.data.Node, Ext.util.Observable, {
      * @return {Node} this
      */
     remove : function(destroy){
-        this.parentNode.removeChild(this, destroy);
+        // [Redcase patch] check parentNode for null
+        if (this.parentNode) {
+            this.parentNode.removeChild(this, destroy);
+        } else {
+            console.log('Parent node is null');
+        }
         return this;
     },
     
@@ -49977,7 +49982,8 @@ Ext.extend(Ext.tree.TreeNode, Ext.data.Node, {
         this.ownerTree.getSelectionModel().unselect(node);
         Ext.tree.TreeNode.superclass.removeChild.apply(this, arguments);
         // if it's been rendered remove dom node
-        if(node.ui.rendered){
+        // [Redcase patch] check node.ui for null
+        if(node.ui && node.ui.rendered){
             node.ui.remove();
         }
         if(this.childNodes.length < 1){

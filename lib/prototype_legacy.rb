@@ -1,4 +1,10 @@
 
+# TODO: Methods below are copied from the following links
+#       to support Protorype helper methods in Rails 3:
+#       1. https://github.com/rails/prototype-rails
+#       2. https://github.com/rails/prototype_legacy_helper
+#       This stuff shall be retired ASAP.
+
 module PrototypeLegacy
       
   def remote_function(options)

@@ -106,7 +106,7 @@ var xContextMenu = new Ext.menu.Menu({
 		}, {
 			text: 'Rename',
 			handler: function(b, e) {
-				log.debug('Trying to rename the execution suite');
+				log.debug('Trying to rename an execution suite');
 				// TODO: Right now it's not handled if any error happened
 				//       after clicking OK, so the dialog with keep showing
 				//       which is not expected.
@@ -130,7 +130,6 @@ var xContextMenu = new Ext.menu.Menu({
 									'exec_suite_id': xCurrentNode.attributes.suite_id
 								},
 								success: function() {
-									log.info('Renaming: Success');
 									try {
 										parentNode.attributes.children = null;
 										parentNode.reload();
@@ -138,9 +137,7 @@ var xContextMenu = new Ext.menu.Menu({
 									} catch (error) {
 										log.debug(error.message);
 									}
-									log.info('Renaming: Closing');
 									jQuery('#redcase-dialog').dialog('close');
-									log.info('Renaming: Closed');
 								},
 								errorMessage: "Execution suite '" + name + "' can't be created"
 							});
@@ -248,8 +245,9 @@ function buildTestSuiteTree(params) {
 				|| ((node.parentNode.parentNode == null) && (node.text == ".Unsorted" || node.text == ".Obsolete"));
 			contextMenu.items.get(1).setVisible(!isNotDeletable);
 			contextMenu.items.get(2).setVisible(node.isLeaf());
-			if (contextMenu.items.getCount() == 4) {
-				contextMenu.items.get(3).setVisible(node.isLeaf());
+			contextMenu.items.get(3).setVisible(!isNotDeletable && !node.isLeaf());
+			if (contextMenu.items.getCount() == 5) {
+				contextMenu.items.get(4).setVisible(node.isLeaf());
 			}
 			contextMenu.show(node.ui.getAnchor());
 		});
@@ -630,6 +628,58 @@ function initSuiteContextMenu() {
 				if (currentNode.isLeaf()) {
 					window.open('/issues/' + currentNode.attributes.issue_id, 'test')
 				}
+			}
+		}, {
+			text: 'Rename',
+			handler: function(b, e) {
+				log.debug('Trying to rename a test suite');
+				// TODO: Right now it's not handled if any error happened
+				//       after clicking OK, so the dialog with keep showing
+				//       which is not expected.
+				if (currentNode.parentNode == null) {
+					return;
+				}
+				parentNode = currentNode.parentNode;
+				jQuery('#redcase-dialog').dialog({
+					title: 'Renaming test suite',
+					modal: true,
+					resizable: false,
+					buttons: {
+						'OK': function() {
+							var name = jQuery('#redcase-dialog-value').val();
+							log.debug('User confirmed test suite name change');
+							Redcase.apiCall({
+								method: Redcase.methods.testSuite.method,
+								params: {
+									'do': Redcase.methods.testSuite.actions.rename,
+									'new_name': name,
+									'test_suite_id': currentNode.attributes.suite_id
+								},
+								success: function() {
+									try {
+										parentNode.attributes.children = null;
+										parentNode.reload();
+										parentNode.expand();
+									} catch (error) {
+										log.debug(error.message);
+									}
+									jQuery('#redcase-dialog').dialog('close');
+								},
+								errorMessage: "Test suite '" + name + "' can't be created"
+							});
+						}
+					},
+					open: function() {
+						var dialog = jQuery(this);
+						dialog.keydown(function(event) {
+							if (event.keyCode === 13) {
+								log.debug('Key pressed: ' + event.keyCode);
+								event.preventDefault();
+								jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
+							}
+						});
+					}
+				});
 			}
 		}
 	];

@@ -11,6 +11,7 @@ Redcase = {
 			actions: {
 				create: 'create',
 				delete: 'delete',
+				rename: 'rename',
 				moveTestSuite: 'move',
 				moveTestCase: 'move_test_case'
 			}

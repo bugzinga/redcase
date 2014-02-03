@@ -1,4 +1,30 @@
 
+<script>
+		Ext.onReady(function() {
+		// Collecting information about other projects (to copy test cases)...
+<% for op in @other_projects %>
+		jsCopyToMenuItems.push({id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo});
+<% end %>
+		// Creating ExtJS tree for test suite and case management ("Management" tab)...
+		buildTestSuiteTree({
+			url: '<%= get_url_for('index', @project.id) %>',
+			root: <%= @root_json.to_json.html_safe %>,
+			tagId: 'management_test_suite_tree_id',
+			draggable: true,
+			pre: 'test-suite-tree'
+		});
+
+		// Creating ExtJS tree for execution suite management ("Management" tab)...
+		buildExecutionSuiteTree({
+			url: '<%= get_url_for('execlist', @project.id) %>',
+			root: <%= @exec_json.to_json.html_safe %>,
+			tagId: 'management_execution_suite_tree_id',
+			draggable: true,
+			pre: 'management_execution_suite_tree'
+		});
+	});
+</script>
+
 <!-- "Management" tab view -->
 <table class="management-layout-table">
 
@@ -13,14 +39,14 @@
         <!-- Execution suites management -->
         <td>
             <div id="management_execution_suites_id">
-                <%= render :partial => 'management_execution_suites' %>
+				<%= render :partial => 'management_execution_suites' %>
             </div>
             <div id="management_execution_suite_tree_id"/>
         </td>
 
         <!-- Test environments management -->
         <td id="management_environments_id">
-            <%= render :partial => 'management_environments' %>
+			<%= render :partial => 'management_environments' %>
         </td>
 
     </tr>

@@ -1,4 +1,17 @@
 
+<script>
+	// Creating ExtJS tree for test casees execution ("Execution" tab)...
+	Ext.onReady(function() {
+		buildExecutionTree({
+			url: '<%= get_url_for('execlist', @project.id) %>',
+			root: <%= @exec_json.to_json.html_safe %>,
+			tagId: 'execution_test_cases_tree_id',
+			draggable: false,
+			pre: 'execution_test_cases_tree'
+		});
+	});
+</script>
+
 <!--table width="100%" style="table-layout: fixed"-->
 <table class="execution-layout-table">
 
@@ -6,7 +19,7 @@
 
         <td id="execution_test_cases_id">
             <div id="execution_settings_id">
-                <%= render :partial => 'execution_list' %>
+				<%= render :partial => 'execution_list' %>
             </div>
             <div id='execution_test_cases_tree_id'/>
         </td>
@@ -22,14 +35,14 @@
                     <div id="test-case-desc" class="wiki"></div>
                     <div id="test-case-attach" class="wiki"></div>
                 </div>
-                <%= l('label_comment') %>:
+				<%= l('label_comment') %>:
                 <br/>
-                <%= text_area_tag 'exec-comment', nil, :rows => 4, :style => 'width: 95%' %>
+				<%= text_area_tag 'exec-comment', nil, :rows => 4, :style => 'width: 95%' %>
                 <br/>
-                <%= l('label_result') %>:
-                <%= select_tag 'results', options_for_select(ExecutionResult.find(:all, :order => 'order_number asc').collect { |res| res.name }) %>
+				<%= l('label_result') %>:
+				<%= select_tag 'results', options_for_select(ExecutionResult.find(:all, :order => 'order_number asc').collect { |res| res.name }) %>
                 &nbsp;
-                <%= submit_tag l(:label_button_save), :onclick => 'execute()' %>
+				<%= submit_tag l(:label_button_save), :onclick => 'execute()' %>
                 <br/>
             </div>
         </td>

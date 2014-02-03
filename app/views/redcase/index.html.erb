@@ -22,57 +22,11 @@
 
 <% end %>
 
-<!--
-    1. We need to save for using in javascript part:
-       a) Project identifier;
-       b) User rights for this plugin;
-       c) Other projects information to use it in menu 'Copy to' to reassign
-          test case to another project;
-    2. We need to create trees of test cases for further management and execution.
--->
 <script type="text/javascript">
-
+	// Project identifier
 	jsProjectId = <%= @project.id %>;
+	// User access rights
 	jsCanEdit = <%= User.current.allowed_to?(:edit_test_cases, @project) != false %>;
-
-	Ext.onReady(function()
-	{
-		// Collecting information about other projects (to copy test cases)...
-<% for op in @other_projects %>
-			jsCopyToMenuItems.push({id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo});
-<% end %>
-
-		// Creating ExtJS tree for test suite and case management ("Management" tab)...
-		buildTestSuiteTree(
-			{
-				url: '<%= get_url_for('index', @project.id) %>',
-				root: <%= @root_json.to_json.html_safe %>,
-				tagId: 'management_test_suite_tree_id',
-				draggable: true,
-				pre: 'test-suite-tree'
-			});
-
-		// Creating ExtJS tree for execution suite management ("Management" tab)...
-		buildExecutionSuiteTree(
-			{
-				url: '<%= get_url_for('execlist', @project.id) %>',
-				root: <%= @exec_json.to_json.html_safe %>,
-				tagId: 'management_execution_suite_tree_id',
-				draggable: true,
-				pre: 'management_execution_suite_tree'
-			});
-
-		// Creating ExtJS tree for test casees execution ("Execution" tab)...
-		buildExecutionTree(
-			{
-				url: '<%= get_url_for('execlist', @project.id) %>',
-				root: <%= @exec_json.to_json.html_safe %>,
-				tagId: 'execution_test_cases_tree_id',
-				draggable: false,
-				pre: 'execution_test_cases_tree'
-			});
-	});
-
 </script>
 
 <% html_title "Test cases" %>

@@ -87,7 +87,6 @@ var xContextMenu = new Ext.menu.Menu({
 				}
 				else {
 					log.debug('Current node is NOT a leaf');
-					log.debug('Current node is a leaf: ' + xCurrentNode.attributes.suite_id);
 					Redcase.apiCall({
 						httpMethod: 'POST',
 						method: Redcase.methods.executionSuite.method,

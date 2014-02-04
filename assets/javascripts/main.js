@@ -731,6 +731,10 @@ var executionTab = {
 				exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(data));
 				exec2Tree.getLoader().load(exec2Tree.getRootNode());
 				exec2Tree.getRootNode().expand();
+				var executionTree = jQuery('#executionTree');
+				executionTree.empty();
+				executionTree.jstree().destroy();
+				executionTree.jstree({ core: { data: data } });
 				onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
 			},
 			errorMessage: "Execution list cannot be reloaded"

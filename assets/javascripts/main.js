@@ -9,7 +9,6 @@ var jsCopyToMenuItems = [];
 
 var suiteTree;
 var execTree;
-var exec2Tree;
 
 var currentNode;
 var xCurrentNode;
@@ -387,12 +386,6 @@ function buildExecutionSuiteTree(params) {
 	}
 }
 
-function buildExecutionTree(params) {
-	log.info('Building the execution tree');
-	exec2Tree = getTree(params.url, params.root, params.tagId, params.draggable, params.pre);
-	exec2Tree.getSelectionModel().on('selectionchange', onExecSelectionChange);
-}
-
 function getTree(url, root, tagId, draggable, pre) {
 	log.info('Building a tree');
 	tree = new Ext.tree.TreePanel({
@@ -437,7 +430,8 @@ function onCopyTo(b, e) {
 
 function execute() {
 	log.info('Executing a test case');
-	node = exec2Tree.getSelectionModel().getSelectedNode();
+	var executionTree = jQuery('#executionTree').jstree();
+	var node = executionTree.get_selected(true)[0];
 	result = Ext.get('results');
 	envs = Ext.get('environments');
 	version = Ext.get('version');
@@ -447,7 +441,7 @@ function execute() {
 		httpMethod: 'POST',
 		method: 'execute',
 		params: {
-			"issue_id": node.attributes.issue_id,
+			"issue_id": node.li_attr.issue_id,
 			"version": version.getValue(false),
 			"result": result.getValue(false),
 			"envs": envs.getValue(false),
@@ -458,8 +452,9 @@ function execute() {
 			txt = executionTab.getHistory(data);
 			Ext.get('all-results').update(txt);
 			next = treeHelper.findNext(node);
+			executionTree.deselect_node(node);
 			if (next) {
-				next.select();
+				executionTree.select_node(next);
 			}
 			Ext.get('exec-comment').dom.value = "";
 		},
@@ -473,12 +468,13 @@ function onExecSelectionChange(model, node) {
 	edit.setVisible(false);
 	r = Ext.get('all-results-d');
 	r.setDisplayed('none');
-	if (node.isLeaf()) {
+	if ((node.isLeaf && node.isLeaf()) || (node.li_attr && node.li_attr.issue_id)) {
 		log.info('Node is a leaf');
+		var issueId = node.isLeaf ? node.attributes.issue_id : node.li_attr.issue_id
 		Redcase.apiCall({
 			method: 'get_test_case',
 			params: {
-				"object_id": node.attributes.issue_id
+				"object_id": issueId
 			},
 			success: function(data) {
 				Ext.get('exec_descr_id').setDisplayed(data.desc ? 'block' : 'none');
@@ -495,7 +491,7 @@ function onExecSelectionChange(model, node) {
 				Redcase.apiCall({
 					method: 'get_executions',
 					params: {
-						"issue_id": node.attributes.issue_id,
+						"issue_id": issueId,
 						"version": version.getValue(false)
 					},
 					success: function(data) {
@@ -510,7 +506,7 @@ function onExecSelectionChange(model, node) {
 				Redcase.apiCall({
 					method: 'get_attachment_urls',
 					params: {
-						"issue_id": node.attributes.issue_id
+						"issue_id": issueId
 					},
 					success: function(data) {
 						Ext.get('test-case-attach').setDisplayed(data.length > 0 ? 'block' : 'none');
@@ -728,14 +724,13 @@ var executionTab = {
 			},
 			success: function(data) {
 				data['prefix'] = 'execution_test_cases_tree';
-				exec2Tree.setRootNode(new Ext.tree.AsyncTreeNode(data));
-				exec2Tree.getLoader().load(exec2Tree.getRootNode());
-				exec2Tree.getRootNode().expand();
 				var executionTree = jQuery('#executionTree');
 				executionTree.empty();
 				executionTree.jstree().destroy();
-				executionTree.jstree({ core: { data: data } });
-				onExecSelectionChange(exec2Tree.getSelectionModel(), exec2Tree.getRootNode());
+				executionTree.jstree({core: {data: data}}).on('changed.jstree', function(e, data) {
+					var node = data.instance.get_node(data.selected[0]);
+					onExecSelectionChange(null, node);
+				});
 			},
 			errorMessage: "Execution list cannot be reloaded"
 		});
@@ -780,22 +775,32 @@ var executionTab = {
 	}
 };
 
+// TODO: Refactor this crap
 var treeHelper = {
 	findNext: function(node) {
 		log.info('Finding the next node');
-		next = node.nextSibling;
+		var executionTree = jQuery('#executionTree').jstree();
+		var nexts = executionTree.get_next_dom(node, true);
+		next = (nexts.length > 0) ? executionTree.get_node(nexts[0]) : null;
 		if (!next) {
-			return node.parentNode ? this.findNext(node.parentNode) : null;
-		} else if (next.isLeaf()) {
+			var parentId = executionTree.get_parent(node);
+			if (parentId === '#') {
+				return null;
+			}
+			return parentId
+				? this.findNext(executionTree.get_node(parentId))
+				: null;
+		} else if (next.li_attr.issue_id) {
 			return next;
 		} else {
-			next.expand();
-			for (i = 0; i < next.childNodes.length; i++) {
-				child = next.childNodes[i];
-				if (child.isLeaf()) {
+			executionTree.open_node(next);
+			var childNodes = executionTree.get_children_dom(next);
+			for (i = 0; i < childNodes.length; i++) {
+				child = executionTree.get_node(childNodes[i]);
+				if (child.li_attr.issue_id) {
 					return child;
 				}
-				child.expand();
+				executionTree.open_node(child);
 				nextChild = this.findNested(child);
 				if (nextChild) {
 					return nextChild;
@@ -805,22 +810,28 @@ var treeHelper = {
 		}
 	},
 	findNested: function(node) {
+		var executionTree = jQuery('#executionTree').jstree();
 		log.info('Finding the nested node');
 		next = node;
 		if (!next) {
-			return node.parentNode
-				? this.findNext(node.parentNode)
+			var parentId = executionTree.get_parent(node);
+			if (parentId === '#') {
+				return null;
+			}
+			return parentId
+				? this.findNext(executionTree.get_node(parentId))
 				: null;
-		} else if (next.isLeaf()) {
+		} else if (next.li_attr.issue_id) {
 			return next;
 		} else {
-			next.expand();
-			for (i = 0; i < next.childNodes.length; i++) {
-				child = next.childNodes[i];
-				if (child.isLeaf()) {
+			executionTree.open_node(next);
+			var childNodes = executionTree.get_children_dom(next);
+			for (i = 0; i < childNodes.length; i++) {
+				child = executionTree.get_node(childNodes[i]);
+				if (child.li_attr.issue_id) {
 					return child;
 				}
-				child.expand();
+				executionTree.open_node(child);
 				nextChild = this.findNext(child);
 				if (nextChild) {
 					return nextChild;

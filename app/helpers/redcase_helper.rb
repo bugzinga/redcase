@@ -184,7 +184,8 @@ module RedcaseHelper
       },
       'counts'       => 0, #get_test_suite_counts_tree(find_test_suite_root(test_suite)).to_json,
       'counts_execs' => 0, #get_test_suite_counts_trees(self).to_json
-      'icon' => 'https://hateandanger.files.wordpress.com/2013/02/marijuana-leaf.jpg?w=32'
+      'icon' => 'https://hateandanger.files.wordpress.com/2013/02/marijuana-leaf.jpg?w=32',
+      'li_attr' => { 'issue_id' => test_case.issue_id }
     }
   end
 
@@ -200,7 +201,7 @@ module RedcaseHelper
       'all_tc_count'   => 0, #test_cases_count(self),
       'children'       => suite.children.collect { |s| execution_suite_to_json(s) } + suite.test_cases.sort_by { |x| x.issue.subject }.collect { |tc| test_case_to_json(tc) },
       'counts'         => 0, #get_exec_suite_counts_tree(find_exec_suite_root(self)).to_json
-      'state'          => { 'opened' => suite.parent.nil? }
+      'state'          => { 'opened' => suite.parent.nil? },
     }
   end
 

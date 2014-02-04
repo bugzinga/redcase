@@ -1,18 +1,5 @@
 <script>$ = _$;</script>
 
-<script>
-	// Creating ExtJS tree for test casees execution ("Execution" tab)...
-	Ext.onReady(function() {
-		buildExecutionTree({
-			url: '<%= get_url_for('execlist', @project.id) %>',
-			root: <%= @exec_json.to_json.html_safe %>,
-			tagId: 'execution_test_cases_tree_id',
-			draggable: false,
-			pre: 'execution_test_cases_tree'
-		});
-	});
-</script>
-
 <!--table width="100%" style="table-layout: fixed"-->
 <table class="execution-layout-table">
     <tr>
@@ -20,8 +7,6 @@
             <div id="execution_settings_id">
 				<%= render :partial => 'execution_list' %>
             </div>
-            <div id='execution_test_cases_tree_id'></div>
-			<br/>
 			<div id='executionTree' />
         </td>
         <td id="execution_test_case_info_id" class="last-cell">

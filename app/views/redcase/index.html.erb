@@ -3,6 +3,8 @@
 
 	<!-- ExtJS -->
 	<%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
+	<!-- jsTree -->
+	<%= stylesheet_link_tag '../javascripts/jstree-3.0.0-beta5/themes/default/style.min.css', :plugin => 'redcase' %>
 	<!-- Redmine -->
 	<%= stylesheet_link_tag 'application' %>
 	<!-- Redcase -->
@@ -13,6 +15,8 @@
 	<!-- ExtJS -->
 	<%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
 	<%= javascript_include_tag 'ext-3.1.1/ext-all-debug', :plugin => 'redcase' %>
+	<!-- jsTree -->
+	<%= javascript_include_tag 'jstree-3.0.0-beta5/jstree.min.js', :plugin => 'redcase' %>
 	<!-- Prototype -->
 	<%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
 	<!-- Redcase -->
@@ -45,9 +49,38 @@
 <% end %>
 
 <!-- Creating plugin inner tabs -->
+<script>
+	_$ = $;
+	$ = jQuery;
+</script>
 <%= render_tabs get_plugin_tabs(@project) %>
+<script>
+	$ = _$;
+</script>
 
 <div id="redcase-dialog" style="display: none">
 	<label for="name">Name:</label>
 	<input type="text" name="redcase-dialog-value" id="redcase-dialog-value" class="text ui-widget-content ui-corner-all">
 </div>
+
+<script>
+	// Creating jsTree's tree control for test cases execution
+	log.info('READY');
+	jQuery('#executionTree').jstree({
+		core: {
+			data: [{
+					id: 'id-fake-root',
+					text: 'Root',
+					state: {
+						opened: true,
+						selected: true
+					},
+					children: [
+						{text: 'Test suite'},
+						{id: 'fake-test-case', text: 'Test case', icon: 'https://hateandanger.files.wordpress.com/2013/02/marijuana-leaf.jpg?w=32'}
+					]
+				}
+			]
+		}
+	});
+</script>

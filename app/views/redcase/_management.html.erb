@@ -1,6 +1,7 @@
+<script>$ = _$;</script>
 
 <script>
-		Ext.onReady(function() {
+	Ext.onReady(function() {
 		// Collecting information about other projects (to copy test cases)...
 <% for op in @other_projects %>
 		jsCopyToMenuItems.push({id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo});
@@ -27,15 +28,12 @@
 
 <!-- "Management" tab view -->
 <table class="management-layout-table">
-
     <tr>
-
         <!-- Test suites management -->
         <td id="management_test_suites_id">
             <h3><%= l('label_test_suites') %></h3>
             <div id="management_test_suite_tree_id"/>
         </td>
-
         <!-- Execution suites management -->
         <td>
             <div id="management_execution_suites_id">
@@ -43,12 +41,11 @@
             </div>
             <div id="management_execution_suite_tree_id"/>
         </td>
-
         <!-- Test environments management -->
         <td id="management_environments_id">
 			<%= render :partial => 'management_environments' %>
         </td>
-
     </tr>
-
 </table>
+
+<script>$ = jQuery;</script>

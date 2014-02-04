@@ -65,22 +65,9 @@
 
 <script>
 	// Creating jsTree's tree control for test cases execution
-	log.info('READY');
 	jQuery('#executionTree').jstree({
 		core: {
-			data: [{
-					id: 'id-fake-root',
-					text: 'Root',
-					state: {
-						opened: true,
-						selected: true
-					},
-					children: [
-						{text: 'Test suite'},
-						{id: 'fake-test-case', text: 'Test case', icon: 'https://hateandanger.files.wordpress.com/2013/02/marijuana-leaf.jpg?w=32'}
-					]
-				}
-			]
+			data: <%= @exec_json.to_json.html_safe %>
 		}
 	});
 </script>

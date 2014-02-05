@@ -43,7 +43,11 @@
 </tr>
 </table>
 <br/>
-        <%= observe_field :list2_id, :function => 'executionTab.updateTree()', :with => 'list2_id' %>
+		<script>
+			jQuery('#list2_id').change(function() {
+				executionTab.updateTree()
+			});
+		</script>
     </div>
     <br/>
 <% end %>

@@ -32,6 +32,9 @@ Redcase = {
 		legacy: {
 			executionSuite: {
 				deleteTestCase: 'delete_test_case_from_execution_suite'
+			},
+			environment: {
+				update: 'update_environment'
 			}
 		}
 	},
@@ -40,7 +43,9 @@ Redcase = {
 		var url = this.context + parameters.method;
 		log.info('API call: ' + url);
 		var params = parameters.params;
-		params.format = 'json';
+		if (!params.format) {
+			params.format = 'json';
+		}
 		if (!params.project_id) {
 			params.project_id = jsProjectId;
 		}

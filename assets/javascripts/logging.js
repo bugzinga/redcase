@@ -1,5 +1,6 @@
 
 LogFactory = {
+
 	getLog: function(context) {
 		var log = {
 			trace: function(parameters) {

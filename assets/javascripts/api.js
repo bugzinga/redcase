@@ -1,7 +1,10 @@
 
 Redcase = {
+
 	log: LogFactory.getLog('redcase-api]'),
+
 	context: 'redcase/',
+
 	methods: {
 		main: {
 			method: 'index'
@@ -32,6 +35,7 @@ Redcase = {
 			}
 		}
 	},
+
 	apiCall: function(parameters) {
 		var url = this.context + parameters.method;
 		log.info('API call: ' + url);
@@ -61,4 +65,5 @@ Redcase = {
 			}
 		});
 	}
+
 };

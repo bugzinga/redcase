@@ -66,15 +66,46 @@
 </div>
 
 <script>
+
+	var testSuiteTreeData = <%= @root_json.to_json.html_safe %>;
+	var executionTreeData = <%= @exec_json.to_json.html_safe %>;
+
+	var map = function(node, pre) {
+		node.id = pre + node.id;
+		if (node.children) {
+			for (var i = 0; i < node.children.length; i++) {
+				node.children[i] = map(node.children[i], pre);
+			}
+		}
+		return node;
+	}
+
+	// Creating jsTree's tree control for test suites management
+	jQuery('#testSuiteTree').jstree({
+		core: {
+			data: map(jQuery.extend(true, {}, testSuiteTreeData), 'tst-'),
+			multiple: false
+		}
+	});
+
+	// Creating jsTree's tree control for execution suites management
+	jQuery('#executionSuiteTree').jstree({
+		core: {
+			data: map(jQuery.extend(true, {}, executionTreeData), 'est-'),
+			multiple: false
+		}
+	});
+
 	// Creating jsTree's tree control for test cases execution
 	// TODO: Remove code duplication (see main.js)
 	jQuery('#executionTree').jstree({
 		core: {
-			data: <%= @exec_json.to_json.html_safe %>,
+			data: map(jQuery.extend(true, {}, executionTreeData), 'et-'),
 			multiple: false
 		}
 	}).on('changed.jstree', function(e, data) {
 		var node = data.instance.get_node(data.selected[0]);
 		onExecSelectionChange(null, node);
 	});
+
 </script>

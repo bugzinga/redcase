@@ -16,6 +16,10 @@ var managementTab = {
 				execTree.getLoader().load(execTree.getRootNode());
 				execTree.getRootNode().expand();
 				jQuery('#list_name').val(execTree.getRootNode().text);
+				var executionSuiteTree = jQuery('#executionSuiteTree');
+				executionSuiteTree.empty();
+				executionSuiteTree.jstree().destroy();
+				executionSuiteTree.jstree({core: {data: data}});
 			},
 			errorMessage: "Execution list cannot be reloaded"
 		});

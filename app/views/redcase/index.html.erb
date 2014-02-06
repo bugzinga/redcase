@@ -84,16 +84,8 @@
 	jQuery('#testSuiteTree').jstree({
 		core: {
 			data: map(jQuery.extend(true, {}, testSuiteTreeData), 'tst-'),
-			multiple: false,
-
-		},
-		dnd: {
-			drag_finish: function(data){
-				alert('drag finish');
-			
-			}
-		},
-		plugins:['contextmenu', 'dnd']   
+			multiple: false
+		}
 	});
 
 	// Creating jsTree's tree control for execution suites management
@@ -101,8 +93,7 @@
 		core: {
 			data: map(jQuery.extend(true, {}, executionTreeData), 'est-'),
 			multiple: false
-		},
-		plugins:[ 'contextmenu', 'dnd']
+		}
 	});
 
 	// Creating jsTree's tree control for test cases execution
@@ -110,8 +101,7 @@
 	jQuery('#executionTree').jstree({
 		core: {
 			data: map(jQuery.extend(true, {}, executionTreeData), 'et-'),
-			multiple: false,
-			plugins:[ 'contextmenu', 'dnd']
+			multiple: false
 		}
 	}).on('changed.jstree', function(e, data) {
 		var node = data.instance.get_node(data.selected[0]);

@@ -6,9 +6,14 @@
 	<!-- jsTree -->
 	<%= stylesheet_link_tag '../javascripts/jstree-3.0.0-beta5/themes/default/style.min.css', :plugin => 'redcase' %>
 	<!-- jqTree -->
-	<%= stylesheet_link_tag '../javascripts/mbraak-jqTree-38c2ba4/jqtree.css', :plugin => 'redcase' %>
+	<!--<%= stylesheet_link_tag '../javascripts/mbraak-jqTree-38c2ba4/jqtree.css', :plugin => 'redcase' %>-->
 	<!-- zTree -->
 	<%= stylesheet_link_tag '../javascripts/zTree-v3.5.15/css/zTreeStyle/zTreeStyle.css', :plugin => 'redcase' %>
+	<!-- jQuery EasyUI -->
+	<%= stylesheet_link_tag '../javascripts/jquery-easyui-1.3.5/themes/default/easyui.css', :plugin => 'redcase' %>
+	<%= stylesheet_link_tag '../javascripts/jquery-easyui-1.3.5/themes/default/menu.css', :plugin => 'redcase' %>
+	<%= stylesheet_link_tag '../javascripts/jquery-easyui-1.3.5/themes/icon.css', :plugin => 'redcase' %>
+	<%= stylesheet_link_tag '../javascripts/jquery-easyui-1.3.5/demo/demo.css', :plugin => 'redcase' %>
 	<!-- Redmine -->
 	<%= stylesheet_link_tag 'application' %>
 	<!-- Redcase -->
@@ -22,9 +27,11 @@
 	<!-- jsTree -->
 	<%= javascript_include_tag 'jstree-3.0.0-beta5/jstree.min.js', :plugin => 'redcase' %>
 	<!-- jqTree -->
-	<%= javascript_include_tag 'mbraak-jqTree-38c2ba4/tree.jquery.js', :plugin => 'redcase' %>
+	<!--<%= javascript_include_tag 'mbraak-jqTree-38c2ba4/tree.jquery.js', :plugin => 'redcase' %>-->
 	<!-- zTree -->
 	<%= javascript_include_tag 'zTree-v3.5.15/js/jquery.ztree.core-3.5.js', :plugin => 'redcase' %>
+	<!-- jQuery EasyUI -->
+	<%= javascript_include_tag 'jquery-easyui-1.3.5/jquery.easyui.min.js', :plugin => 'redcase' %>
 	<!-- Prototype -->
 	<%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
 	<!-- Redcase -->
@@ -120,13 +127,37 @@
 	});
 	*/
 
+	/*
 	var executionSuiteTree = jQuery('#executionSuiteTree').tree({
 		data: [
 			map(jQuery.extend(true, {}, executionTreeData), 'est-')
 		]
 	});
 	executionSuiteTree.tree('openNode', executionSuiteTree.tree('getTree').children[0])
-
+	*/
+   
+   var executionSuiteTree = jQuery('#executionSuiteTree').tree({
+		data: [
+			map(jQuery.extend(true, {}, executionTreeData), 'est-')
+		],
+		dnd: true,
+		animate: true,
+		onDrop: function(targetNode, source, point){
+			log.info('Yay! We dragged something!');
+		},
+		onContextMenu: function(e, node){
+			e.preventDefault();
+            jQuery(this).tree('select',node.target);
+            jQuery('#mm').menu('show',{
+                left: e.pageX,
+                top: e.pageY
+            });
+		}
+	});
+	
+	jQuery('#mm').menu({
+	});
+   
 	// Creating jsTree's tree control for test cases execution
 	// TODO: Remove code duplication (see main.js)
 	jQuery('#executionTree').jstree({

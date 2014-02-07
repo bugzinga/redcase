@@ -47,6 +47,12 @@
             <div id="management_execution_suite_tree_id"></div>
             <br />
             <div id="executionSuiteTree"></div>
+			<div id="mm" class="easyui-menu" style="width:120px">
+				<div onclick="log.info('Adding a new execution suite');" data-options="iconCls:'icon-add'">Add Suite</div>
+				<div onclick="log.info('Renaming the execution suite');" data-options="iconCls:'icon-remove'">Rename</div>
+				<div class="menu-sep"></div>
+				<div onclick="log.info('Expanding the execution suite');">Delete</div>
+			</div>
         </td>
         <!-- Test environments management -->
         <td id="management_environments_id">

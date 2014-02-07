@@ -136,7 +136,7 @@
 	executionSuiteTree.tree('openNode', executionSuiteTree.tree('getTree').children[0])
 	*/
    
-   var executionSuiteTree = jQuery('#executionSuiteTree').tree({
+   jQuery('#executionSuiteTree').tree({
 		data: [
 			map(jQuery.extend(true, {}, executionTreeData), 'est-')
 		],

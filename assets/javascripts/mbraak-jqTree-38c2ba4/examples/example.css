@@ -1,0 +1,62 @@
+body {
+    width: 960px;
+    margin: 1em auto;
+    padding-bottom: 2em;
+}
+
+body, button, input, select, textarea {
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+    font-size: 1.625em;
+}
+
+h3 {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 2em;
+}
+
+
+p {
+    margin-top: 1em;
+}
+
+#tree1 {
+    background-color: #ccc;
+    padding: 1em;
+}
+
+#nav .next {
+    float: right;
+}
+
+.jqtree-tree .jqtree-loading > div .jqtree-title:after {
+    content: url(spinner.gif);
+    margin-left: 8px;
+}
+
+#tree1.jqtree-loading:after {
+    content: url(spinner.gif);
+}
+
+pre {
+    background-color: #333;
+}
+
+#scroll-container {
+    height: 200px;
+    overflow-y: scroll;
+    position: relative;  /* ie7 fix */
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* prism syntax highlighting */
+pre[class*="language-"] {
+    padding-top: 0;
+    border-radius: 0;
+    font-size: 13px;
+    margin-bottom: 16px;
+}

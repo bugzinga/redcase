@@ -7,6 +7,8 @@
 	<%= stylesheet_link_tag '../javascripts/jstree-3.0.0-beta5/themes/default/style.min.css', :plugin => 'redcase' %>
 	<!-- jqTree -->
 	<%= stylesheet_link_tag '../javascripts/mbraak-jqTree-38c2ba4/jqtree.css', :plugin => 'redcase' %>
+	<!-- zTree -->
+	<%= stylesheet_link_tag '../javascripts/zTree-v3.5.15/css/zTreeStyle/zTreeStyle.css', :plugin => 'redcase' %>
 	<!-- Redmine -->
 	<%= stylesheet_link_tag 'application' %>
 	<!-- Redcase -->
@@ -21,6 +23,8 @@
 	<%= javascript_include_tag 'jstree-3.0.0-beta5/jstree.min.js', :plugin => 'redcase' %>
 	<!-- jqTree -->
 	<%= javascript_include_tag 'mbraak-jqTree-38c2ba4/tree.jquery.js', :plugin => 'redcase' %>
+	<!-- zTree -->
+	<%= javascript_include_tag 'zTree-v3.5.15/js/jquery.ztree.core-3.5.js', :plugin => 'redcase' %>
 	<!-- Prototype -->
 	<%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
 	<!-- Redcase -->
@@ -82,26 +86,31 @@
 			}
 		}
 		node.label = node.text;
+		node.name = node.text;
 		return node;
 	};
 
 	// Creating jsTree's tree control for test suites management
-	jQuery('#testSuiteTree').jstree({
-		core: {
-			data: map(jQuery.extend(true, {}, testSuiteTreeData), 'tst-'),
-			multiple: false
-		}
-	});
+	//jQuery('#testSuiteTree').jstree({
+	//	core: {
+	//		data: map(jQuery.extend(true, {}, testSuiteTreeData), 'tst-'),
+	//		multiple: false
+	//	}
+	//});
+
+	var settings = {};
+	var data = map(jQuery.extend(true, {}, testSuiteTreeData), 'est-');
+
+	var testSuiteTree = jQuery.fn.zTree.init(jQuery('#testSuiteTree'), settings, [data]);
+	testSuiteTree.expandNode(testSuiteTree.getNodes().first());
 
 	// Creating jsTree's tree control for execution suites management
-	/*
-	 jQuery('#executionSuiteTree').jstree({
-		core: {
-			data: map(jQuery.extend(true, {}, executionTreeData), 'est-'),
-			multiple: false
-		}
-	 });
-	 */
+	//jQuery('#executionSuiteTree').jstree({
+	//	core: {
+	//		data: map(jQuery.extend(true, {}, executionTreeData), 'est-'),
+	//		multiple: false
+	//	}
+	//});
 
 	jQuery('#executionSuiteTree').tree({
 		data: [

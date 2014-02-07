@@ -91,32 +91,41 @@
 	};
 
 	// Creating jsTree's tree control for test suites management
-	//jQuery('#testSuiteTree').jstree({
-	//	core: {
-	//		data: map(jQuery.extend(true, {}, testSuiteTreeData), 'tst-'),
-	//		multiple: false
-	//	}
-	//});
+	/*
+	jQuery('#testSuiteTree').jstree({
+		core: {
+			data: map(jQuery.extend(true, {}, testSuiteTreeData), 'tst-'),
+			multiple: false
+		}
+	});
+	*/
 
-	var settings = {};
+	var settings = {
+		view: {
+			selectedMulti: false
+		}
+	};
+
 	var data = map(jQuery.extend(true, {}, testSuiteTreeData), 'est-');
-
 	var testSuiteTree = jQuery.fn.zTree.init(jQuery('#testSuiteTree'), settings, [data]);
 	testSuiteTree.expandNode(testSuiteTree.getNodes().first());
-
+	
 	// Creating jsTree's tree control for execution suites management
-	//jQuery('#executionSuiteTree').jstree({
-	//	core: {
-	//		data: map(jQuery.extend(true, {}, executionTreeData), 'est-'),
-	//		multiple: false
-	//	}
-	//});
+	/*
+	jQuery('#executionSuiteTree').jstree({
+		core: {
+			data: map(jQuery.extend(true, {}, executionTreeData), 'est-'),
+			multiple: false
+		}
+	});
+	*/
 
-	jQuery('#executionSuiteTree').tree({
+	var executionSuiteTree = jQuery('#executionSuiteTree').tree({
 		data: [
 			map(jQuery.extend(true, {}, executionTreeData), 'est-')
 		]
 	});
+	executionSuiteTree.tree('openNode', executionSuiteTree.tree('getTree').children[0])
 
 	// Creating jsTree's tree control for test cases execution
 	// TODO: Remove code duplication (see main.js)

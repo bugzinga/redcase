@@ -161,7 +161,7 @@ module RedcaseHelper
   end
 
   def test_case_to_json(test_case)
-    textilized_description = (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if test_case.issue.description)
+    textilized_description = (textilizable(test_case.issue.description.gsub(/#\d/) { |s| s.gsub("#", "N")}, :attachments => test_case.issue.attachments ) if test_case.issue.description)
     {
       'issue_id'     => test_case.issue_id,
       'text'         => test_case.issue.subject,

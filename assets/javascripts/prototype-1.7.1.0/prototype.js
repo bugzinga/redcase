@@ -2796,7 +2796,7 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
 
   function hasAttribute(element, attribute) {
     attribute = ATTRIBUTE_TRANSLATIONS.has[attribute] || attribute;
-    var node = $(element).getAttributeNode(attribute);
+    var node = $(element).getAttribute(attribute);
     return !!(node && node.specified);
   }
 
@@ -5815,7 +5815,8 @@ var Form = {
 
     return elements.inject(initial, function(result, element) {
       if (!element.disabled && element.name) {
-        key = element.name; value = $(element).getValue();
+        key = element.name;
+        value = element.value;
         if (value != null && element.type != 'file' && (element.type != 'submit' || (!submitted &&
             submit !== false && (!submit || key == submit) && (submitted = true)))) {
           result = accumulator(result, key, value);

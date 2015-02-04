@@ -421,6 +421,7 @@ class RedcaseController < ApplicationController
       @list = ExecutionSuite.find_by_project_id(params[:project_id])
     end
     @environment = execution_environment_default(@project)
+    @version = get_last_version(params[:project_id])
     render :partial => 'management_execution_suites'
   end
 

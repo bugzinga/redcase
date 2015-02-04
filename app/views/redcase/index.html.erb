@@ -1,24 +1,23 @@
-
 <% content_for :header_tags do %>
 
-	<!-- ExtJS -->
-	<%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
-	<!-- Redmine -->
-	<%= stylesheet_link_tag 'application' %>
-	<!-- Redcase -->
-	<%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
+    <!-- ExtJS -->
+    <%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
+    <!-- Redmine -->
+    <%= stylesheet_link_tag 'application' %>
+    <!-- Redcase -->
+    <%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
 
-	<!-- Flash chart -->
-	<%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
-	<!-- ExtJS -->
-	<%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
-	<%= javascript_include_tag 'ext-3.1.1/ext-all-debug', :plugin => 'redcase' %>
-	<!-- Prototype -->
-	<%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
-	<!-- Redcase -->
-	<%= javascript_include_tag 'logging', :plugin => 'redcase' %>
-	<%= javascript_include_tag 'api', :plugin => 'redcase' %>
-	<%= javascript_include_tag 'main', :plugin => 'redcase' %>
+    <!-- Flash chart -->
+    <%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
+    <!-- Prototype -->
+    <%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
+    <!-- ExtJS -->
+    <%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
+    <%= javascript_include_tag 'ext-3.1.1/ext-all-debug', :plugin => 'redcase' %>
+    <!-- Redcase -->
+    <%= javascript_include_tag 'logging', :plugin => 'redcase' %>
+    <%= javascript_include_tag 'api', :plugin => 'redcase' %>
+    <%= javascript_include_tag 'main', :plugin => 'redcase' %>
 
 <% end %>
 

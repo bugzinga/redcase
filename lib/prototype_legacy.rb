@@ -22,7 +22,7 @@ module PrototypeLegacy
       "new Ajax.Request(" :
       "new Ajax.Updater(#{update}, "
     url_options = options[:url]
-    function << "'#{ERB::Util.html_escape(escape_javascript(url_for(url_options)))}'"
+    function << "'#{escape_javascript(url_for(url_options))}'"
     function << ", #{javascript_options})"
     function = "#{options[:before]}; #{function}" if options[:before]
     function = "#{function}; #{options[:after]}"  if options[:after]
@@ -79,7 +79,7 @@ module PrototypeLegacy
   
   def build_observer(klass, name, options = {})
     if options[:with] && (options[:with] !~ /[\{=(.]/)
-      options[:with] = "'#{options[:with]}=' + encodeURIComponent(value)"
+      options[:with] = "'#{options[:with]}=' + encodeURIComponent(element.value)"
     else
       options[:with] ||= 'value' unless options[:function]
     end

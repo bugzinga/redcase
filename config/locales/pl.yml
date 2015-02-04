@@ -1,0 +1,26 @@
+# Polish strings go here for Rails i18n
+
+pl:
+
+  label_test_case_management    : "Zarzadzanie"
+  label_test_case_execution     : "Wykonanie"
+  label_test_case_report        : "Raport"
+  label_test_suites             : "Scenariusze"
+  label_execution_suite         : "Teczka Scenariuszy"
+  label_environment             : "Środowisko"
+  label_version                 : "Wersja"
+  label_execution_info          : "Zapis Wykonania"
+  label_description             : "Opis"
+  label_history                 : "Historia"
+  label_id                      : "ID"
+  label_name                    : "Nazwa"
+  label_date                    : "Data"
+  label_result                  : "Wynik"
+  label_comments                : "Komentarze"
+  label_comment                 : "Komanetarz"
+  label_executor                : "Wykonawca"
+  label_not_available           : "Niedostępne"
+  label_report                  : "Raport"
+  label_full_report             : "Pełny Raport"
+  label_test_case_specification : "Specyfikacja scenariuszy"
+  label_button_save             : "zapisz"

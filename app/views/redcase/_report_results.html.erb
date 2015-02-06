@@ -42,11 +42,11 @@
         end
     %>
         <tr style="background-color: <%= color %>" name="<%= x.result.name %>">
-            <td style="border-left-width: 0px"><%= link_to x.test_case.issue.id, { :controller => 'issues', :action => x.test_case.issue.id }, :target => '_blank' %></td>
-            <td><%= link_to x.test_case.issue.subject, { :controller => 'issues', :action => x.test_case.issue.id }, :target => '_blank' %></td>
+          <td style="border-left-width: 0px"><%= link_to x.test_case.issue.id, { :controller => 'issues', :action => :show, :id => x.test_case.issue.id }, :target => '_blank' %></td>
+            <td><%= link_to x.test_case.issue.subject, { :controller => 'issues', :action => :show, :id => x.test_case.issue.id }, :target => '_blank' %></td>
             <td><%= x.created_on.strftime("%Y-%m-%d %H:%M") %></td>
             <td><%= x.result.name %></td>
-            <td><%= link_to x.executor, { :controller => 'users', :action => x.executor.id }, :target => '_blank' %></td>
+            <td><%= link_to x.executor, { :controller => 'users', :action => :show, :id => x.executor.id }, :target => '_blank' %></td>
             <td style="border-right-width: 0px">
                 <% if not x.comment.blank? then %>
                     <small style="font-weight: normal; color: inherit"><%= link_to image_tag("info.png", :plugin => 'redcase', :size=> '16x16'), {}, :onclick => "jQuery('##{x.id}').toggle(150); return false;" %></small>

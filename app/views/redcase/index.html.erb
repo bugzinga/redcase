@@ -1,24 +1,32 @@
 
 <% content_for :header_tags do %>
 
-	<!-- ExtJS -->
-	<%= stylesheet_link_tag '../javascripts/ext-3.1.1/resources/css/ext-all', :plugin => 'redcase' %>
 	<!-- Redmine -->
 	<%= stylesheet_link_tag 'application' %>
 	<!-- Redcase -->
-	<%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>
+	<%= stylesheet_link_tag 'styles', :plugin => 'redcase' %>	
+	<!-- jstree -->
+	<%= stylesheet_link_tag '../javascripts/jstree/themes/default/style.min.css', :plugin => 'redcase' %>	
 
 	<!-- Flash chart -->
 	<%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
-	<!-- ExtJS -->
-	<%= javascript_include_tag 'ext-3.1.1/adapter/ext/ext-base', :plugin => 'redcase' %>
-	<%= javascript_include_tag 'ext-3.1.1/ext-all-debug', :plugin => 'redcase' %>
-	<!-- Prototype -->
-	<%= javascript_include_tag 'prototype-1.7.1.0/prototype.js', :plugin => 'redcase' %>
+	<!-- jQuery 2 -->
+	<%= javascript_include_tag 'jquery 2.1.3/jquery-2.1.3.min.js', :plugin => 'redcase' %>
+	<!-- jstree -->
+	<%= javascript_include_tag 'jstree/jstree.min.js', :plugin => 'redcase' %>
+<script type="text/javascript">
+  // NonConflict jQuery
+  var jQuery2 = $.noConflict(true);
+  
+</script>  	    	
 	<!-- Redcase -->
 	<%= javascript_include_tag 'logging', :plugin => 'redcase' %>
 	<%= javascript_include_tag 'api', :plugin => 'redcase' %>
 	<%= javascript_include_tag 'main', :plugin => 'redcase' %>
+	<%= javascript_include_tag 'TestSuiteTree', :plugin => 'redcase' %>
+	<%= javascript_include_tag 'ExecutionSuiteTree', :plugin => 'redcase' %>
+	<%= javascript_include_tag 'ExecutionTree', :plugin => 'redcase' %>
+	<%= javascript_include_tag 'Environments', :plugin => 'redcase' %>
 
 <% end %>
 
@@ -40,7 +48,7 @@
 
 <% if @version.nil? then %>
 	<div style="color: #bbbbbb; text-align: center">
-		(There is no <b>version</b> for this project. If you need to execute test cases please create some one...)
+		(There are no <b>versions</b> for this project. If you need to execute test cases please create one...)
 	</div>
 <% end %>
 
@@ -50,4 +58,7 @@
 <div id="redcase-dialog" style="display: none">
 	<label for="name">Name:</label>
 	<input type="text" name="redcase-dialog-value" id="redcase-dialog-value" class="text ui-widget-content ui-corner-all">
+</div>
+<div id="redcase-error" style="display: none" title="Error">
+	<p id="redcase-error-message" />
 </div>

@@ -13,9 +13,9 @@
 	width: 100%;
 }
 
-#execution_test_cases_tree_id {
-	overflow: auto;
+.redcase_tree {
 	max-height: 400px;
+	overflow: auto;
 }
 
 .no-border {
@@ -392,3 +392,26 @@ a:hover img {
 	line-height:inherit;
 	font-size:inherit;
 }
+
+.testcase-result-icon-Passed {
+	background-image: url(../images/Passed.png) !important;
+}
+
+.testcase-result-icon-Failed {
+        background-image: url(../images/Failed.png) !important;
+}
+
+.testcase-result-icon-none {
+        background-image: url(../images/none.png) !important;
+}
+
+.testcase-result-icon-Blocked {
+        background-image: url(../images/Blocked.png) !important;
+}
+
+.testcase-result-icon-NotAvailable {
+        background-image: url(../images/NotAvailable.png) !important;
+}
+
+
+

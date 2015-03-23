@@ -1,18 +1,27 @@
 
 <!-- Loading test environments for project every time when this form is reloading -->
-<% environments = get_environments_by_project(@project) %>
+<% environments = ExecutionEnvironment.find_all_by_project_id(project.id) %>
 
 <!-- AJAX form to manage test environments -->
-<%= form_for :env, :remote => true, :url => { :action => 'update_environment', :project_id => @project.id, :act => 'save' }, :update => :management_environments_id, :complete => 'full()', :html => { :id => 'environment_form_id' }  do |f| %>
+<%= form_for environment, :remote => true, :url => { :controller => 'redcase/environments', :action => :update, :project_id => project.id }, :update => :management_environments_id, :complete => 'Redcase.full()', :html => { :id => 'environment_form_id' }  do |f| %>
 	<h3>
         <%= l('label_environment') %>: <%= f.select :id, environments.collect { |e| [ e.name, e.id ] } %>
-        <%= observe_field :env_id, :url => { :action => 'update_environment', :project_id => @project.id }, :with => 'env_id', :update => :management_environments_id %>
+        <%= observe_field :execution_environment_id, :url => { :controller => 'redcase/environments', :action => :index, :project_id => project.id }, :with => 'execution_environment_id', :update => :management_environments_id, :complete => 'Redcase.Environments.bind()' %>
     </h3>
     <p>
         <%= f.text_field :name %>
-        <%= update_environment_link 'save.png', 'save' %>
-        <%= update_environment_link 'add.jpg', 'new', '13x13' %>
-        <%= update_environment_link 'delete.jpg', 'delete', '13x13' if (environments.length > 1)%>
+		
+		<a href="#" id="btn_save_environment">
+			<%= image_tag('save.png', :plugin => 'redcase', :size=> '20x20', :style => 'vertical-align: middle') %>
+		</a>
+		<a href="#" id="btn_create_environment">
+			<%= image_tag('add.jpg', :plugin => 'redcase', :size=> '13x13', :style => 'vertical-align: middle') %>
+		</a>
+<% if (environments.length > 1) %>		
+		<a href="#" id="btn_destroy_environment">
+			<%= image_tag('delete.jpg', :plugin => 'redcase', :size=> '13x13', :style => 'vertical-align: middle') %>
+		</a>
+<% end %>		
     </p>
 	<br/>
 	<%= f.text_area :description %>

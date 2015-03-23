@@ -7,11 +7,11 @@
         <td>&nbsp;</td>
 
         <td align="right" colspan="2">
-            <%= form_tag({ :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now }, :id => 'spec_id') do %>
+			<%= form_tag({ :controller => 'redcase/export', :action =>  :index, :export_to => :rtf, :project_id => @project.id, :time => Time.now }, :id => 'spec_id') do %>
                 <%= link_to image_tag('test_spec.png', :plugin => 'redcase', :size=> '180x36', :style => 'float: right'),
-                  { :action =>  :export_to_rtf, :project_id => @project.id, :time => Time.now },
-                  { :class => 'no_underline', :submit => 'spec_id' } %>
-            <% end %>
+                  { :controller => 'redcase/export', :action =>  :index, :export_to => :rtf, :project_id => @project.id, :time => Time.now },
+                  { :class => 'no_underline', :submit => 'spec_id', url: url_for(:controller => 'redcase/export', :action =>  :index, :export_to => :rtf, :project_id => @project.id, :time => Time.now), :onclick => "jQuery(this).attr('href', jQuery(this).attr('url') + '&suite_id=' + jQuery('#suite').val())" } %>
+            <% end %>        
         </td>
 
         <td>&nbsp;</td>
@@ -34,7 +34,11 @@
                     </tr>
                 </table>
                 <div id="chart_id" class="graph" style="width: 510px; height: 510px; padding: 4px">
-                    <%= @graph.html_safe %>
+<%  
+	graphData = TestGraph.get_data(@version.id, @environment.id, @execroot.nil? ? -1 : @execroot.id, @project.id)
+	graph = open_flash_chart_object(500, 500, url_for(:controller => 'redcase/graph', :action => 'show', :all => graphData), true, '/plugin_assets/redcase/')
+%>
+					<%= graph.html_safe %>
                 </div>
             </div>
         </td>

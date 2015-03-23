@@ -1,40 +1,37 @@
 
 <script type="text/javascript">
-
-    update2exe = function() {
-        <%= remote_function :url => { :action => 'update_exelists2', :project_id => @project.id }, :update => "execution_settings_id", :complete => "executionTab.updateTree()" %>
-    }
-
-    full = function() {
-        managementTab.updateTree();
-        update2exe();
-        updateReport();
-    }
-
-    updateReport = function() {
+    Redcase.updateReport = function() {
         <%=
-            params = { :action => 'update_combos', :project_id => @project.id, :environment_id => @environment.id }
-            params['version_id'] = @version.id if (@version)
-            remote_function :url => params, :update => "combos_id"
-        %>
-    }
-    
+            params = { :controller => 'redcase/combos', :action => 'index', :environment_id => @environment.id, :suite_id => get_id_or_default(@execroot, -1) }
+			version = Version.find_by_project_id(@project.id, :order => 'created_on desc')
+            params['version_id'] = version.id if (version)
+            remote_function :url => params, :update => "combos_id", :complete => "jQuery2('#versionx').change()"
+        %>		
+    }    
 </script>
 
 <!-- Loading execution suites for project every time when this form is reloading -->
-<% @lists = get_execution_suites_by_project_and_parent(@project) %>
+<% @lists = ExecutionSuite.find_all_by_project_id(@project.id) %>
 
 <!-- AJAX form to manage execution suites -->
-<%= form_for :list, :remote => true, :url => { :action => 'update_exelists', :project_id => @project.id, :act => 'save' }, :update => :management_execution_suites_id, :complete => 'full()', :html => { :id => 'list_form' } do |f| %>
+<%= form_for :list, :remote => true, :url => { :controller => :executionsuites, :action => 'update', :project_id => @project.id }, :update => :management_execution_suites_id, :complete => 'Redcase.full()', :html => { :id => 'list_form' } do |f| %>
 	<h3>
         <%= l('label_execution_suite') %>: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
-        <%= observe_field :list_id, :function => 'managementTab.updateTree()', :with => 'list_id' %>
+        <%= observe_field :list_id, :function => 'Redcase.ExecutionSuiteTree.refresh()', :with => 'list_id' %>
     </h3>
     <p>
         <%= f.text_field :name %>
-        <%= update_execution_suite_link 'save.png', 'save' %>
-        <%= update_execution_suite_link 'add.jpg', 'new', '13x13' %>
-        <%= update_execution_suite_link 'delete.jpg', 'delete', '13x13' if (@lists.length > 1)%>
+		<a href="#" id="btn_save_exec_suite">
+			<%= image_tag('save.png', :plugin => 'redcase', :size=> '20x20', :style => 'vertical-align: middle') %>
+		</a>
+		<a href="#" id="btn_create_exec_suite">
+			<%= image_tag('add.jpg', :plugin => 'redcase', :size=> '13x13', :style => 'vertical-align: middle') %>
+		</a>
+<% if (@lists.length > 1) %>		
+		<a href="#" id="btn_destroy_exec_suite">
+			<%= image_tag('delete.jpg', :plugin => 'redcase', :size=> '13x13', :style => 'vertical-align: middle') %>
+		</a>
+<% end %>		
     </p>
 	<br/>
 <% end %>

@@ -30,8 +30,8 @@ module RedcaseOverride
       if context[:issue].tracker.name != "Test case" then
         return
       end
-      root = test_suite_root(context[:issue].project)
-      execroot = execution_suite_root(context[:issue].project)
+      root = TestSuite.get_root_for_project(context[:issue].project)
+      execroot = ExecutionSuite.get_root_for_project(context[:issue].project)
       x = TestCase.create(:issue => context[:issue], :test_suite => root.children.detect { |o| o.name == ".Unsorted" } )
       # execroot.test_cases << x
     end

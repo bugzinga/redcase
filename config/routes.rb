@@ -1,23 +1,16 @@
+resources :projects do
+	namespace :redcase do
+		resources :environments, only: [:create, :update, :destroy]
+		resources :testsuites, only: [:index, :create, :update, :destroy]
+		resources :testcases, only: [:index, :update]
+		resources :executionsuites, only: [:index, :update, :create, :destroy, :show]		
+		resources :executionjournals, only: [:index]
+		resources :export, only: [:index]
+		resources :graph, only: [:show]
+		resources :combos, only: [:index]
+	end
+end
 
-match 'projects/:id/redcase', :to => 'redcase#index'
-match 'projects/:id/redcase/index', :to => 'redcase#index'
-match 'projects/:id/redcase/test_suite_manager', :to => 'redcase#test_suite_manager'
-match 'projects/:id/redcase/execution_suite_manager', :to => 'redcase#execution_suite_manager'
-match 'projects/:id/redcase/copy_test_case_to_exec', :to => 'redcase#copy_test_case_to_exec'
-match 'projects/:id/redcase/get_test_case', :to => 'redcase#get_test_case'
-match 'projects/:id/redcase/get_executions', :to => 'redcase#get_executions'
-match 'projects/:id/redcase/get_attachment_urls', :to => 'redcase#get_attachment_urls'
-match 'projects/:id/redcase/execute', :to => 'redcase#execute'
-match 'projects/:id/redcase/test_case_to_obsolete', :to => 'redcase#test_case_to_obsolete'
-match 'projects/:id/redcase/get_advanced_execution', :to => 'redcase#get_advanced_execution'
-match 'projects/:id/redcase/delete_test_case_from_execution_suite', :to => 'redcase#delete_test_case_from_execution_suite'
-match 'projects/:id/graph', :to => 'redcase#graph'
-match 'projects/:id/get_graph', :to => 'redcase#get_graph'
-match 'projects/:id/execlist', :to => 'redcase#execlist'
-match 'projects/:id/update_exelists', :to => 'redcase#update_exelists'
-match 'projects/:id/update_exelists2', :to => 'redcase#update_exelists2'
-match 'projects/:id/update_combos', :to => 'redcase#update_combos'
-match 'projects/:id/update_combos2', :to => 'redcase#update_combos2'
-match 'projects/:id/update_environment', :to => 'redcase#update_environment'
-match 'projects/:id/export_to_rtf', :to => 'redcase#export_to_rtf'
-match 'projects/:id/export_to_excel2', :to => 'redcase#export_to_excel2'
+get 'projects/:id/redcase', :to => 'redcase#index'
+get 'projects/:id/redcase/get_attachments_urls', :to => 'redcase#get_attachments_urls'
+get 'projects/:id/:controller/:action', constraints: {controller: /redcase/}

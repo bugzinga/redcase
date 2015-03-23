@@ -1,8 +1,8 @@
 
 <!-- Loading execution suites for project every time when this form is reloading -->
-<% @lists2 = get_execution_suites_by_project_and_parent(@project) %>
+<% lists2 = ExecutionSuite.find_all_by_project_id(@project.id) %>
 
-<%= form_for :list2, :url => { :action => 'update_exelists', :project_id => @project.id } do |f| %>
+
     <div>
 <table>
 <tr>
@@ -13,7 +13,8 @@
 </td>            
 <td>
 <h3 id="execution-settings-suite">
-            <%= f.select :id, @lists2.collect { |e| [ e.name, e.id ] } %>
+            <!-- f.select :id, lists2.collect { |e| [ e.name, e.id ] } -->
+			<%= select_tag 'list2_id', options_for_select(lists2.collect { |e| [ e.name, e.id ] }) %>
         </h3>
         </td>
 </tr>
@@ -43,7 +44,7 @@
 </tr>
 </table>
 <br/>
-        <%= observe_field :list2_id, :function => 'executionTab.updateTree()', :with => 'list2_id' %>
+        <%= observe_field :list2_id, :function => 'Redcase.ExecutionTree.tree.refresh()', :with => 'list2_id' %>
     </div>
     <br/>
-<% end %>
+

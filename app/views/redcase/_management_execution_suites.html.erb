@@ -1,20 +1,8 @@
-
-<script type="text/javascript">
-    Redcase.updateReport = function() {
-        <%=
-            params = { :controller => 'redcase/combos', :action => 'index', :environment_id => @environment.id, :suite_id => get_id_or_default(@execroot, -1) }
-			version = Version.find_by_project_id(@project.id, :order => 'created_on desc')
-            params['version_id'] = version.id if (version)
-            remote_function :url => params, :update => "combos_id", :complete => "jQuery2('#versionx').change()"
-        %>		
-    }    
-</script>
-
 <!-- Loading execution suites for project every time when this form is reloading -->
-<% @lists = ExecutionSuite.find_all_by_project_id(@project.id) %>
+<% @lists = ExecutionSuite.where({project_id: @project.id}) %>
 
 <!-- AJAX form to manage execution suites -->
-<%= form_for :list, :remote => true, :url => { :controller => :executionsuites, :action => 'update', :project_id => @project.id }, :update => :management_execution_suites_id, :complete => 'Redcase.full()', :html => { :id => 'list_form' } do |f| %>
+<%= form_for :list, :remote => true, :url => { :controller => 'redcase/executionsuites', :action => 'update', :project_id => @project.id }, :update => :management_execution_suites_id, :complete => 'Redcase.full()', :html => { :id => 'list_form' } do |f| %>
 	<h3>
         <%= l('label_execution_suite') %>: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
         <%= observe_field :list_id, :function => 'Redcase.ExecutionSuiteTree.refresh()', :with => 'list_id' %>

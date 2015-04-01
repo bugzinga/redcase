@@ -235,7 +235,7 @@ Redcase.ExecutionSuiteTree.renameSuiteDialog = function (params) {
 			'OK' : function() {
 				var 
 				name = jQuery('#redcase-dialog-value').val();
-				renameSuite(node.original.suite_id, name, function () {Redcase.ExecutionSuiteTree.tree.set_text(node, name);}, function () {jQuery('#redcase-dialog').dialog('close')})
+				Redcase.ExecutionSuiteTree.renameSuite(node.original.suite_id, name, function () {Redcase.ExecutionSuiteTree.tree.set_text(node, name);}, function () {jQuery('#redcase-dialog').dialog('close')})
 			}
 		}
 	});
@@ -309,7 +309,7 @@ Redcase.ExecutionSuiteTree.moveTestSuite = function (new_node, org_node, new_ins
 
 Redcase.ExecutionSuiteTree.copyTestCase = function (new_node, org_node, new_instance, old_instance) {
 	var	apiParms = {};
-	if (org_node.original.status.issue_status.name === "In Progress") {
+	if (org_node.original.status.name === "In Progress") {
 		new_node.original = org_node.original;
 		
 		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(org_node.original.issue_id), {

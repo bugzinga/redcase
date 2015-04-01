@@ -134,7 +134,7 @@ Redmine::Plugin.register :redcase do
 		Project.send :include, ProjectPatch
 		Version.send :include, VersionPatch
 		User.send :include, UserPatch
-		RedcaseController.send :include, ApplicationControllerPatch
+#		RedcaseController.send :include, ApplicationControllerPatch
 	end
 	
 end

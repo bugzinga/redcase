@@ -36,7 +36,7 @@
                 <div id="chart_id" class="graph" style="width: 510px; height: 510px; padding: 4px">
 <%  
 	graphData = TestGraph.get_data(@version.id, @environment.id, @execroot.nil? ? -1 : @execroot.id, @project.id)
-	graph = open_flash_chart_object(500, 500, url_for(:controller => 'redcase/graph', :action => 'show', :all => graphData), true, '/plugin_assets/redcase/')
+	graph = open_flash_chart_object(500, 500, url_for(:controller => 'redcase/graph', :action => 'show', :all => graphData, :project_id => @project.id), true, '/plugin_assets/redcase/')
 %>
 					<%= graph.html_safe %>
                 </div>

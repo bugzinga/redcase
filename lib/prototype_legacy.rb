@@ -58,6 +58,14 @@ module PrototypeLegacy
 		end
 		options_for_javascript(js_options)
 	end
+	
+	def options_for_javascript(options)
+		if options.empty?
+			'{}'
+		else
+			"{#{options.keys.map { |k| "#{k}:#{options[k]}" }.sort.join(', ')}}"
+		end
+	end	
 				
 	def build_callbacks(options)
 		_CALLBACKS = Set.new([ :create, :uninitialized, :loading, :loaded,

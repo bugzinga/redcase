@@ -1,6 +1,6 @@
 resources :projects do
 	namespace :redcase do
-		resources :environments, only: [:create, :update, :destroy]
+		resources :environments, only: [:index, :create, :update, :destroy]
 		resources :testsuites, only: [:index, :create, :update, :destroy]
 		resources :testcases, only: [:index, :update]
 		resources :executionsuites, only: [:index, :update, :create, :destroy, :show]		
@@ -12,5 +12,4 @@ resources :projects do
 end
 
 get 'projects/:id/redcase', :to => 'redcase#index'
-get 'projects/:id/redcase/get_attachments_urls', :to => 'redcase#get_attachments_urls'
-get 'projects/:id/:controller/:action', constraints: {controller: /redcase/}
+get 'projects/:id/redcase/get_attachment_urls', :to => 'redcase#get_attachment_urls'

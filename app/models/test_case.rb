@@ -5,10 +5,10 @@ class TestCase < ActiveRecord::Base
 	has_and_belongs_to_many :execution_suites, :join_table => "execution_suite_test_case"
 	has_many :execution_journals, :dependent => :destroy
 	
-	include ApplicationHelper
-	
+	attr_protected :id
+		
 	def self.maintenance(project)
-		all_issues = Issue.find_all_by_project_id(project.id, :include => [ :tracker, :test_case, :status ]);
+		all_issues = Issue.includes(:tracker, :test_case, :status).where({project_id: project.id})
 		
 		cleanup_obsolete(all_issues, project)
 		move_unsorted(all_issues, project)
@@ -68,13 +68,14 @@ class TestCase < ActiveRecord::Base
 		return included	
 	end
 	
-	def to_json
+	#TODO Move to view f.ex. using JBuilder (https://github.com/rails/jbuilder)
+	def to_json(context)
 		atext = issue_id.to_s + ' - ' + issue.subject
 		lastresult = 'none'
 		if execution_journals.any?
 			lastresult = execution_journals.last.result.name.gsub ' ', ''
 		end
-		textilized_description = (textilizable(issue.description.gsub(/#\d/) { |s| s.gsub("#", "N") }) if issue.description)
+		textilized_description = issue.description ? context.textilizable(issue, :description, {}) : ''
 		{
 			'id' => 'issue_' + issue_id.to_s,
 			'issue_id'     => issue_id,

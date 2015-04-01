@@ -6,7 +6,10 @@ class ExecutionJournal < ActiveRecord::Base
 	belongs_to :result, :class_name => 'ExecutionResult'
 	belongs_to :executor, :class_name => 'User'
 	belongs_to :environment, :class_name => 'ExecutionEnvironment'
+	
+	attr_protected :id
 
+	#TODO Move to view f.ex. using JBuilder (https://github.com/rails/jbuilder)
 	def to_json
 	{
 		'created_on'  => created_on.strftime('%d.%m.%Y %H:%M:%S'),
@@ -20,6 +23,6 @@ class ExecutionJournal < ActiveRecord::Base
 	
 	def self.find_by_issue_id(issue_id)
 		test_case = TestCase.find_by_issue_id(issue_id)
-		return ExecutionJournal.find(:all, :order => 'created_on desc', :conditions => 'test_case_id = ' + test_case.id.to_s)
+		return ExecutionJournal.order('created_on desc').where({test_case_id: test_case.id})
 	end
 end

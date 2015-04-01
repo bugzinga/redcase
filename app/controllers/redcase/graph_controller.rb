@@ -1,9 +1,6 @@
-class GraphController < ApplicationController
-	# TODO: remove it later
-	#skip_before_filter :verify_authenticity_token
-
+require 'open_flash_chart/open_flash_chart'
+class Redcase::GraphController < ApplicationController
 	unloadable
-	#helper RedcaseHelper
 	before_filter :find_project, :authorize
 	
 	def show

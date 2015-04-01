@@ -22,10 +22,10 @@ class Rtf_Exporter
 	end
 	
 	def self.getTestCases(suite_id, project)
-		issues = Issue.find_all_by_project_id(project.id).collect { |i| i.id}
-		test_cases = TestCase.find(:all, :conditions => { :issue_id => issues })
+		issues = Issue.where({project_id: project.id}).collect { |i| i.id}
+		test_cases = TestCase.where({issue_id: issues})
 		if (suite_id >= 0)
-			test_cases.select! {|tc| tc.in_suite?(suite_id, project.id)}
+			test_cases = test_cases.select {|tc| tc.in_suite?(suite_id, project.id)}
 		end	
 		return test_cases
 	end

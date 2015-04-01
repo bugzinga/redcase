@@ -1,12 +1,13 @@
 
 <!-- Loading test environments for project every time when this form is reloading -->
-<% environments = ExecutionEnvironment.find_all_by_project_id(project.id) %>
+<% environments = ExecutionEnvironment.where({project_id: project.id}) %>
 
 <!-- AJAX form to manage test environments -->
-<%= form_for environment, :remote => true, :url => { :controller => 'redcase/environments', :action => :update, :project_id => project.id }, :update => :management_environments_id, :complete => 'Redcase.full()', :html => { :id => 'environment_form_id' }  do |f| %>
+<%= form_for environment, :remote => true, :url => { :controller => 'redcase/environments', :action => :create, :project_id => project.id }, :update => :management_environments_id, :complete => 'Redcase.full()', :html => { :id => 'environment_form_id' }  do |f| %>
+<!--%= form_for environment, :remote => true, :update => :management_environments_id, :complete => 'Redcase.full()', :html => { :id => 'environment_form_id' }  do |f| %-->
 	<h3>
         <%= l('label_environment') %>: <%= f.select :id, environments.collect { |e| [ e.name, e.id ] } %>
-        <%= observe_field :execution_environment_id, :url => { :controller => 'redcase/environments', :action => :index, :project_id => project.id }, :with => 'execution_environment_id', :update => :management_environments_id, :complete => 'Redcase.Environments.bind()' %>
+        <!--%= observe_field :execution_environment_id, :url => { :controller => 'redcase/environments', :action => :index, :project_id => project.id }, :with => 'execution_environment_id', :update => :management_environments_id, :complete => 'Redcase.Environments.bind()' %-->
     </h3>
     <p>
         <%= f.text_field :name %>

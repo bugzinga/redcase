@@ -1,6 +1,6 @@
 
 <!-- Loading execution suites for project every time when this form is reloading -->
-<% lists2 = ExecutionSuite.find_all_by_project_id(@project.id) %>
+<% lists2 = ExecutionSuite.where({project_id: @project.id}) %>
 
 
     <div>
@@ -26,7 +26,7 @@
 </td>            
 <td>
 <h3 id="execution-settings-version">
-            <%= select_tag 'version', options_for_select(Version.find_all_by_project_id(@project.id).collect { |res| res.name }, @version.name ) %>
+            <%= select_tag 'version', options_for_select(Version.where({project_id: @project.id}).collect { |res| res.name }, @version.name ) %>
         </h3>
         </td>
 </tr>
@@ -38,7 +38,7 @@
 </td>            
 <td>
 <h3 id="execution-settings-environment">
-            <%= select_tag 'environments', options_for_select(ExecutionEnvironment.find(:all, :conditions => "project_id = #{@project.id}", :order => 'name asc').collect { |res| [res.name, res.id] }) %>
+            <%= select_tag 'environments', options_for_select(ExecutionEnvironment.order('name asc').where({project_id: @project.id}).collect { |res| [res.name, res.id] }) %>
         </h3>
 </td>
 </tr>

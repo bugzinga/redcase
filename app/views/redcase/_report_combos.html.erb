@@ -4,11 +4,7 @@
       <%= l('label_version') %>:
 	</td>
     <td>
-      <%= select_tag(:versionx, options_from_collection_for_select(Version.find_all_by_project_id(@project.id), 'id', 'name', @version.id), :style => 'width: 225px') %>
-      <%= observe_field :versionx, :url => { :controller => 'redcase/combos', :action => 'index', :environment_id => @environment.id, :suite_id => get_id_or_default(@execroot, -1)}, :with => 'version_id', :update => 'combos_id' %>
-      <%= observe_field :versionx, :url => { :controller => 'redcase/graph', :action => 'show', :environment_id => @environment.id, :suite_id => get_id_or_default(@execroot, -1)}, :with => 'version_id', :update => 'chart_id' %>
-      <%= observe_field :versionx, :url => { :controller => 'redcase/executionsuites', :action => 'index', :get_results => true, :project_id => @project.id, :environment_id => @environment.id, :suite_id => get_id_or_default(@execroot, -1)}, :with => 'version_id', :update => 'report_results_table_id' %>
-      <%= observe_field :versionx, :url => { :controller => 'redcase/combos', :action => 'index', :button => true, :project_id => @project.id, :environment_id => @environment.id, :suite_id => get_id_or_default(@execroot, -1)}, :with => 'version_id', :update => 'download_button_id' %>
+      <%= select_tag(:versionx, options_from_collection_for_select(Version.where({project_id: @project.id}), 'id', 'name', @version.id), :style => 'width: 225px', :class => "report_combo") %>
     </td>
   </tr>
   <tr>
@@ -16,11 +12,7 @@
       <%= l('label_execution_suite') %>:
 	</td>
     <td>
-      <%= select_tag(:suite, options_for_select([['All', '-1']]) + options_from_collection_for_select(ExecutionSuite.find_all_by_project_id(@project.id), 'id', 'name', get_id_or_default(@execroot, -1)), :style => 'width: 225px') %>
-      <%= observe_field :suite, :url => { :controller => 'redcase/combos', :action => 'index', :environment_id => @environment.id, :version_id => @version.id}, :with => 'suite_id', :update => 'combos_id' %>
-      <%= observe_field :suite, :url => { :controller => 'redcase/graph', :action => 'show', :environment_id => @environment.id, :version_id => @version.id}, :with => 'suite_id', :update => 'chart_id' %>
-      <%= observe_field :suite, :url => { :controller => 'redcase/executionsuites', :action => 'index', :get_results => true, :project_id => @project.id, :environment_id => @environment.id, :version_id => @version.id}, :with => 'suite_id', :update => 'report_results_table_id' %>
-      <%= observe_field :suite, :url => { :controller => 'redcase/combos', :action => 'index', :button => true, :environment_id => @environment.id, :version_id => @version.id}, :with => 'suite_id', :update => 'download_button_id' %>
+      <%= select_tag(:suite, options_for_select([['All', '-1']]) + options_from_collection_for_select(ExecutionSuite.where({project_id: @project.id}), 'id', 'name', get_id_or_default(@execroot, -1)), :style => 'width: 225px', :class => "report_combo") %>
     </td>
   </tr>  
   <tr>
@@ -28,11 +20,7 @@
       <%= l('label_environment') %>:
 	</td>
     <td>
-      <%= select_tag :environment, options_from_collection_for_select(ExecutionEnvironment.find_all_by_project_id(@project.id), 'id', 'name', @environment.id), :style => 'width: 225px' %>
-      <%= observe_field :environment, :url => { :controller => 'redcase/combos', :action => 'index', :version_id => @version.id, :suite_id => get_id_or_default(@execroot, -1) }, :with => 'environment_id', :update => 'combos_id' %>
-      <%= observe_field :environment, :url => { :controller => 'redcase/graph', :action => 'show', :version_id => @version.id, :suite_id => get_id_or_default(@execroot, -1) }, :with => 'environment_id', :update => 'chart_id' %>
-      <%= observe_field :environment, :url => { :controller => 'redcase/executionsuites', :action => 'index', :get_results => true, :project_id => @project.id, :version_id => @version.id, :suite_id => get_id_or_default(@execroot, -1) }, :with => 'environment_id', :update => 'report_results_table_id' %>
-      <%= observe_field :environment, :url => { :controller => 'redcase/combos', :action => 'index', :button => true, :version_id => @version.id, :suite_id => get_id_or_default(@execroot, -1) }, :with => 'environment_id', :update => 'download_button_id' %>
+      <%= select_tag :environment, options_from_collection_for_select(ExecutionEnvironment.where({project_id: @project.id}), 'id', 'name', @environment.id), :style => 'width: 225px', :class => "report_combo" %>
     </td>
   </tr>
 </table>

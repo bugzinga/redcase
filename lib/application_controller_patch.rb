@@ -16,16 +16,16 @@
 module ApplicationControllerPatch
 
   def self.included(base)
-    base.class_eval do
-    
-      alias_method :redmine_api_request?, :api_request?
-
-      def api_request?
-        false
-        #redmine_api_request?
-      end
-
+    base.send(:include, InstanceMethods)
+    base.class_eval do	        
+	  alias_method_chain :api_request?, :redcase
     end
+  end
+  module InstanceMethods
+	  def api_request_with_redcase?
+		false
+		#redmine_api_request?
+	  end
   end
 
 end

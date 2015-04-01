@@ -1,19 +1,15 @@
-class TestsuitesController < ApplicationController
-	# TODO: remove it later
-	#skip_before_filter :verify_authenticity_token
-
+class Redcase::TestsuitesController < ApplicationController
 	unloadable
-	#helper RedcaseHelper
 	before_filter :find_project, :authorize
 	
 	def index
-		testsuites = TestSuite.get_root_for_project(@project).to_json
+		testsuites = TestSuite.get_root_for_project(@project).to_json(view_context)
 		render :json => testsuites
 	end	
 	
 	def create
 		created = TestSuite.create(:name => params[:name], :parent_id => params[:parent_id])
-		render :json => created.to_json
+		render :json => created.to_json(view_context)
 	end
 	
 	def update		

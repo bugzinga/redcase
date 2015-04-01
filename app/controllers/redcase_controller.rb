@@ -1,9 +1,6 @@
 require 'open_flash_chart/open_flash_chart'
 
 class RedcaseController < ApplicationController
-	# TODO: remove it later
-	#skip_before_filter :verify_authenticity_token
-
 	unloadable
 	helper RedcaseHelper
 	before_filter :find_project, :authorize
@@ -16,7 +13,7 @@ class RedcaseController < ApplicationController
 		redcase_performance.stop
 
 		redcase_performance.start('Getting project last version')
-		@version = Version.find_by_project_id(@project.id, :order => 'created_on desc')
+		@version = Version.order('created_on desc').find_by_project_id(@project.id)
 		redcase_performance.stop
 
 		redcase_performance.start('Getting default environment')

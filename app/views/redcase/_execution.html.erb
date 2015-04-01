@@ -26,7 +26,7 @@
 				<%= text_area_tag 'exec-comment', nil, :rows => 4, :style => 'width: 95%' %>
                 <br/>
 				<%= l('label_result') %>:
-				<%= select_tag 'results', options_for_select(ExecutionResult.find(:all, :order => 'order_number asc').collect { |res| res.name }) %>
+				<%= select_tag 'results', options_for_select(ExecutionResult.order('order_number asc').collect { |res| res.name }) %>
                 &nbsp;
 				<%= submit_tag l(:label_button_save), :onclick => 'Redcase.ExecutionTree.execute()' %>
                 <br/>

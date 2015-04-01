@@ -1,14 +1,12 @@
-class ExecutionsuitesController < ApplicationController
-	# TODO: remove it later
-	#skip_before_filter :verify_authenticity_token
-
+class Redcase::ExecutionsuitesController < ApplicationController
 	unloadable
 	before_filter :find_project, :authorize
+	
 	
 	def index
 		if params[:get_results].nil?
 			@list2 = ExecutionSuite.find_by_project_id(@project.id)
-			@version = Version.find_by_project_id(@project.id, :order => 'created_on desc')
+			@version = Version.order('created_on desc').find_by_project_id(@project.id)
 			render :partial => 'redcase/execution_list'		
 		else
 			@environment = ExecutionEnvironment.find(params[:environment_id])
@@ -20,7 +18,7 @@ class ExecutionsuitesController < ApplicationController
 	end
 	
 	def show
-		render :json => ExecutionSuite.find(params[:id]).to_json
+		render :json => ExecutionSuite.find(params[:id]).to_json(view_context)
 	end
 	
 	def create
@@ -29,7 +27,7 @@ class ExecutionsuitesController < ApplicationController
 		else
 			executionSuite = ExecutionSuite.create(:name => params[:name], :parent_id => params[:parent_id])
 		end
-		render :json => executionSuite.to_json
+		render :json => executionSuite.to_json(view_context)
 	end
 	
 	def update		

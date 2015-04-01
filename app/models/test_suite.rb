@@ -3,6 +3,8 @@ class TestSuite < ActiveRecord::Base
 	acts_as_tree :order => "name"
 	has_many :test_cases, :dependent => :destroy
 	belongs_to :project
+	
+	attr_protected :id
 
 	# Returns root test suite linked to the project and creates one and nested 'system'
 	# test suites (for 'obsolete' and 'unsorted' test cases) if they don't exist yet
@@ -23,29 +25,30 @@ class TestSuite < ActiveRecord::Base
 		return TestSuite.get_root_for_project(project).children.detect { |o| o.name == ".Obsolete"}	
 	end
 	
-	def to_json
+	#TODO Move to view f.ex. using JBuilder (https://github.com/rails/jbuilder)
+	def to_json(context)
 		if parent_id then
 			kids = children.collect { |s|
-				s.to_json
+				s.to_json(context)
 			} + test_cases.sort_by { |x|
 				x.issue.subject
 			}.collect { |tc|
-				tc.to_json
+				tc.to_json(context)
 			}
 		else
 			kids = children.select { |x|
 				(x.name != '.Obsolete' and x.name != '.Unsorted')
 			}.collect { |s|
-				s.to_json
+				s.to_json(context)
 			} +
 			test_cases.sort_by { |x|
 			x.issue.subject }.collect { |tc|
-				tc.to_json
+				tc.to_json(context)
 			} +
 			children.select { |x|
 				(x.name == '.Obsolete' or x.name == '.Unsorted')
 			}.collect { |s|
-				s.to_json
+				s.to_json(context)
 			}
 
 		end
@@ -60,7 +63,6 @@ class TestSuite < ActiveRecord::Base
 			'draggable'      => (!parent.nil? and !((name == ".Unsorted" or name == ".Obsolete") and parent.parent.nil?)),
 			'state' => { 'opened' => parent.nil? },
 			'type' => 'suite'
-			#'type' => name != ".Obsolete" ? 'suite' : 'obsolete'
 		}	
 	end
 end

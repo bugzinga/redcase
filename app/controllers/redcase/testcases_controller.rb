@@ -1,13 +1,10 @@
-class TestcasesController < ApplicationController
-	# TODO: remove it later
-	#skip_before_filter :verify_authenticity_token
-
+class Redcase::TestcasesController < ApplicationController
 	unloadable
 	before_filter :find_project, :authorize
 	
 	def index
-		testCase = TestCase.find(:first, :conditions => 'issue_id = ' + params[:object_id])
-		render :json => testCase.to_json
+		testCase = TestCase.where({issue_id: params[:object_id]}).first
+		render :json => testCase.to_json(view_context)
 	end	
 	
 	def create
@@ -15,7 +12,7 @@ class TestcasesController < ApplicationController
 	end
 	
 	def update		
-		testCase = TestCase.find(:first, :conditions => 'issue_id = ' + params[:id])
+		testCase = TestCase.where({issue_id: params[:id]}).first
 		testCase.test_suite = TestSuite.find(params[:parent_id]) unless params[:parent_id].nil?
 		testCase.change_execution_suite(params[:source_exec_id], params[:dest_exec_id]) unless params[:source_exec_id].nil? or params[:dest_exec_id].nil?
 		testCase.add_to_execution_suite(params[:dest_exec_id]) unless !params[:source_exec_id].nil? or params[:dest_exec_id].nil?
@@ -45,8 +42,8 @@ class TestcasesController < ApplicationController
 		comment = params[:comment].blank? ? nil : params[:comment]
 		result = ExecutionResult.find_by_name(params[:result])
 		environment = ExecutionEnvironment.find(params[:envs])
-		ExecutionJournal.create(:version => version, :comment => comment, :test_case => testCase, :result => result, :executor => User.current, :environment => environment)
-		render :json => ExecutionJournal.find(:all, :order => 'created_on desc', :conditions => 'test_case_id = ' + testCase.id.to_s).collect { |j| j.to_json }	
+		ExecutionJournal.create(version: version, comment: comment, test_case: testCase, result: result, executor: User.current, environment: environment)
+		render :json => ExecutionJournal.order('created_on desc').where({test_case_id: testCase.id}).collect { |j| j.to_json }	
 	end
 end
 

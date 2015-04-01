@@ -5,8 +5,6 @@ require 'application_helper'
 require 'prototype_legacy'
 
 module RedcaseHelper
-	include ApplicationHelper
-
 	def get_id_or_default(obj, defaultval)
 		if obj.respond_to?(:id)
 			return obj.id
@@ -18,7 +16,7 @@ module RedcaseHelper
 	module_function :get_id_or_default	
 
 	def get_plugin_tabs(project)
-		if Version.find_all_by_project_id(project.id).length == 0
+		if Version.where({project_id: project.id}).length == 0
 			tabs = [
 				{:name => 'Management', :partial => 'redcase/management', :label => :label_test_case_management}
 			]

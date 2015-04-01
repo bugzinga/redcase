@@ -69,6 +69,10 @@ var Redcase = {
 		'environments' : {
 			'controller' : 'environments',			
 			'actions' : {
+				'index' : {'getCall': function() {return {
+					method : Redcase.methods.environments.controller,
+					httpMethod: 'GET'
+				}}},				
 				'update' : {'getCall': function(id) {return {
 					method : Redcase.methods.environments.controller + '/' + id,
 					httpMethod: 'PUT'
@@ -96,6 +100,28 @@ var Redcase = {
 					'getCall': function(id) {return {
 						method : Redcase.methods.testCase.controller + '/' + id,
 						httpMethod: 'PUT',
+					}}
+				}
+			}
+		},		
+		'combos' : {
+			'controller' : 'combos',
+			'actions' : {
+				'index' : {
+					'getCall': function() {return {
+						method : Redcase.methods.combos.controller,
+						httpMethod: 'GET'
+					}}
+				}
+			}
+		},		
+		'graph' : {
+			'controller' : 'graph',
+			'actions' : {
+				'show' : {
+					'getCall': function(id) {return {
+						method : Redcase.methods.graph.controller + '/' + id,
+						httpMethod: 'GET'
 					}}
 				}
 			}
@@ -152,6 +178,7 @@ var Redcase = {
     'full' : function() {
 		console.log('running full update!')
 		Redcase.ExecutionSuiteTree.updateList2();
-        Redcase.updateReport();
+        //Redcase.updateReport();
+		Redcase.Combos.update();
     }	
 };

@@ -9,16 +9,16 @@ class Redcase::EnvironmentsController < ApplicationController
 	end
 
 	def create
-		environment = ExecutionEnvironment.new params[:execution_environment]
+		environment = ExecutionEnvironment.new(params[:execution_environment])
 		environment.project_id = @project.id
 		environment.save	
 		render :json => environment
 	end
 	
 	def update
-		environment = ExecutionEnvironment.find params[:id]
+		environment = ExecutionEnvironment.find(params[:id])
 		environment.update_attributes params[:execution_environment]
-		if params[:execution_environment][:project_id] then
+		if params[:execution_environment][:project_id]
 			environment.project_id = params[:execution_environment][:project_id]
 		end
 		environment.save		
@@ -26,7 +26,7 @@ class Redcase::EnvironmentsController < ApplicationController
 	end
 	
 	def destroy
-		environment = ExecutionEnvironment.find params[:id]
+		environment = ExecutionEnvironment.find(params[:id])
 		environment.destroy
 		
 		render :json => {:success => true}

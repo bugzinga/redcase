@@ -31,8 +31,7 @@ class Excel_Exporter
 				rows << row.clone
 			end
 		}
-		buffer = ''
-		rows.each { |row| buffer += CSV.generate_line(row) }
-		return buffer
+		bom = "\357\273\277" #UTF-8 Byte Order Mark
+		bom + rows.inject('') { |buffer, row| buffer += CSV.generate_line(row); buffer }.force_encoding("utf-8")
 	end	
 end

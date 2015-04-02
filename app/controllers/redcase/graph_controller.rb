@@ -5,36 +5,35 @@ class Redcase::GraphController < ApplicationController
 	
 	def show
 		if params[:all]
-			count = 0
-			keys = []
-			values = []
-			params[:all].each { |key, value| count += value.to_i }
+			count = params[:all].inject(0) { |accumulator, (key, value)| accumulator += value.to_i; accumulator }			
 			keys = params[:all].collect { |key, value| "#{key} (#{value})" if value.to_i != 0 }.compact
-			color=[]
-			params[:all].each { |key, value|
+			values = params[:all].values.collect { |value| 100 * value.to_i / count if value.to_i != 0}.compact
+			
+			color = params[:all].inject([]) { |colors, (key, value)|
 				if value.to_i != 0 then
-					if key == "Failed"
-						color << "#FF9999"
-					elsif key == "Passed"
-						color << "#99FF33"
-					elsif key == "Blocked"
-						color << "#9999CC"
-					elsif key == "Not Executed"
-						color << "#FFFFFF"
-					elsif key == "Not Available"
-						color <<  "#000000"
-					end
+					case key
+					when "Failed"
+						colors << "#FF9999"
+					when "Passed"
+						colors << "#99FF33"
+					when "Blocked"
+						colors << "#9999CC"
+					when "Not Executed"
+						colors << "#FFFFFF"
+					when "Not Available"
+						colors <<  "#000000"
+					end			
 				end
-			}
-			values = params[:all].values.collect { |x| 100 * x.to_i / count if x.to_i != 0}.compact
-			g = Graph.new
-			g.set_swf_path('plugin_assets/redcase/')
-			g.pie(60, '#505050', '{font-size: 12px; color: #404040; background-color: white}')
-			g.pie_values(values, keys)
-			g.set_tool_tip("#val#%")
-			g.set_bg_color('#ffffff')
-			g.pie_slice_colors(color)
-			render :text => g.render		
+				colors
+			}			
+			graph = Graph.new
+			graph.set_swf_path('plugin_assets/redcase/')
+			graph.pie(60, '#505050', '{font-size: 12px; color: #404040; background-color: white}')
+			graph.pie_values(values, keys)
+			graph.set_tool_tip("#val#%")
+			graph.set_bg_color('#ffffff')
+			graph.pie_slice_colors(color)
+			render :text => graph.render		
 		else
 			environment = ExecutionEnvironment.find(params[:environment_id])
 			version = Version.find(params[:version_id])

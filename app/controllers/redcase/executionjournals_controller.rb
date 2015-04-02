@@ -3,12 +3,12 @@ class Redcase::ExecutionjournalsController < ApplicationController
 	before_filter :find_project, :authorize
 	
 	def index
-		if (!params[:issue_id].nil?)
+		if !params[:issue_id].nil?
 			journals = ExecutionJournal.find_by_issue_id(params[:issue_id])
 		else
 			journals = ExecutionJournal.order('created_on desc')
 		end
-		render :json => journals.collect { |j| j.to_json }			
+		render :json => journals.map(&:to_json)
 	end	
 	
 	def find_project

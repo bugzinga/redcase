@@ -12,22 +12,23 @@ class ExecutionSuite < ActiveRecord::Base
 		if execution_suite.nil?
 			execution_suite = ExecutionSuite.create(:name => "Root", :project => project)
 		end
-		return execution_suite
+		execution_suite
 	end
 	
-	def self.get_results(environment, version, suite_id, project_id)	
-		issues = Issue.where({project_id: project_id}).collect { |i| i.id }
-		test_cases = TestCase.where({issue_id: issues})
-		unless suite_id < 0
-			test_cases = test_cases.select {|tc| tc.in_suite?(suite_id, project_id) }			
+	def self.get_results(environment, version, suite_id, project_id)
+	    if environment and version
+			issues = Issue.where({project_id: project_id}).collect { |i| i.id }
+			test_cases = TestCase.where({issue_id: issues})
+			unless suite_id < 0
+				test_cases = test_cases.select {|tc| tc.in_suite?(suite_id, project_id) }			
+			end
+			test_cases.inject([]) {|journals, tc| 
+				journals << ExecutionJournal.order('created_on desc').find_by_test_case_id_and_environment_id_and_version_id(tc.id, environment.id, version.id)
+				journals
+			}.compact		
+		else
+			[]
 		end
-		results = []
-		test_cases.each do |tc|
-			found = ExecutionJournal.order('created_on desc').find_by_test_case_id_and_environment_id_and_version_id(tc.id, environment.id, version.id)
-			results << found
-		end
-		return results.compact	
-
 	end
 	
 	#TODO Move to view f.ex. using JBuilder (https://github.com/rails/jbuilder)

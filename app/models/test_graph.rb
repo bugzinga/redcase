@@ -5,7 +5,7 @@ class TestGraph
 		all = {}
 		ExecutionResult.all.each { |r| all[r.name] = 0 }
 		un_count = 0
-		TestCase.includes(execution_journals: [ :result ]).joins(:issue).where('issues.project_id': project_id).each do |tc|
+		TestCase.includes(execution_journals: [ :result ]).joins(:issue).where({'issues.project_id' => project_id}).each do |tc|
 			if (suite_id.to_i >= 0) then
 				included = tc.in_suite?(suite_id, project_id)
 			else

@@ -2,8 +2,7 @@ class TestGraph
 	unloadable
 
 	def self.get_data(version_id, environment_id, suite_id, project_id)
-		all = {}
-		ExecutionResult.all.each { |r| all[r.name] = 0 }
+		all = ExecutionResult.all.inject({}) { |names, result| names[result.name] = 0; names; }		
 		un_count = 0
 		TestCase.includes(execution_journals: [ :result ]).joins(:issue).where({'issues.project_id' => project_id}).each do |tc|
 			if (suite_id.to_i >= 0) then

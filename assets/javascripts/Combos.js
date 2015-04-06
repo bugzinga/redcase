@@ -38,21 +38,8 @@ Redcase.Combos.changed = function() {
 		errorMessage : "An unknown error ocurred"
 	});
 	Redcase.apiCall(apiParms);
-
 	
-	apiParms = {};	
-	jQuery2.extend(apiParms, Redcase.methods.graph.actions.show.getCall(0), {
-		params : {
-			'environment_id' : jQuery2('#environment').val(),
-			'suite_id': jQuery2('#suite').val(),
-			'version_id': jQuery2('#versionx').val()
-		},		
-		success : function(data, textStatus, request) {
-			jQuery2('#chart_id').html(data);
-		},
-		errorMessage : "Couldn't load graph"
-	});
-	Redcase.apiCall(apiParms);	
+	Redcase.Graph.update();
 	
 	apiParms = {};	
 	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.index.getCall(), {

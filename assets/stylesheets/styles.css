@@ -1,4 +1,4 @@
-
+﻿
 #report_results_table_id {
 	text-align: center;
 	background-image: url('../images/y.jpg');
@@ -413,5 +413,13 @@ a:hover img {
         background-image: url(../images/NotAvailable.png) !important;
 }
 
+.jschart-legend-table {
+	font-size: 80%;
+	border-collapse: collapse;
+}
 
+.jschart-legend-cell {
+}
 
+.jschart-legend-row {
+}

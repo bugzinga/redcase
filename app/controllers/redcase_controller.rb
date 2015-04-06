@@ -1,5 +1,3 @@
-require 'open_flash_chart/open_flash_chart'
-
 class RedcaseController < ApplicationController
 	unloadable
 	helper RedcaseHelper

@@ -8,16 +8,13 @@
 	<!-- jstree -->
 	<%= stylesheet_link_tag '../javascripts/jstree/themes/default/style.min.css', :plugin => 'redcase' %>	
 
-	<!-- Flash chart -->
-	<%= javascript_include_tag 'swfobject', :plugin => 'redcase' %>
 	<!-- jQuery 2 -->
 	<%= javascript_include_tag 'jquery 2.1.3/jquery-2.1.3.min.js', :plugin => 'redcase' %>
 	<!-- jstree -->
 	<%= javascript_include_tag 'jstree/jstree.min.js', :plugin => 'redcase' %>
 <script type="text/javascript">
   // NonConflict jQuery
-  var jQuery2 = $.noConflict(true);
-  
+  var jQuery2 = $.noConflict(true);  
 </script>  	    	
 	<!-- Redcase -->
 	<%= javascript_include_tag 'logging', :plugin => 'redcase' %>
@@ -28,7 +25,8 @@
 	<%= javascript_include_tag 'ExecutionTree', :plugin => 'redcase' %>
 	<%= javascript_include_tag 'Environments', :plugin => 'redcase' %>
 	<%= javascript_include_tag 'Combos', :plugin => 'redcase' %>
-
+	<%= javascript_include_tag 'chartjs/Chart.min.js', :plugin => 'redcase' %>
+	<%= javascript_include_tag 'chart.js', :plugin => 'redcase' %>
 <% end %>
 
 <script type="text/javascript">

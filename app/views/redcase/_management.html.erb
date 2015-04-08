@@ -1,12 +1,11 @@
 
 <script>
-		jQuery2(function() {
+	jQuery2(function() {
 		// Collecting information about other projects (to copy test cases)...
-<% if false %>		
-<% for op in @other_projects %>
-		//Redcase.jsCopyToMenuItems.push({id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>', handler: onCopyTo});
-<% end %>
-<% end %>	
+<% Project.allowed_to(:add_issues).where('id <> ?', @project.id).each {|op| %>
+		Redcase.jsCopyToMenuItems.push({id: '<%= op.id %>', text: '<%= op.name.gsub(/'/, "\\\\'") %>'});
+<% } %>
+		Redcase.TestSuiteTree.initialize();
 	});
 </script>
 

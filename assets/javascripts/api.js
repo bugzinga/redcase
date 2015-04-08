@@ -101,6 +101,12 @@ var Redcase = {
 						method : Redcase.methods.testCase.controller + '/' + id,
 						httpMethod: 'PUT',
 					}}
+				},
+				'copy' : {
+					'getCall': function(id) {return {
+						method : Redcase.methods.testCase.controller + '/' + id + '/copy',
+						httpMethod: 'POST',
+					}}
 				}
 			}
 		},		

@@ -66,7 +66,8 @@ Redmine::Plugin.register :redcase do
 			'redcase/testcases' => [
 				:index,
 				:update,
-				:destroy
+				:destroy,
+				:copy
 			],
 			'redcase/executionjournals' => [
 				:index

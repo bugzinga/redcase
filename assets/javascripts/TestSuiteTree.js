@@ -1,9 +1,9 @@
-jQuery2(function() {
-	Redcase.TestSuiteTree.prepareContextItems();
-	Redcase.TestSuiteTree.build();
-});
-
 Redcase.TestSuiteTree = {};
+
+Redcase.TestSuiteTree.initialize = function() {
+	Redcase.TestSuiteTree.prepareContextItems();
+	Redcase.TestSuiteTree.build();	
+}
 
 Redcase.TestSuiteTree.CheckCallback = function (operation, node, node_parent, node_position, more) {
 	// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
@@ -120,6 +120,18 @@ Redcase.TestSuiteTree.getSelectionType = function (tree) {
 	return selectionType;
 }
 
+Redcase.TestSuiteTree.contextCopyTo = function(params) {
+	var
+	node = Redcase.TestSuiteTree.tree.get_node(params.reference),
+	apiParms = {};
+
+	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.copy.getCall(node.original.issue_id), {
+		params : {'dest_project' : params.item.id},
+		errorMessage : "Can't copy '" + node.text + "'"
+	});
+	Redcase.apiCall(apiParms);
+}
+
 Redcase.TestSuiteTree.prepareContextItems = function () {
 	var tmpObj = {},
 	copyItems = {};
@@ -127,6 +139,7 @@ Redcase.TestSuiteTree.prepareContextItems = function () {
 	for (i = 0; i < Redcase.jsCopyToMenuItems.length; i++) {
 		tmpObj['keyfor_' + Redcase.jsCopyToMenuItems[i].id] = {
 			'label' : Redcase.jsCopyToMenuItems[i].text,
+			'id': Redcase.jsCopyToMenuItems[i].id,
 			'action' : Redcase.TestSuiteTree.contextCopyTo
 		};
 		jQuery2.extend(copyItems, tmpObj);

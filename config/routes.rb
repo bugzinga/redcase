@@ -2,7 +2,9 @@ resources :projects do
 	namespace :redcase do
 		resources :environments, only: [:index, :create, :update, :destroy]
 		resources :testsuites, only: [:index, :create, :update, :destroy]
-		resources :testcases, only: [:index, :update]
+		resources :testcases, only: [:index, :update] do
+			post 'copy', on: :member
+		end
 		resources :executionsuites, only: [:index, :update, :create, :destroy, :show]		
 		resources :executionjournals, only: [:index]
 		resources :export, only: [:index]

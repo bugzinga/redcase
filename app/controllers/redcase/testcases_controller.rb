@@ -5,12 +5,18 @@ class Redcase::TestcasesController < ApplicationController
 	def index
 		testCase = TestCase.where({issue_id: params[:object_id]}).first
 		render :json => testCase.to_json(view_context)
-	end	
-	
-	def create
-
 	end
-	
+
+	def copy
+		destination_project = Project.find(params[:dest_project])
+		unless User.current.allowed_to?(:add_issues, destination_project)
+			raise ::Unauthorized
+		end
+		testCase = TestCase.where({issue_id: params[:id]}).first
+		testCase.copy_to(destination_project)
+		render :json => {:success => true}
+	end
+		
 	def update		
 		testCase = TestCase.where({issue_id: params[:id]}).first
 		testCase.test_suite = TestSuite.find(params[:parent_id]) unless params[:parent_id].nil?
@@ -26,11 +32,6 @@ class Redcase::TestcasesController < ApplicationController
 		end
 	end
 	
-	def destroy
-
-	end
-	
-		
 
 	private
 	def find_project

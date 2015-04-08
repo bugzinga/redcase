@@ -6,6 +6,23 @@ class TestCase < ActiveRecord::Base
 	has_many :execution_journals, :dependent => :destroy
 	
 	attr_protected :id
+	
+	def copy_to(project)		
+		new_issue = Issue.new
+		new_issue.copy_from(issue, :subtasks => false)
+		new_issue.project = project
+		# Changing project resets the custom field values
+		new_issue.custom_field_values = issue.custom_field_values.inject({}) {|h,v| h[v.custom_field_id] = v.value; h}
+		# Reassign fixed_versions by name, since names are unique per project
+		if issue.fixed_version && issue.fixed_version.project == project
+			new_issue.fixed_version = self.versions.detect {|v| v.name == issue.fixed_version.name}
+		end
+		# Reassign the category by name, since names are unique per project
+		if issue.category
+			new_issue.category = self.issue_categories.detect {|c| c.name == issue.category.name}
+		end
+		new_issue.save
+	end
 		
 	def self.maintenance(project)
 		all_issues = Issue.includes(:tracker, :test_case, :status).where({project_id: project.id})

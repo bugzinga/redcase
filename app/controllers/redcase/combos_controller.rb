@@ -6,7 +6,7 @@ class Redcase::CombosController < ApplicationController
 	def index
 		@environment = params[:environment_id] ? ExecutionEnvironment.find(params[:environment_id]) : ExecutionEnvironment.get_default_for_project(@project)
 		@version = params[:version_id] ? Version.find(params[:version_id]) : Version.order('created_on desc').find_by_project_id(@project.id)
-		@execroot = params[:suite_id] ? ExecutionSuite.find_by_id(params[:suite_id]) : ExecutionSuite.get_root_for_project(@project)
+		@root_execution_suite = params[:suite_id] ? ExecutionSuite.find_by_id(params[:suite_id]) : ExecutionSuite.get_root_for_project(@project)
 		if params[:button]
 			render :partial => 'redcase/report_download_button'
 		else

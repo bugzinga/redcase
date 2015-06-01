@@ -11,7 +11,7 @@ class Redcase::ExecutionsuitesController < ApplicationController
 		else
 			@environment = ExecutionEnvironment.find(params[:environment_id])
 			@version = Version.find(params[:version_id])
-			@execroot = ExecutionSuite.find_by_id(params[:suite_id])
+			@root_execution_suite = ExecutionSuite.find_by_id(params[:suite_id])
 			@results = ExecutionSuite.get_results(@environment, @version, params[:suite_id].to_i, @project.id)
 			render :partial => 'redcase/report_results'
 		end

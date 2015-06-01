@@ -5,8 +5,13 @@ class Redcase::GraphController < ApplicationController
 	def show
 		environment = ExecutionEnvironment.find(params[:environment_id])
 		version = Version.find(params[:version_id])
-		execroot = ExecutionSuite.find_by_id(params[:suite_id])
-		graphData = TestGraph.get_data(version.id, environment.id, execroot.nil? ? -1 : execroot.id, @project.id)
+		root_execution_suite = ExecutionSuite.find_by_id(params[:suite_id])
+		graphData = TestGraph.get_data(
+			version.id,
+			environment.id,
+			root_execution_suite.nil? ? -1 : root_execution_suite.id,
+			@project.id
+		)
 		render :json => get_json(graphData)
 	end
 	

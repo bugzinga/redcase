@@ -12,7 +12,9 @@
       <%= l('label_execution_suite') %>:
 	</td>
     <td>
-      <%= select_tag(:suite, options_for_select([['All', '-1']]) + options_from_collection_for_select(ExecutionSuite.where({project_id: @project.id}), 'id', 'name', get_id_or_default(@execroot, -1)), :style => 'width: 225px', :class => "report_combo") %>
+      <%= select_tag(:suite, options_for_select([['All', '-1']]) +
+	  options_from_collection_for_select(ExecutionSuite.where({project_id:
+	  @project.id}), 'id', 'name', get_id_or_default(@root_execution_suite, -1)), :style => 'width: 225px', :class => "report_combo") %>
     </td>
   </tr>  
   <tr>

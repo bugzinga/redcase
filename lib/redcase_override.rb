@@ -30,7 +30,7 @@ module RedcaseOverride
         return
       end
       root = TestSuite.get_root_for_project(context[:issue].project)
-      execroot = ExecutionSuite.get_root_for_project(context[:issue].project)
+      root_execution_suite = ExecutionSuite.get_root_for_project(context[:issue].project)
       x = TestCase.create(:issue => context[:issue], :test_suite => root.children.detect { |o| o.name == ".Unsorted" } )
     end
 

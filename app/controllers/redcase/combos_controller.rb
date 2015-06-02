@@ -38,6 +38,7 @@ class Redcase::CombosController < ApplicationController
 
 	private
 
+	# TODO: Extract to a base controller.
 	def find_project
 		@project = Project.find(params[:project_id] || params[:id])
 	end

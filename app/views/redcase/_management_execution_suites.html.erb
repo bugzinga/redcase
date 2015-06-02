@@ -1,25 +1,65 @@
 <!-- Loading execution suites for project every time when this form is reloading -->
 <% @lists = ExecutionSuite.where({project_id: @project.id}) %>
-
 <!-- AJAX form to manage execution suites -->
-<%= form_for :list, :remote => true, :url => { :controller => 'redcase/executionsuites', :action => 'update', :project_id => @project.id }, :update => :management_execution_suites_id, :complete => 'Redcase.full()', :html => { :id => 'list_form' } do |f| %>
+<%=
+	form_for(
+		:list,
+		:remote => true,
+		:url => {
+			:controller => 'redcase/executionsuites',
+			:action => 'update',
+			:project_id => @project.id
+		},
+		:update => :management_execution_suites_id,
+		:complete => 'Redcase.full()',
+		:html => { :id => 'list_form' }
+	) do |f|
+%>
 	<h3>
-        <%= l('label_execution_suite') %>: <%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
-        <%= observe_field :list_id, :function => 'Redcase.ExecutionSuiteTree.refresh()', :with => 'list_id' %>
+        <%= l('label_execution_suite') %>:
+		<%= f.select :id, @lists.collect { |e| [ e.name, e.id ] } %>
+        <%=
+			observe_field(
+				:list_id,
+				:function => 'Redcase.ExecutionSuiteTree.refresh()',
+				:with => 'list_id'
+			)
+		%>
     </h3>
     <p>
         <%= f.text_field :name %>
 		<a href="#" id="btn_save_exec_suite">
-			<%= image_tag('save.png', :plugin => 'redcase', :size=> '20x20', :style => 'vertical-align: middle') %>
+			<%=
+				image_tag(
+					'save.png',
+					:plugin => 'redcase',
+					:size=> '20x20',
+					:style => 'vertical-align: middle'
+				)
+			%>
 		</a>
 		<a href="#" id="btn_create_exec_suite">
-			<%= image_tag('add.jpg', :plugin => 'redcase', :size=> '13x13', :style => 'vertical-align: middle') %>
+			<%=
+				image_tag(
+					'add.jpg',
+					:plugin => 'redcase',
+					:size=> '13x13',
+					:style => 'vertical-align: middle'
+				)
+			%>
 		</a>
-<% if (@lists.length > 1) %>		
+<% if @lists.length > 1 %>
 		<a href="#" id="btn_destroy_exec_suite">
-			<%= image_tag('delete.jpg', :plugin => 'redcase', :size=> '13x13', :style => 'vertical-align: middle') %>
+			<%=
+				image_tag(
+					'delete.jpg',
+					:plugin => 'redcase',
+					:size=> '13x13',
+					:style => 'vertical-align: middle'
+				)
+			%>
 		</a>
-<% end %>		
+<% end %>
     </p>
 	<br/>
 <% end %>

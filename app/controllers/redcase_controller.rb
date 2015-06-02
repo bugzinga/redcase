@@ -24,6 +24,11 @@ class RedcaseController < ApplicationController
 		#       case specific, but rather provides general kind of
 		#       functionality. Or move it to some shared plugin entry point.
 		TestCase.maintenance(@project)
+		# TODO: Rename to execution_suites. Be aware that this name seems to
+		#       affect some names in views.
+		@list = ExecutionSuite
+			.where({ project: @project })
+			.detect { |es| es.parent.nil? }
 		@results = ExecutionSuite.get_results(
 			@environment,
 			# FIXME: The page can be opened when the project has no versions

@@ -1,50 +1,79 @@
-
 <!-- Loading execution suites for project every time when this form is reloading -->
 <% lists2 = ExecutionSuite.where({project_id: @project.id}) %>
-
-
-    <div>
-<table>
-<tr>
-<td>
-<h3 id="execution-settings-suite">
-            <%= l('label_execution_suite') %>:
-            </h3>
-</td>            
-<td>
-<h3 id="execution-settings-suite">
-            <!-- f.select :id, lists2.collect { |e| [ e.name, e.id ] } -->
-			<%= select_tag 'list2_id', options_for_select(lists2.collect { |e| [ e.name, e.id ] }) %>
-        </h3>
-        </td>
-</tr>
-<tr>
-<td>
-        <h3 id="execution-settings-version">
-            <%= l('label_version') %>:
-            </h3>
-</td>            
-<td>
-<h3 id="execution-settings-version">
-            <%= select_tag 'version', options_for_select(Version.where({project_id: @project.id}).collect { |res| res.name }, @version.name ) %>
-        </h3>
-        </td>
-</tr>
-<tr>
-<td>
-        <h3 id="execution-settings-environment">
-            <%= l('label_environment') %>:
-            </h3>
-</td>            
-<td>
-<h3 id="execution-settings-environment">
-            <%= select_tag 'environments', options_for_select(ExecutionEnvironment.order('name asc').where({project_id: @project.id}).collect { |res| [res.name, res.id] }) %>
-        </h3>
-</td>
-</tr>
-</table>
+<div>
+	<table>
+		<tr>
+			<td>
+				<h3 id="execution-settings-suite">
+					<%= l('label_execution_suite') %>:
+				</h3>
+			</td>
+			<td>
+				<h3 id="execution-settings-suite">
+					<!-- f.select :id, lists2.collect { |e| [ e.name, e.id ] } -->
+					<%=
+						select_tag(
+							'list2_id',
+							options_for_select(
+								lists2.collect { |e| [ e.name, e.id ] }
+							)
+						)
+					%>
+				</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3 id="execution-settings-version">
+					<%= l('label_version') %>:
+				</h3>
+			</td>
+			<td>
+				<h3 id="execution-settings-version">
+					<%=
+						select_tag(
+							'version',
+							options_for_select(
+								Version
+									.where({ project_id: @project.id })
+									.collect { |res| res.name },
+								@version.name
+							)
+						)
+					%>
+				</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<h3 id="execution-settings-environment">
+					<%= l('label_environment') %>:
+				</h3>
+			</td>
+			<td>
+				<h3 id="execution-settings-environment">
+					<%=
+						select_tag(
+							'environments',
+							options_for_select(
+								ExecutionEnvironment
+									.order('name asc')
+									.where({ project_id: @project.id })
+									.collect { |res| [res.name, res.id] }
+							)
+						)
+					%>
+				</h3>
+			</td>
+		</tr>
+	</table>
+	<br/>
+	<%=
+		observe_field(
+			:list2_id,
+			:function => 'Redcase.ExecutionTree.tree.refresh()',
+			:with => 'list2_id'
+		)
+	%>
+</div>
 <br/>
-        <%= observe_field :list2_id, :function => 'Redcase.ExecutionTree.tree.refresh()', :with => 'list2_id' %>
-    </div>
-    <br/>
-

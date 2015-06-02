@@ -1,4 +1,8 @@
 
+# TODO: "Combos" is not business case specific name, we need to come up with a
+#       better one. As this controller generates output for reports, it could be
+#       ReportController which would had two separate methods to generate two
+#       different kind of data (for the download button and the combo controls).
 class Redcase::CombosController < ApplicationController
 
 	unloadable
@@ -24,6 +28,7 @@ class Redcase::CombosController < ApplicationController
 			else
 				ExecutionSuite.get_root_for_project(@project)
 			end
+		# TODO: Looks like two different partial views, should be separated.
 		if params[:button]
 			render :partial => 'redcase/report_download_button'
 		else

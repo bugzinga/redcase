@@ -1,3 +1,4 @@
+
 resources :projects do
 	namespace :redcase do
 		resources :environments, only: [:index, :create, :update, :destroy]
@@ -5,7 +6,7 @@ resources :projects do
 		resources :testcases, only: [:index, :update] do
 			post 'copy', on: :member
 		end
-		resources :executionsuites, only: [:index, :update, :create, :destroy, :show]		
+		resources :executionsuites, only: [:index, :update, :create, :destroy, :show]
 		resources :executionjournals, only: [:index]
 		resources :export, only: [:index]
 		resources :graph, only: [:show]
@@ -15,3 +16,4 @@ end
 
 get 'projects/:id/redcase', :to => 'redcase#index'
 get 'projects/:id/redcase/get_attachment_urls', :to => 'redcase#get_attachment_urls'
+

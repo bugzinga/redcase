@@ -30,7 +30,9 @@ Redcase.Graph.isRendered = function() {
 	};
 	graph_el = jQuery2('#jschart_id').get(0);
 	
-	return !isNaN(computeDimension(graph_el, 'Height')) && !isNaN(computeDimension(graph_el, 'Width'));
+	return graph_el
+		&& !isNaN(computeDimension(graph_el, 'Height'))
+		&& !isNaN(computeDimension(graph_el, 'Width'));
 }
 
 Redcase.Graph.update = function() {

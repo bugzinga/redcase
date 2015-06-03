@@ -5,7 +5,17 @@ class Redcase::GraphController < ApplicationController
 	before_filter :find_project, :authorize
 
 	def show
-		environment = ExecutionEnvironment.find(params[:environment_id])
+		environment = ExecutionEnvironment.find_by_id(params[:environment_id])
+		# TODO: This is not supposed to happen in general, only if this
+		#       controller method was called at the wrong time. Unfortunately,
+		#       it takes place currently, so below is a workaround to not throw
+		#       an error and simply ignore the issue. This check should exist
+		#       anyway, but we need to polish the API and return a JSON data
+		#       with an error so the client could handle it properly.
+		if !environment
+			render :json => {}
+			return
+		end
 		version = Version.find(params[:version_id])
 		root_execution_suite = ExecutionSuite.find_by_id(params[:suite_id])
 		graph_data = TestGraph.get_data(

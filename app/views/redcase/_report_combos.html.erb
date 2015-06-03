@@ -15,7 +15,12 @@
 					),
 					:style => 'width: 225px',
 					:class => 'report_combo'
-				)
+				) if @version
+				# TODO: If this view is called with no project version provided,
+				#       we need to make sure that it will not crash. This
+				#       partial view should not be executed when there is no
+				#       project version, so we still need to revise why it
+				#       happens in some cases.
 			%>
 		</td>
 	</tr>

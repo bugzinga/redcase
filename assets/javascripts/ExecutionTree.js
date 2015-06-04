@@ -161,6 +161,24 @@ Redcase.ExecutionTree.build = function (params) {
 	Redcase.ExecutionTree.tree = jQuery2.jstree.reference(Redcase.ExecutionTree.tree);
 }
 
+Redcase.ExecutionTree.selectNextNode = function() {
+	var 
+		nextNode;
+	nextNode = Redcase.ExecutionTree.tree.get_node(
+		Redcase.ExecutionTree.tree.get_next_dom(Redcase.ExecutionTree.tree.get_selected(true)[0], false)
+	);
+	while (nextNode && nextNode.original.type !== 'case') {
+		if (nextNode.children.length > 0) {
+			Redcase.ExecutionTree.tree.open_node(nextNode);
+		}					
+		nextNode = Redcase.ExecutionTree.tree.get_node(Redcase.ExecutionTree.tree.get_next_dom(nextNode, false));
+	}
+	if (nextNode) {					
+		Redcase.ExecutionTree.tree.deselect_all();
+		Redcase.ExecutionTree.tree.select_node(nextNode);					
+	}	
+}
+
 Redcase.ExecutionTree.execute = function() {
 	var 
 		apiParms = {},
@@ -176,15 +194,10 @@ Redcase.ExecutionTree.execute = function() {
 			},
 			success: function(data) {
 				var
-				nextNode;
+					nextNode;
 				jQuery2('#all-results-d').toggle(data.length > 0);
-				txt = Redcase.ExecutionTree.getHistory(data);
-				jQuery2('#all-results').html(txt);
-				nextNode = Redcase.ExecutionTree.tree.get_node(Redcase.ExecutionTree.tree.get_next_dom(Redcase.ExecutionTree.tree.get_selected(true)[0], true));
-				if (nextNode !== undefined) {
-					Redcase.ExecutionTree.tree.deselect_all();
-					Redcase.ExecutionTree.tree.select_node(nextNode);					
-				}
+				jQuery2('#all-results').html(Redcase.ExecutionTree.getHistory(data));
+				Redcase.ExecutionTree.selectNextNode();
 				jQuery2('#exec-comment').val('');
 				// TODO: When a user executes a test case, the results are
 				//       getting updated and we need to refresh the Report tab

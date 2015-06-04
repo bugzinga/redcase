@@ -6,6 +6,7 @@ Redcase.Combos = {};
 
 Redcase.Combos.bindEvents = function() {
 	jQuery2('.report_combo').on('change', Redcase.Combos.changed);
+	jQuery2('#filter_id_').on('change', Redcase.Combos.refreshFilter);
 }
 
 Redcase.Combos.update = function() {
@@ -55,4 +56,27 @@ Redcase.Combos.changed = function() {
 		errorMessage : "Couldn't load results"
 	});
 	Redcase.apiCall(apiParms);	
-}  
+} 
+
+Redcase.Combos.refreshFilter = function() {
+	var 
+		el,
+		filtered,
+		i,
+		els,
+		k;
+	el = document.getElementById('filter_id_');
+	filtered = el.options[el.selectedIndex].text;
+	for (i = 0; i < Redcase.result_names.length; i++) {
+		els = document.getElementsByName(Redcase.result_names[i]);
+		for (k = 0; k < els.length; k++) {
+			els[k].style.display = (
+				(filtered == 'All results')
+				|| (Redcase.result_names[i] == filtered)
+				|| (filtered == 'Not passed' && Redcase.result_names[i] !== 'Passed')
+			)
+				? 'table-row'
+				: 'none';
+		}
+	}
+} 

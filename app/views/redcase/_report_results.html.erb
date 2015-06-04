@@ -1,23 +1,7 @@
 <script type="text/javascript">
-	result_names = <%=
+	Redcase.result_names = <%=
 		ExecutionResult.all.collect { |x| x.name }.to_json.html_safe
 	%>;
-	function refresh() {
-		el = document.getElementById('filter_id_');
-		filtered = el.options[el.selectedIndex].text;
-		for (i = 0; i < result_names.length; i++) {
-			els = document.getElementsByName(result_names[i]);
-			for (k = 0; k < els.length; k++) {
-				els[k].style.display = (
-					(filtered == 'All results')
-					|| (result_names[i] == filtered)
-					|| (filtered == 'Not passed' && result_names[i] !== 'Passed')
-				)
-					? 'table-row'
-					: 'none';
-			}
-		}
-	}
 </script>
 <table class="redcase-row" style="width: 100%; margin: 0px; text-align: center">
 	<tr style="font-weight: bold; background-color: #507aaa; color: white; text-align: center; vertical-align: top">
@@ -42,7 +26,6 @@
 					{ :style => 'width: 100%' }
 				)
 			%>
-			<%= observe_field 'filter_id_', :function => "refresh()" %>
 		</td>
 		<td style="vertical-align: middle; border-top-width: 0px; padding: 6px">
 			<%= l('label_executor') %>

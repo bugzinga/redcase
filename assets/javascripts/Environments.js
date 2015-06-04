@@ -32,8 +32,6 @@ Redcase.Environments.combo_change = function() {
 	Redcase.apiCall(apiParms);		
 }
 
-//<!--%= observe_field :execution_environment_id, :url => { :controller => 'redcase/environments', :action => :index, :project_id => project.id }, :with => 'execution_environment_id', :update => :management_environments_id, :complete => 'Redcase.Environments.bind()' %-->
-
 Redcase.Environments.btn_destroy_click = function(event) {
 	var 
 		apiParms = {},

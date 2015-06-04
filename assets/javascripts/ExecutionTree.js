@@ -1,5 +1,6 @@
 jQuery2(function() {
 	Redcase.ExecutionTree.build();
+	jQuery2('#list2_id').on('change', function() {Redcase.ExecutionTree.tree.refresh()});
 });
 
 Redcase.ExecutionTree = {}

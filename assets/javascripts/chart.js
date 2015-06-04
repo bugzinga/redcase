@@ -1,68 +1,81 @@
-jQuery2(function() {
-	jQuery2('#tab-Report').on('click', Redcase.Graph.update);
-	Redcase.Graph.update();
-})
 
-Redcase.Graph = {};
+var RedcaseGraph = function() {
 
-Redcase.Graph.chartOptions = {
-	legendTemplate : 
-		"<table class=\"jschart-legend-table\">" +
-			"<% for (var i=0; i<segments.length; i++){%>" +
-				"<tr><td class=\"jschart-legend-cell\" style=\"width: 10px; background-color: <%=segments[i].fillColor%>\"></td><td><%if(segments[i].label){%><%=segments[i].label%><%}%></td></tr>" +
-			"<%}%>" +
-		"</table>"
-}
+	this.chart = null;
 
-Redcase.Graph.isRendered = function() {
-	var computeDimension, graph_el;
-	
-	computeDimension = function(element,dimension) 
-	{
-		if (element['offset'+dimension])
-		{
-			return element['offset'+dimension];
+	this.chartOptions = {
+		legendTemplate:
+			'<table class="jschart-legend-table">' +
+				'<% for (var i = 0; i < segments.length; i++) { %>' +
+					'<tr>' +
+						'<td class="jschart-legend-cell"' +
+						   ' style="width: 10px; background-color: <%=segments[i].fillColor %>"></td>' +
+						'<td><% if (segments[i].label) { %><%= segments[i].label %><% } %></td>' +
+					'</tr>' +
+				'<% } %>' +
+			'</table>'
+	};
+
+	this.isRendered = function() {
+		var computeDimension = function(element, dimension) {
+			return element['offset' + dimension]
+				|| document.defaultView
+					.getComputedStyle(element)
+					.getPropertyValue(dimension);
+		};
+		var graphElement = $('#jschart_id').get(0);
+		return graphElement
+			&& !isNaN(computeDimension(graphElement, 'Height'))
+			&& !isNaN(computeDimension(graphElement, 'Width'));
+	};
+
+	this.update = function() {
+		var self = this;
+		var apiParams = $.extend(
+			{},
+			Redcase.methods.graph.actions.show.getCall(0), {
+				params: {
+					environment_id: $('#environment').val(),
+					suite_id: $('#suite').val(),
+					version_id: $('#versionx').val()
+				},
+				success: function(data) {
+					self.refresh(data);
+				},
+				errorMessage: "Couldn't load graph"
+			}
+		);
+		Redcase.apiCall(apiParams);
+	};
+
+	this.refresh = function(data) {
+		if (this.chart) {
+			this.chart.destroy();
 		}
-		else
-		{
-			return document.defaultView.getComputedStyle(element).getPropertyValue(dimension);
+		if (!this.isRendered()) {
+			return;
+		}
+		var graphElement = $('#jschart_id').get(0);
+		var context = graphElement.getContext("2d");
+		var canvas = context.canvas;
+		if ((canvas.width > 0) && (canvas.height > 0)) {
+			this.chart = new Chart(context).Pie(
+				data,
+				this.chartOptions
+			);
+			$('#jschart_legend').html(
+				this.chart.generateLegend()
+			);
 		}
 	};
-	graph_el = jQuery2('#jschart_id').get(0);
-	
-	return graph_el
-		&& !isNaN(computeDimension(graph_el, 'Height'))
-		&& !isNaN(computeDimension(graph_el, 'Width'));
+
 }
 
-Redcase.Graph.update = function() {
-	var
-	apiParms = {};	
-	jQuery2.extend(apiParms, Redcase.methods.graph.actions.show.getCall(0), {
-		params : {
-			'environment_id' : jQuery2('#environment').val(),
-			'suite_id': jQuery2('#suite').val(),
-			'version_id': jQuery2('#versionx').val()
-		},		
-		success : function(data, textStatus, request) {
-			var graph_el, ctx;
-			if (Redcase.Graph.Chart !== undefined) 
-			{
-				Redcase.Graph.Chart.destroy();
-			}
-
-			if (Redcase.Graph.isRendered()) 
-			{
-				graph_el = jQuery2('#jschart_id').get(0);
-				ctx = graph_el.getContext("2d");
-				if (ctx.canvas.width > 0 && ctx.canvas.height > 0) 
-				{
-					Redcase.Graph.Chart = new Chart(ctx).Pie(data,Redcase.Graph.chartOptions);			
-					jQuery2('#jschart_legend').html(Redcase.Graph.Chart.generateLegend())
-				}
-			}
-		},
-		errorMessage : "Couldn't load graph"
+$(function() {
+	Redcase.Graph = new RedcaseGraph();
+	$('#tab-Report').click(function() {
+		Redcase.Graph.update();
 	});
-	Redcase.apiCall(apiParms);	
-}
+	Redcase.Graph.update();
+});
+

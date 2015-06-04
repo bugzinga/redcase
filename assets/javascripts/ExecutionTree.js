@@ -162,39 +162,39 @@ Redcase.ExecutionTree.build = function (params) {
 }
 
 Redcase.ExecutionTree.selectNextNode = function() {
-	var 
-		nextNode;
-	nextNode = Redcase.ExecutionTree.tree.get_node(
-		Redcase.ExecutionTree.tree.get_next_dom(Redcase.ExecutionTree.tree.get_selected(true)[0], false)
+	var tree =  Redcase.ExecutionTree.tree;
+	var nextNode = tree.get_node(
+		tree.get_next_dom(tree.get_selected(true)[0], false)
 	);
-	while (nextNode && nextNode.original.type !== 'case') {
+	while (nextNode && (nextNode.original.type !== 'case')) {
 		if (nextNode.children.length > 0) {
-			Redcase.ExecutionTree.tree.open_node(nextNode);
-		}					
-		nextNode = Redcase.ExecutionTree.tree.get_node(Redcase.ExecutionTree.tree.get_next_dom(nextNode, false));
+			tree.open_node(nextNode);
+		}
+		nextNode = tree.get_node(tree.get_next_dom(nextNode, false));
 	}
-	if (nextNode) {					
-		Redcase.ExecutionTree.tree.deselect_all();
-		Redcase.ExecutionTree.tree.select_node(nextNode);					
-	}	
-}
+	if (!nextNode) {
+		return;
+	}
+	tree.deselect_all();
+	tree.select_node(nextNode);
+};
 
 Redcase.ExecutionTree.execute = function() {
-	var 
-		apiParms = {},
-		issue_id = Redcase.ExecutionTree.currentIssue;
-	
-	if (issue_id !== undefined) {
-		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(issue_id), {
+	var issueId = Redcase.ExecutionTree.currentIssue;
+	if (!issueId) {
+		// TODO: Log something.
+		return;
+	}
+	var apiParams = jQuery2.extend(
+		{},
+		Redcase.methods.testCase.actions.update.getCall(issueId), {
 			params: {
-				'version': jQuery2('#version').val(),
-				'result': jQuery2('#results').val(),
-				'envs': jQuery2('#environments').val(),
-				'comment': jQuery2('#exec-comment').val()
+				version: jQuery2('#version').val(),
+				result: jQuery2('#results').val(),
+				envs: jQuery2('#environments').val(),
+				comment: jQuery2('#exec-comment').val()
 			},
 			success: function(data) {
-				var
-					nextNode;
 				jQuery2('#all-results-d').toggle(data.length > 0);
 				jQuery2('#all-results').html(Redcase.ExecutionTree.getHistory(data));
 				Redcase.ExecutionTree.selectNextNode();
@@ -206,8 +206,8 @@ Redcase.ExecutionTree.execute = function() {
 				//       issue with updates.
 				Redcase.Combos.changed();
 			},
-			errorMessage: "Execution failed"
-		});
-		Redcase.apiCall(apiParms);
-	}
+			errorMessage: 'Execution failed'
+		}
+	);
+	Redcase.apiCall(apiParams);
 }

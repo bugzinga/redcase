@@ -4,6 +4,7 @@ jQuery2(function() {
 	jQuery2('#btn_save_exec_suite').on('click', Redcase.ExecutionSuiteTree.saveExecSuiteClick);
 	jQuery2('#btn_create_exec_suite').on('click', Redcase.ExecutionSuiteTree.createExecSuiteClick);
 	jQuery2('#btn_destroy_exec_suite').on('click', Redcase.ExecutionSuiteTree.destroyExecSuiteClick);
+	jQuery2('#list_id').on('change', Redcase.ExecutionSuiteTree.refresh);
 });
 
 Redcase.ExecutionSuiteTree = {};

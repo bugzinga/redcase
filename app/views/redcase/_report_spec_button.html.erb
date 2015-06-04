@@ -1,7 +1,7 @@
 <%=
 	form_tag({
 		:controller => 'redcase/export',
-		:action =>  :index,
+		:action => :index,
 		:export_to => :rtf,
 		:project_id => @project.id,
 		:suite_id => get_id_or_default(@root_execution_suite, -1)
@@ -14,7 +14,7 @@
 		:size => '180x36'
 	), {
 		:controller => 'redcase/export',
-		:action =>  :index,		
+		:action => :index,
 		:export_to => :rtf,
 		:project_id => @project.id,
 		:suite_id => get_id_or_default(@root_execution_suite, -1)

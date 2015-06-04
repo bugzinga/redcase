@@ -1,7 +1,7 @@
 <%=
 	form_tag({
 		:controller => 'redcase/export',
-		:action =>  :index,
+		:action => :index,
 		:export_to => :excel,
 		:project_id => @project.id,
 		:environment_id => @environment.id,
@@ -17,7 +17,7 @@
 		:style => 'vertical-align: middle'
 	), {
 		:controller => 'redcase/export',
-		:action =>  :index,		
+		:action => :index,
 		:export_to => :excel,
 		:project_id => @project.id,
 		:environment_id => @environment.id,

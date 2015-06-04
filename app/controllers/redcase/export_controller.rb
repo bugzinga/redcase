@@ -10,15 +10,19 @@ class Redcase::ExportController < ApplicationController
 		filename = "TCReport-#{project_name}-#{current_time}"
 		case params[:export_to]
 			when 'excel'
-				doc = export_to_excel				
+				doc = export_to_excel
 			when 'rtf'
 				doc = export_to_rtf
 		end
-		send_data(doc[:document], { :filename => "#{filename}.#{doc[:extension]}"})
+		send_data(
+			doc[:document], {
+				:filename => "#{filename}.#{doc[:extension]}"
+			}
+		)
 	end
-	
+
 	private
-	
+
 	def export_to_excel
 		excelDoc = Excel_Exporter.exportTestResults(
 			@project.id,
@@ -28,10 +32,10 @@ class Redcase::ExportController < ApplicationController
 		)
 		{
 			:document => excelDoc,
-			:extension => "csv"
-		}		
+			:extension => 'csv'
+		}
 	end
-	
+
 	def export_to_rtf
 		rtfDoc = Rtf_Exporter.exportTestSuiteSpec(
 			params[:suite_id].to_i,
@@ -39,13 +43,14 @@ class Redcase::ExportController < ApplicationController
 		)
 		{
 			:document => rtfDoc,
-			:extension => "rtf"
+			:extension => 'rtf'
 		}
-	end	
+	end
 
 	# TODO: Extract to a base controller.
 	def find_project
 		@project = Project.find(params[:project_id])
 	end
+
 end
 

@@ -152,6 +152,7 @@ Redcase.ExecutionSuiteTree.addSuiteDialog = function (params) {
 					name, 
 					function (newNode) {
 						Redcase.ExecutionSuiteTree.tree.create_node(node, newNode);
+						Redcase.full();
 					},
 					function () {
 						jQuery('#redcase-dialog').dialog('close');
@@ -175,6 +176,7 @@ Redcase.ExecutionSuiteTree.deleteSuiteNode = function (node) {
 	if (node.parents.length > 1) {
 		Redcase.ExecutionSuiteTree.deleteSuite(node.original.suite_id, node.text, function () {
 			Redcase.ExecutionSuiteTree.tree.delete_node(node);
+			Redcase.full();
 		});
 	} else {
 		//Error, can't delete root node.
@@ -191,6 +193,7 @@ Redcase.ExecutionSuiteTree.deleteCase = function (node) {
 		},
 		success : function () {
 			Redcase.ExecutionSuiteTree.tree.delete_node(node);
+			Redcase.full();
 		},
 		errorMessage : "Test case '" + node.text + "' can't be deleted"
 	});
@@ -237,7 +240,10 @@ Redcase.ExecutionSuiteTree.renameSuiteDialog = function (params) {
 			'OK' : function() {
 				var 
 				name = jQuery('#redcase-dialog-value').val();
-				Redcase.ExecutionSuiteTree.renameSuite(node.original.suite_id, name, function () {Redcase.ExecutionSuiteTree.tree.set_text(node, name);}, function () {jQuery('#redcase-dialog').dialog('close')})
+				Redcase.ExecutionSuiteTree.renameSuite(node.original.suite_id, name, function () {
+					Redcase.ExecutionSuiteTree.tree.set_text(node, name);
+					Redcase.full();
+				}, function () {jQuery('#redcase-dialog').dialog('close')})
 			}
 		}
 	});
@@ -282,6 +288,7 @@ Redcase.ExecutionSuiteTree.moveTestCase = function (new_node, org_node, new_inst
 		},
 		success : function () {
 			old_instance.delete_node(org_node);
+			Redcase.full();
 		},
 		error : function () {
 			new_instance.delete_node(new_node);
@@ -300,6 +307,7 @@ Redcase.ExecutionSuiteTree.moveTestSuite = function (new_node, org_node, new_ins
 		},
 		success : function () {
 			old_instance.delete_node(org_node);
+			Redcase.full();
 		},
 		error : function () {
 			new_instance.delete_node(new_node);
@@ -317,6 +325,9 @@ Redcase.ExecutionSuiteTree.copyTestCase = function (new_node, org_node, new_inst
 		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(org_node.original.issue_id), {
 			params : {
 				'dest_exec_id' : new_instance.get_node(new_node.parent).original.suite_id
+			},
+			success: function() {
+				Redcase.full();
 			},
 			error : function () {
 				new_instance.delete_node(new_node);

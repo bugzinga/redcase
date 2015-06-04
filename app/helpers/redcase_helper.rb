@@ -1,6 +1,5 @@
 
 require 'application_helper'
-require 'prototype_legacy'
 
 module RedcaseHelper
 

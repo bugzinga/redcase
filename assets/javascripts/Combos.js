@@ -6,7 +6,7 @@ Redcase.Combos = {};
 
 Redcase.Combos.bindEvents = function() {
 	jQuery2('.report_combo').on('change', Redcase.Combos.changed);
-	jQuery2('#filter_id_').on('change', Redcase.Combos.refreshFilter);
+	jQuery2('#report_results_table_id').on('change', '#filter_id_', Redcase.Combos.refreshFilter);
 }
 
 Redcase.Combos.update = function() {

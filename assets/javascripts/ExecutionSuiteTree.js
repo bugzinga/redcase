@@ -74,7 +74,7 @@ Redcase.ExecutionSuiteTree.CheckCallback = function (operation, node, node_paren
 	var IsOK = true;
 	if (operation === "copy_node") {
 		if (more.ref !== undefined) {
-			IsOK = this.get_node(node.parent) != node_parent;
+			IsOK = (this.get_node(node.parent) != node_parent) && (!this.get_node(node.id));
 		}
 	}
 	return IsOK;
@@ -322,6 +322,7 @@ Redcase.ExecutionSuiteTree.copyTestCase = function (new_node, org_node, new_inst
 	var	apiParms = {};
 	if (org_node.original.status.name === "In Progress") {
 		new_node.original = org_node.original;
+		new_instance.set_id(new_node, org_node.id);
 		
 		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update(org_node.original.issue_id), {
 			params : {

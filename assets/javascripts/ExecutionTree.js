@@ -205,7 +205,7 @@ Redcase.ExecutionTree.execute = function() {
 				//       as well. Triggering combo controls' changes might be
 				//       not the best solution, but at least it seems to fix the
 				//       issue with updates.
-				Redcase.Combos.changed();
+				Redcase.Combos.refresh();
 			},
 			errorMessage: 'Execution failed'
 		}

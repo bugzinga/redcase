@@ -1,5 +1,7 @@
 
-var RedcaseGraph = function() {
+var RedcaseGraph = function($) {
+
+	var self = this;
 
 	this.chart = null;
 
@@ -30,7 +32,6 @@ var RedcaseGraph = function() {
 	};
 
 	this.update = function() {
-		var self = this;
 		var apiParams = $.extend(
 			{},
 			Redcase.methods.graph.actions.show.getCall(0), {
@@ -49,8 +50,8 @@ var RedcaseGraph = function() {
 	};
 
 	this.refresh = function(data) {
-		if (this.chart) {
-			this.chart.destroy();
+		if (self.chart) {
+			self.chart.destroy();
 		}
 		if (!this.isRendered()) {
 			return;
@@ -59,23 +60,29 @@ var RedcaseGraph = function() {
 		var context = graphElement.getContext("2d");
 		var canvas = context.canvas;
 		if ((canvas.width > 0) && (canvas.height > 0)) {
-			this.chart = new Chart(context).Pie(
+			self.chart = new Chart(context).Pie(
 				data,
-				this.chartOptions
+				self.chartOptions
 			);
 			$('#jschart_legend').html(
-				this.chart.generateLegend()
+				self.chart.generateLegend()
 			);
 		}
 	};
 
+	(function() {
+		$('#tab-Report').click(function() {
+			self.update();
+		});
+		self.update();
+	})();
+
 }
 
-$(function() {
-	Redcase.Graph = new RedcaseGraph();
-	$('#tab-Report').click(function() {
-		Redcase.Graph.update();
-	});
-	Redcase.Graph.update();
+jQuery(function($) {
+	if (Redcase.Graph) {
+		return;
+	}
+	Redcase.Graph = new RedcaseGraph($);
 });
 

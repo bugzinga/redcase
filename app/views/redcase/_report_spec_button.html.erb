@@ -1,0 +1,29 @@
+<%=
+	form_tag({
+		:controller => 'redcase/export',
+		:action =>  :index,
+		:export_to => :rtf,
+		:project_id => @project.id,
+		:suite_id => get_id_or_default(@root_execution_suite, -1)
+	}, :id => 'spec_id') do
+%>
+<%=
+	link_to image_tag(
+		'test_spec.png',
+		:plugin => 'redcase',
+		:size => '180x36'
+	), {
+		:controller => 'redcase/export',
+		:action =>  :index,		
+		:export_to => :rtf,
+		:project_id => @project.id,
+		:suite_id => get_id_or_default(@root_execution_suite, -1)
+	}, {
+		:class => 'no_underline',
+		:submit => 'spec_id',
+		:target => '_blank',
+	}
+%>
+<%
+	end
+%>

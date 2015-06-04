@@ -3,46 +3,14 @@
 	<tr>
 		<td>&nbsp;</td>
 		<td align="right" colspan="2">
-			<%=
-				form_tag(
-					{
-						:controller => 'redcase/export',
-						:action =>  :index,
-						:export_to => :rtf,
-						:project_id => @project.id,
-						:time => Time.now
-					},
-					:id => 'spec_id'
-				) do
-			%>
+			<div id="spec_button_id"
+				 style="display: inline-block; vertical-align: middle">
 				<%=
-					link_to(
-						image_tag(
-							'test_spec.png',
-							:plugin => 'redcase',
-							:size=> '180x36',
-							:style => 'float: right'
-						), {
-							:controller => 'redcase/export',
-							:action =>  :index,
-							:export_to => :rtf,
-							:project_id => @project.id,
-							:time => Time.now
-						}, {
-							:class => 'no_underline',
-							:submit => 'spec_id',
-							url: url_for(
-								:controller => 'redcase/export',
-								:action =>  :index,
-								:export_to => :rtf,
-								:project_id => @project.id,
-								:time => Time.now
-							),
-							:onclick => "jQuery(this).attr('href', jQuery(this).attr('url') + '&suite_id=' + jQuery('#suite').val())"
-						}
+					render(
+						:partial => 'report_spec_button'
 					)
 				%>
-			<% end %>
+			</div>
 		</td>
 		<td>&nbsp;</td>
 	</tr>

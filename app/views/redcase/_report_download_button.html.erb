@@ -4,7 +4,6 @@
 		:action =>  :index,
 		:export_to => :excel,
 		:project_id => @project.id,
-		:time => Time.now,
 		:environment_id => @environment.id,
 		:version_id => @version.id,
 		:suite_id => get_id_or_default(@root_execution_suite, -1)
@@ -18,16 +17,16 @@
 		:style => 'vertical-align: middle'
 	), {
 		:controller => 'redcase/export',
-		:action =>  :index,
+		:action =>  :index,		
 		:export_to => :excel,
 		:project_id => @project.id,
-		:time => Time.now,
 		:environment_id => @environment.id,
 		:version_id => @version.id,
 		:suite_id => get_id_or_default(@root_execution_suite, -1)
 	}, {
 		:class => 'no_underline',
-		:submit => 'spec_id'
+		:submit => 'spec_id',
+		:target => '_blank',
 	}
 %>
 <%

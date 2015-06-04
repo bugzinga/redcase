@@ -186,6 +186,12 @@ Redcase.ExecutionTree.execute = function() {
 					Redcase.ExecutionTree.tree.select_node(nextNode);					
 				}
 				jQuery2('#exec-comment').val('');
+				// TODO: When a user executes a test case, the results are
+				//       getting updated and we need to refresh the Report tab
+				//       as well. Triggering combo controls' changes might be
+				//       not the best solution, but at least it seems to fix the
+				//       issue with updates.
+				Redcase.Combos.changed();
 			},
 			errorMessage: "Execution failed"
 		});

@@ -3,139 +3,129 @@ var Redcase = {
 
 	log: LogManager.getLog('redcase'),
 
-	'context' : 'redcase/',	
+	'context' : 'redcase/',
 	'jsCopyToMenuItems' : [],
 	'methods' : {
 		'redcase' : {
 			'controller': '',
 			'actions' : {
-				'getAttachmentURLs' : {'getCall': function() {return {
+				'getAttachmentURLs' : function() {return {
 						method : Redcase.methods.redcase.controller + '/get_attachment_urls',
 						httpMethod: 'GET'
-				}}}
+				}}
 			}
 		},
 		'testSuite' : {
 			'controller' : 'testsuites',
 			'actions' : {
-				'index' : {'getCall': function() {return {
+				'index' : function() {return {
 						method : Redcase.methods.testSuite.controller,
 						httpMethod: 'GET'
-				}}},				
-				'destroy' : {'getCall': function(id) {return {
+				}},
+				'destroy' : function(id) {return {
 						method : Redcase.methods.testSuite.controller + '/' + id,
 						httpMethod: 'DELETE'
-				}}},				
-				'update' : {'getCall': function(id) {return {
+				}},
+				'update' : function(id) {return {
 						method : Redcase.methods.testSuite.controller + '/' + id,
 						httpMethod: 'PUT'
-				}}},
-				'create' : {'getCall': function() {return {
+				}},
+				'create' : function() {return {
 						method : Redcase.methods.testSuite.controller,
 						httpMethod: 'POST'
-				}}}				
+				}}
 			}
 		},
 		'executionSuite' : {
-			'controller' : 'executionsuites',			
+			'controller' : 'executionsuites',
 			'actions' : {
-				'create' : {'getCall': function() {return {
+				'create' : function() {return {
 					method : Redcase.methods.executionSuite.controller,
 					httpMethod: 'POST'
-				}}},
-				'update' : {'getCall': function(id) {return {
+				}},
+				'update' : function(id) {return {
 					method : Redcase.methods.executionSuite.controller + '/' + id,
 					httpMethod: 'PUT'
-				}}},
-				'destroy' : {'getCall': function(id) {return {
+				}},
+				'destroy' : function(id) {return {
 					method : Redcase.methods.executionSuite.controller + '/' + id,
 					httpMethod: 'DELETE'
-				}}},
-				'show' : {'getCall': function(id) {return {
+				}},
+				'show' : function(id) {return {
 					method : Redcase.methods.executionSuite.controller + '/' + id,
 					httpMethod: 'GET'
-				}}},
-				'index' : {'getCall': function() {return {
+				}},
+				'index' : function() {return {
 					method : Redcase.methods.executionSuite.controller,
 					httpMethod: 'GET'
-				}}}				
+				}}
 			}
 		},
 		'executionJournal' : {
-			'controller' : 'executionjournals',			
+			'controller' : 'executionjournals',
 			'actions' : {
-				'index' : {'getCall': function() {return {
+				'index' : function() {return {
 					method : Redcase.methods.executionJournal.controller,
 					httpMethod: 'GET'
-				}}},
+				}},
 			}
 		},
 		'environments' : {
-			'controller' : 'environments',			
+			'controller' : 'environments',
 			'actions' : {
-				'index' : {'getCall': function() {return {
+				'index' : function() {return {
 					method : Redcase.methods.environments.controller,
 					httpMethod: 'GET'
-				}}},				
-				'update' : {'getCall': function(id) {return {
+				}},
+				'update' : function(id) {return {
 					method : Redcase.methods.environments.controller + '/' + id,
 					httpMethod: 'PUT'
-				}}},
-				'create' : {'getCall': function() {return {
+				}},
+				'create' : function() {return {
 					method : Redcase.methods.environments.controller,
 					httpMethod: 'POST'
-				}}},
-				'destroy' : {'getCall': function(id) {return {
+				}},
+				'destroy' : function(id) {return {
 					method : Redcase.methods.environments.controller + '/' + id,
 					httpMethod: 'DELETE'
-				}}}				
+				}}
 			}
-		},		
+		},
 		'testCase' : {
 			'controller' : 'testcases',
 			'actions' : {
-				'index' : {
-					'getCall': function() {return {
-						method : Redcase.methods.testCase.controller,
-						httpMethod: 'GET'
-					}}
-				},
-				'update' : {
-					'getCall': function(id) {return {
-						method : Redcase.methods.testCase.controller + '/' + id,
-						httpMethod: 'PUT',
-					}}
-				},
-				'copy' : {
-					'getCall': function(id) {return {
-						method : Redcase.methods.testCase.controller + '/' + id + '/copy',
-						httpMethod: 'POST',
-					}}
-				}
+				'index' : function() {return {
+					method : Redcase.methods.testCase.controller,
+					httpMethod: 'GET'
+				}},
+				'update' : function(id) {return {
+					method : Redcase.methods.testCase.controller + '/' + id,
+					httpMethod: 'PUT',
+				}},
+				'copy' : function(id) {return {
+					method : Redcase.methods.testCase.controller + '/' + id + '/copy',
+					httpMethod: 'POST',
+				}}
 			}
-		},		
+		},
 		'combos' : {
 			'controller' : 'combos',
 			'actions' : {
-				'index' : {
-					'getCall': function() {return {
-						method : Redcase.methods.combos.controller,
-						httpMethod: 'GET'
-					}}
-				}
+				'index' : function() {return {
+					method : Redcase.methods.combos.controller,
+					httpMethod: 'GET'
+				}}
 			}
-		},		
+		},
 		'graph' : {
 			'controller' : 'graph',
 			'actions' : {
-				'show' : {
-					'getCall': function(id) {return {
-						method : Redcase.methods.graph.controller + '/' + id,
-						httpMethod: 'GET'
-					}}
-				}
+				'show' : function(id) {return {
+					method : Redcase.methods.graph.controller + '/' + id,
+					httpMethod: 'GET'
+				}}
 			}
-		}		
+		}
 	},
 	'apiCall' : function (parameters) {
 		var
@@ -184,12 +174,12 @@ var Redcase = {
 				}
 			}
 		})
-	},	
+	},
     'full' : function() {
 		this.log.info('Running full update...')
 		Redcase.ExecutionSuiteTree.updateList2();
         //Redcase.updateReport();
 		Redcase.Combos.update();
-    }	
+    }
 };
 

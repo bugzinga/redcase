@@ -12,7 +12,7 @@ Redcase.ExecutionSuiteTree = {};
 Redcase.ExecutionSuiteTree.updateList2 = function() {
 	var
 	apiParms = {};	
-	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.index.getCall(), {
+	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.index(), {
 		success : function(data, textStatus, request) {
 			jQuery2('#execution_settings_id').html(data);
 			if (Redcase.ExecutionTree.tree) {
@@ -124,7 +124,7 @@ Redcase.ExecutionSuiteTree.refresh = function() {
 Redcase.ExecutionSuiteTree.addSuite = function (parent_id, name, successCallback, completeCallback) {
 	var
 	apiParms = {};	
-	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.create.getCall(), {
+	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.create(), {
 		params : {
 			'name' : name,
 			'parent_id' : parent_id
@@ -166,7 +166,7 @@ Redcase.ExecutionSuiteTree.addSuiteDialog = function (params) {
 
 Redcase.ExecutionSuiteTree.deleteSuite = function (suite_id, name, successCallback) {
 	var apiParms = {};	
-	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.destroy.getCall(suite_id), {
+	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.destroy(suite_id), {
 		success : successCallback,
 		errorMessage : "Execution suite '" + name + "' can't be deleted"
 	});
@@ -188,7 +188,7 @@ Redcase.ExecutionSuiteTree.deleteSuiteNode = function (node) {
 Redcase.ExecutionSuiteTree.deleteCase = function (node) {
 	var apiParms = {};
 	
-	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(node.original.issue_id), {
+	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update(node.original.issue_id), {
 		params : {
 			'remove_from_exec_id' : Redcase.ExecutionSuiteTree.tree.get_node(node.parent).original.suite_id
 		},
@@ -218,7 +218,7 @@ Redcase.ExecutionSuiteTree.deleteItem = function (params) {
 
 Redcase.ExecutionSuiteTree.renameSuite = function (suite_id, name, successCallback, completeCallback) {
 	var apiParms = {};				
-	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.update.getCall(suite_id), {
+	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.update(suite_id), {
 		params : {
 			'new_name' : name
 		},
@@ -282,7 +282,7 @@ Redcase.ExecutionSuiteTree.getItems = function () {
 Redcase.ExecutionSuiteTree.moveTestCase = function (new_node, org_node, new_instance, old_instance) {
 	var apiParms = {};
 	new_node.original = org_node.original;	
-	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(org_node.original.issue_id), {
+	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update(org_node.original.issue_id), {
 		params : {
 			'source_exec_id' : old_instance.get_node(org_node.parent).original.suite_id,
 			'dest_exec_id' : new_instance.get_node(new_node.parent).original.suite_id
@@ -302,7 +302,7 @@ Redcase.ExecutionSuiteTree.moveTestCase = function (new_node, org_node, new_inst
 Redcase.ExecutionSuiteTree.moveTestSuite = function (new_node, org_node, new_instance, old_instance) {
 	var apiParms = {};
 	new_node.original = org_node.original;
-	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.update.getCall(org_node.original.suite_id), {
+	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.update(org_node.original.suite_id), {
 		params : {
 			'parent_id' : new_instance.get_node(new_node.parent).original.suite_id
 		},
@@ -323,7 +323,7 @@ Redcase.ExecutionSuiteTree.copyTestCase = function (new_node, org_node, new_inst
 	if (org_node.original.status.name === "In Progress") {
 		new_node.original = org_node.original;
 		
-		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(org_node.original.issue_id), {
+		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update(org_node.original.issue_id), {
 			params : {
 				'dest_exec_id' : new_instance.get_node(new_node.parent).original.suite_id
 			},
@@ -383,7 +383,7 @@ Redcase.ExecutionSuiteTree.build = function (params) {
 				'data' : {
 					'type' : 'GET',
 					'url' : function() {
-						return Redcase.context + Redcase.methods.executionSuite.actions.show.getCall(jQuery2('#list_id').val()).method
+						return Redcase.context + Redcase.methods.executionSuite.actions.show(jQuery2('#list_id').val()).method
 					}
 					/*
 					'data' : function () {

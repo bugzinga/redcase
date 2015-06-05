@@ -16,7 +16,7 @@ Redcase.Environments.combo_change = function() {
 	var 
 		apiParms = {};
 		
-	jQuery2.extend(apiParms, Redcase.methods.environments.actions.index.getCall(), {
+	jQuery2.extend(apiParms, Redcase.methods.environments.actions.index(), {
 		params: {
 			'execution_environment_id': jQuery2('#execution_environment_id').val()
 		},
@@ -37,7 +37,7 @@ Redcase.Environments.btn_destroy_click = function(event) {
 		apiParms = {},
 		environment_id = jQuery2('#execution_environment_id').val();
 		
-	jQuery2.extend(apiParms, Redcase.methods.environments.actions.destroy.getCall(environment_id), {
+	jQuery2.extend(apiParms, Redcase.methods.environments.actions.destroy(environment_id), {
 		success : function (data, textStatus, request) {			
 			jQuery2('#execution_environment_id option:selected').remove();
 			jQuery2('#execution_environment_id').change();
@@ -57,7 +57,7 @@ Redcase.Environments.btn_create_click = function(event) {
 		apiParms = {},
 		name = jQuery2('#execution_environment_name').val();
 		
-	jQuery2.extend(apiParms, Redcase.methods.environments.actions.create.getCall(), {
+	jQuery2.extend(apiParms, Redcase.methods.environments.actions.create(), {
 		params : {
 			'execution_environment' : {
 				'name' : name,
@@ -84,7 +84,7 @@ Redcase.Environments.btn_save_click = function(event) {
 		environment_id = jQuery2('#execution_environment_id').val(),
 		name = jQuery2('#execution_environment_name').val();
 		
-	jQuery2.extend(apiParms, Redcase.methods.environments.actions.update.getCall(environment_id), {
+	jQuery2.extend(apiParms, Redcase.methods.environments.actions.update(environment_id), {
 		params : {
 			'execution_environment' : {
 				'name' : name,

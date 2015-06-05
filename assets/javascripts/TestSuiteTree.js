@@ -30,7 +30,7 @@ Redcase.TestSuiteTree.IsDraggable = function (nodes) {
 Redcase.TestSuiteTree.MoveTestCase = function (new_node, org_node, new_instance, old_instance) {
 	var apiParms = {};
 	new_node.original = org_node.original;
-	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(org_node.original.issue_id), {
+	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update(org_node.original.issue_id), {
 		params : {
 			'parent_id' : new_instance.get_node(new_node.parent).original.suite_id
 		},
@@ -48,7 +48,7 @@ Redcase.TestSuiteTree.MoveTestCase = function (new_node, org_node, new_instance,
 Redcase.TestSuiteTree.MoveTestSuite = function (new_node, org_node, new_instance, old_instance) {
 	new_node.original = org_node.original;
 	var apiParms = {};
-	jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.update.getCall(org_node.original.suite_id), {
+	jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.update(org_node.original.suite_id), {
 		params : {
 			'parent_id' : new_instance.get_node(new_node.parent).original.suite_id
 		},
@@ -125,7 +125,7 @@ Redcase.TestSuiteTree.contextCopyTo = function(params) {
 	node = Redcase.TestSuiteTree.tree.get_node(params.reference),
 	apiParms = {};
 
-	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.copy.getCall(node.original.issue_id), {
+	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.copy(node.original.issue_id), {
 		params : {'dest_project' : params.item.id},
 		errorMessage : "Can't copy '" + node.text + "'"
 	});
@@ -180,7 +180,7 @@ Redcase.TestSuiteTree.prepareContextItems = function () {
 
 Redcase.TestSuiteTree.deleteCase = function (node) {	
 	var apiParms = {};
-	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update.getCall(node.original.issue_id), {
+	jQuery2.extend(apiParms, Redcase.methods.testCase.actions.update(node.original.issue_id), {
 		params : {
 			'obsolesce' : true
 		},
@@ -200,7 +200,7 @@ Redcase.TestSuiteTree.deleteSuite = function (node) {
 	if ((node.parents.length > 1) && (node.text !== '.Unsorted') && (node.text !== '.Obsolete')) {
 		
 		var apiParms = {};
-		jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.destroy.getCall(node.original.suite_id),{
+		jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.destroy(node.original.suite_id),{
 			success : function () {
 				Redcase.TestSuiteTree.tree.delete_node(node);
 			},
@@ -242,7 +242,7 @@ Redcase.TestSuiteTree.addSuite = function (params) {
 				var 
 					name = jQuery('#redcase-dialog-value').val(),
 					apiParms = {};
-				jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.create.getCall(), {
+				jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.create(), {
 					params : {
 						'name' : name,
 						'parent_id' : node.original.suite_id
@@ -274,7 +274,7 @@ Redcase.TestSuiteTree.renameSuite = function (params) {
 				var 
 					name = jQuery('#redcase-dialog-value').val(),
 					apiParms = {};
-				jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.update.getCall(node.original.suite_id), {
+				jQuery2.extend(apiParms, Redcase.methods.testSuite.actions.update(node.original.suite_id), {
 					params : {'new_name' : name},
 					success : function () {
 						Redcase.TestSuiteTree.tree.set_text(node, name);

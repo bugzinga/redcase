@@ -63,7 +63,7 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 	jQuery2('#all-results-d').hide();
 	if (node.original.type == 'case') {
 		var apiParms = {};
-		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.index.getCall(), {
+		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.index(), {
 			params: {
 				"object_id": node.original.issue_id
 			},
@@ -87,7 +87,7 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 				results.val('Passed');
 				version = jQuery2('#version');
 				
-				jQuery2.extend(apiParms, Redcase.methods.executionJournal.actions.index.getCall(), {
+				jQuery2.extend(apiParms, Redcase.methods.executionJournal.actions.index(), {
 					params: {
 						"issue_id": node.original.issue_id,
 						"version": version.val()
@@ -103,7 +103,7 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 				});					
 				Redcase.apiCall(apiParms);
 				apiParms = {};
-				jQuery2.extend(apiParms, Redcase.methods.redcase.actions.getAttachmentURLs.getCall(), {
+				jQuery2.extend(apiParms, Redcase.methods.redcase.actions.getAttachmentURLs(), {
 					params: {
 						"issue_id": node.original.issue_id
 					},
@@ -136,7 +136,7 @@ Redcase.ExecutionTree.build = function (params) {
 				'check_callback' : Redcase.ExecutionTree.CheckCallback,
 				'data' : {
 					'type' : 'GET',
-					'url' : function() {return Redcase.context + Redcase.methods.executionSuite.actions.show.getCall(jQuery2('#list2_id').val()).method}
+					'url' : function() {return Redcase.context + Redcase.methods.executionSuite.actions.show(jQuery2('#list2_id').val()).method}
 					/*
 					'data' : function () {
 						return {
@@ -188,7 +188,7 @@ Redcase.ExecutionTree.execute = function() {
 	}
 	var apiParams = jQuery2.extend(
 		{},
-		Redcase.methods.testCase.actions.update.getCall(issueId), {
+		Redcase.methods.testCase.actions.update(issueId), {
 			params: {
 				version: jQuery2('#version').val(),
 				result: jQuery2('#results').val(),

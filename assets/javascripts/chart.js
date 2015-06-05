@@ -34,7 +34,7 @@ var RedcaseGraph = function($) {
 	this.update = function() {
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.graph.actions.show.getCall(0), {
+			Redcase.methods.graph.actions.show(0), {
 				params: {
 					environment_id: $('#environment').val(),
 					suite_id: $('#suite').val(),

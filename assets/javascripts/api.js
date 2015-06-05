@@ -1,4 +1,8 @@
+
 var Redcase = {
+
+	log: LogManager.getLog('redcase'),
+
 	'context' : 'redcase/',	
 	'jsCopyToMenuItems' : [],
 	'methods' : {
@@ -140,7 +144,7 @@ var Redcase = {
 		token = jQuery2("meta[name='csrf-token']").attr('content');
 		jQuery2.extend(params, parameters.params, {'authenticity_token' : token});
 
-		log.info('API call: ' + url);
+		this.log.info('API call: ' + url);
 
 		//params.format = 'json';
 		//if (!params.project_id) {
@@ -160,7 +164,7 @@ var Redcase = {
 					parameters.error(errorThrown, textStatus, jqXHR);
 				}
 				Redcase.errorBox(parameters.errorMessage);
-				log.debug(errorThrown);
+				this.log.debug(errorThrown);
 			},
 			complete : function () {
 				if (parameters.complete !== undefined) {
@@ -182,9 +186,10 @@ var Redcase = {
 		})
 	},	
     'full' : function() {
-		console.log('running full update!')
+		this.log.info('Running full update...')
 		Redcase.ExecutionSuiteTree.updateList2();
         //Redcase.updateReport();
 		Redcase.Combos.update();
     }	
 };
+

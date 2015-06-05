@@ -1,38 +1,47 @@
+
 var Form = {
-	'Element' : {
-		EventObserver : function (Element, Callback) {
-			jQuery2('#' + Element).on('change', function (event) {
-				Callback(event.target, jQuery2(event.target).val());
+	Element: {
+		EventObserver: function(element, callback) {
+			$('#' + element).change(function(event) {
+				var target = event.target;
+				callback(target, $(target).val());
 			});
 		}
 	},
-	'serialize' : function (Element) {
-		return jQuery2('#' + Element).serialize();
+	serialize: function(element) {
+		return $('#' + element).serialize();
 	}
-},
-Ajax = {
-	'Updater' : function (ElementToUpdate, Url, Config) {
-		jQuery2.ajax(Url, {
-			type: Config.method ? Config.method : 'GET', 
-			data : Config.parameters,
-			success : function (data, textStatus, request) {
-				jQuery2('#' + ElementToUpdate).html(data);
-			},
-			complete : function () {
-				if (Config.onComplete !== undefined) {
-					Config.onComplete();
+};
+
+var Ajax = {
+	Updater: function(elementToUpdate, url, config) {
+		$.ajax(
+			url, {
+				type: (config.method || 'GET'),
+				data: config.parameters,
+				success: function(data, textStatus, request) {
+					$('#' + elementToUpdate).html(data);
+				},
+				complete: function() {
+					if (config.onComplete) {
+						config.onComplete();
+					}
 				}
 			}
-		});
+		);
 	}
-},
-log = LogFactory.getLog('redcase-api]');
+};
 
-jQuery2(function () {
-	jQuery('#redcase-dialog').on('keydown', function (event) {
+$(function() {
+	$('#redcase-dialog').keydown(function(event) {
 		if (event.keyCode === 13) {
-			jQuery('#redcase-dialog').parents().find('.ui-dialog-buttonpane button').first().trigger('click');
+			$('#redcase-dialog')
+				.parents()
+				.find('.ui-dialog-buttonpane button')
+				.first()
+				.trigger('click');
 			return false;
 		}
 	})
 });
+

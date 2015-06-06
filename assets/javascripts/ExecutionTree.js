@@ -57,8 +57,8 @@ Redcase.ExecutionTree.getHistory = function(data) {
 
 Redcase.ExecutionTree.selectionChange = function (event, params) {
 	var
-	node = params.node,	
-	edit = jQuery2('#test-case-edit');	
+	node = params.node,
+	edit = jQuery2('#test-case-edit');
 	edit.hide();
 	jQuery2('#all-results-d').hide();
 	if (node.original.type == 'case') {
@@ -75,7 +75,7 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 				version,
 				txt,
 				apiParms = {};
-				
+
 				Redcase.ExecutionTree.currentIssue = data.issue_id;
 				jQuery2('#exec_descr_id').toggle(data.desc !== undefined);
 				desc = jQuery2('#test-case-desc');
@@ -86,7 +86,7 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 				results = jQuery2('#results');
 				results.val('Passed');
 				version = jQuery2('#version');
-				
+
 				jQuery2.extend(apiParms, Redcase.methods.executionJournal.actions.index(), {
 					params: {
 						"issue_id": node.original.issue_id,
@@ -100,7 +100,7 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 						}
 					},
 					errorMessage: "Unable to get execution results"
-				});					
+				});
 				Redcase.apiCall(apiParms);
 				apiParms = {};
 				jQuery2.extend(apiParms, Redcase.methods.redcase.actions.getAttachmentURLs(), {
@@ -124,19 +124,25 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 			},
 			errorMessage: "Information about test case '" + node.text + "' can't be obtained"
 		});
-		
+
 		Redcase.apiCall(apiParms);
-	}	
+	}
 }
 
 Redcase.ExecutionTree.build = function (params) {
-	Redcase.ExecutionTree.tree = jQuery2('#execution_test_cases_tree_id').jstree({
+	Redcase.ExecutionTree.tree =
+		jQuery2('#execution_test_cases_tree_id').jstree({
 			// Core config
 			'core' : {
 				'check_callback' : Redcase.ExecutionTree.CheckCallback,
 				'data' : {
 					'type' : 'GET',
-					'url' : function() {return Redcase.context + Redcase.methods.executionSuite.actions.show(jQuery2('#list2_id').val()).method}
+					'url' : function() {
+						return Redcase.context +
+							Redcase.methods.executionSuite.actions.show(
+								jQuery2('#list2_id').val()
+							).method
+					}
 					/*
 					'data' : function () {
 						return {
@@ -146,20 +152,16 @@ Redcase.ExecutionTree.build = function (params) {
 					*/
 				},
 				'multiple' : false
-			},
-
-			// Contextmenu config
-			'contextmenu' : {
-				'items' : Redcase.ExecutionTree.getItems
-			},
-
-			'plugins' : ['contextmenu']
+			}
 		});
 
 	// Bind tree events
-	//Redcase.ExecutionTree.tree.on('copy_node.jstree', Redcase.ExecutionTree.OnCopy);
-	Redcase.ExecutionTree.tree.on('select_node.jstree', Redcase.ExecutionTree.selectionChange);
-	Redcase.ExecutionTree.tree = jQuery2.jstree.reference(Redcase.ExecutionTree.tree);
+	Redcase.ExecutionTree.tree.on(
+		'select_node.jstree', Redcase.ExecutionTree.selectionChange
+	);
+	Redcase.ExecutionTree.tree = jQuery2.jstree.reference(
+		Redcase.ExecutionTree.tree
+	);
 }
 
 Redcase.ExecutionTree.selectNextNode = function() {

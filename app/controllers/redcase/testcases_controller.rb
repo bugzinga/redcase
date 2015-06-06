@@ -24,26 +24,35 @@ class Redcase::TestcasesController < ApplicationController
 	def update
 		# TODO: What if there is none?
 		test_case = TestCase.where({ issue_id: params[:id] }).first
-		# TODO: All this stuff with inline "unless" is very difficult to
-		#       perceive.
-		test_case.test_suite = TestSuite.find(
-			params[:parent_id]
-		) unless params[:parent_id].nil?
-		test_case.change_execution_suite(
-			params[:source_exec_id], params[:dest_exec_id]
-		) unless (params[:source_exec_id].nil? || params[:dest_exec_id].nil?)
-		test_case.add_to_execution_suite(
-			params[:dest_exec_id]
-		) unless (!params[:source_exec_id].nil? || params[:dest_exec_id].nil?)
-		test_case.remove_from_execution_suite(
-			params[:remove_from_exec_id]
-		) unless params[:remove_from_exec_id].nil?
-		test_case.test_suite = TestSuite.get_obsolete(
-			@project
-		) unless params[:obsolesce].nil?
+		if test_case.nil?
+			success = false
+		else
+			unless params[:parent_id].nil?
+				test_case.test_suite = TestSuite.find(params[:parent_id])
+			end
+			unless (params[:source_exec_id].nil? || params[:dest_exec_id].nil?)
+				success = test_case.change_execution_suite?(
+					params[:source_exec_id], params[:dest_exec_id]
+				)
+			end
+			unless (!params[:source_exec_id].nil? || params[:dest_exec_id].nil?)
+				success = test_case.add_to_execution_suite?(
+					params[:dest_exec_id]
+				)
+			end
+			unless params[:remove_from_exec_id].nil?
+				test_case.remove_from_execution_suite(
+					params[:remove_from_exec_id]
+				)
+			end
+			unless params[:obsolesce].nil?
+				test_case.test_suite = TestSuite.get_obsolete(@project)
+			end
+		end
+
 		if params[:result].nil?
 			test_case.save
-			render :json => {:success => true}
+			render :json => {:success => success}
 		else
 			execute(test_case)
 		end

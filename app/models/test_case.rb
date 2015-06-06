@@ -169,16 +169,26 @@ class TestCase < ActiveRecord::Base
 		execution_suite.test_cases.delete(self)
 	end
 
-	def change_execution_suite(source_id, dest_id)
-		sourceSuite = ExecutionSuite.find(source_id)
+	def change_execution_suite?(source_id, dest_id)
 		destination_suite = ExecutionSuite.find(dest_id)
-		destination_suite.test_cases << self
-		sourceSuite.test_cases.delete(self)
+		source_suite = ExecutionSuite.find(source_id)
+		if (source_suite.root == destination_suite.root) or (destination_suite.is_test_case_id_unique?(id))
+			destination_suite.test_cases << self
+			source_suite.test_cases.delete(self)
+			true
+		else
+			false
+		end
 	end
 
-	def add_to_execution_suite(dest_id)
+	def add_to_execution_suite?(dest_id)
 		execution_suite = ExecutionSuite.find(dest_id)
-		execution_suite.test_cases << self
+		if execution_suite.is_test_case_id_unique?(id)
+			execution_suite.test_cases << self
+			true
+		else
+			false
+		end
 	end
 
 end

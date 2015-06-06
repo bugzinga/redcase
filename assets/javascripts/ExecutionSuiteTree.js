@@ -69,12 +69,17 @@ Redcase.ExecutionSuiteTree.destroyExecSuiteClick = function(event) {
 	event.preventDefault();
 }
 
-Redcase.ExecutionSuiteTree.CheckCallback = function (operation, node, node_parent, node_position, more) {
-	// operation can be 'create_node', 'rename_node', 'delete_node', 'move_node' or 'copy_node'
+Redcase.ExecutionSuiteTree.CheckCallback = 
+	function (operation, node, node_parent, node_position, more) {
+	// operation can be 'create_node', 'rename_node', 
+	// 'delete_node', 'move_node' or 'copy_node'
 	var IsOK = true;
-	if (operation === "copy_node") {
-		if (more.ref !== undefined) {
-			IsOK = (this.get_node(node.parent) != node_parent) && (!this.get_node(node.id));
+	if (operation === "copy_node" && more.ref !== undefined) {
+		var sameNode = this.get_node(node);
+		IsOK = (this.get_node(node.parent) != node_parent) && 
+			(!sameNode || sameNode === node);
+		if (!IsOK && sameNode) {
+			this.select_node(sameNode);
 		}
 	}
 	return IsOK;
@@ -328,8 +333,13 @@ Redcase.ExecutionSuiteTree.copyTestCase = function (new_node, org_node, new_inst
 			params : {
 				'dest_exec_id' : new_instance.get_node(new_node.parent).original.suite_id
 			},
-			success: function() {
-				Redcase.full();
+			success: function(data) {
+				if (data.success === true) {
+					Redcase.full();
+				} else {
+					new_instance.delete_node(new_node);
+					Redcase.errorBox("Test case '" + org_node.text + "' can't be added");
+				}
 			},
 			error : function () {
 				new_instance.delete_node(new_node);

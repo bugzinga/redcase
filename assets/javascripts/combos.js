@@ -67,7 +67,7 @@ var RedcaseCombos = function($) {
 		var filtered = $('#filter_id_ option:selected').text().trim();
 		for (var i = 0; i < Redcase.result_names.length; i++) {
 			var name = Redcase.result_names[i];
-			$.each($('[name=' + name + ']'), function(index, value) {
+			$.each($('[name="' + name + '"]'), function(index, value) {
 				$(value).css(
 					'display', (
 						(filtered == 'All results')

@@ -117,12 +117,10 @@ class TestCase < ActiveRecord::Base
 
 	# TODO: Move to view f.ex. using JBuilder
 	#       (https://github.com/rails/jbuilder).
-	def to_json(context)
+	def to_json(context, version = nil, environment = nil)
 		atext = "#{issue_id}-#{issue.subject}"
-		last_result = 'none'
-		if execution_journals.any?
-			last_result = execution_journals.last.result.name.gsub(' ', '')
-		end
+		last_result = get_last_result(version, environment)
+				
 		textilized_description =
 			if issue.description
 				context.textilizable(issue, :description, {})
@@ -189,6 +187,27 @@ class TestCase < ActiveRecord::Base
 		else
 			false
 		end
+	end
+	
+	private
+	
+	def get_last_result(version = nil, environment = nil)
+		if execution_journals.any?
+			if version.nil? || environment.nil?
+				execution_journals.last.result.name.gsub(' ', '')
+			else
+				last_result = execution_journals.where({
+						:version => version, :environment => environment
+					}).last
+				if last_result.nil?
+					'none'
+				else
+					last_result.result.name.gsub(' ', '')
+				end
+			end
+		else
+			'none'
+		end	
 	end
 
 end

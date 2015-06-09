@@ -99,7 +99,7 @@ class ExecutionSuite < ActiveRecord::Base
 	
 	# TODO: Move to view f.ex. using JBuilder
 	#       (https://github.com/rails/jbuilder).
-	def to_json(context)
+	def to_json(context, version = nil, environment = nil)
 		{
 			'suite_id'   => id,
 			'text'       => name,
@@ -109,10 +109,10 @@ class ExecutionSuite < ActiveRecord::Base
 			'state'      => { 'opened' => parent.nil? },
 			'editable'   => !parent.nil?,
 			'children'   => (
-				children.collect { |s| s.to_json(context) } +
+				children.collect { |s| s.to_json(context, version, environment) } +
 				test_cases
 					.sort_by { |x| x.issue.subject }
-					.collect { |tc| tc.to_json(context) }
+					.collect { |tc| tc.to_json(context, version, environment) }
 			),
 			'type'      => 'suite'
 		}

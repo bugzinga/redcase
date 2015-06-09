@@ -143,13 +143,12 @@ Redcase.ExecutionTree.build = function (params) {
 								jQuery2('#list2_id').val()
 							).method
 					}
-					/*
-					'data' : function () {
+					'data' : function() {
 						return {
-							'id' : jQuery2('#list2_id').val()
+							'version' : jQuery2('#version').val(),
+							'environment' : jQuery2('#environments').val()
 						}
 					}
-					*/
 				},
 				'multiple' : false
 			}

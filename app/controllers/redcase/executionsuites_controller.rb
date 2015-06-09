@@ -26,7 +26,19 @@ class Redcase::ExecutionsuitesController < ApplicationController
 	end
 
 	def show
-		render :json => ExecutionSuite.find(params[:id]).to_json(view_context)
+		unless params[:version].nil?
+			version = Version.find_by_name_and_project_id(
+				params[:version],
+				@project.id
+			)
+		end
+		unless params[:environment].nil?
+			environment = ExecutionEnvironment.find(params[:environment])	
+		end
+	
+		render :json => ExecutionSuite.find(params[:id]).to_json(
+			view_context, version, environment
+		)
 	end
 
 	def create

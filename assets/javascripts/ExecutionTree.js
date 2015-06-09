@@ -203,12 +203,7 @@ Redcase.ExecutionTree.execute = function() {
 			success: function(data) {
 				jQuery2('#all-results-d').toggle(data.length > 0);
 				jQuery2('#all-results').html(Redcase.ExecutionTree.getHistory(data));
-				selectedNode
-					.find('.jstree-themeicon')
-					.removeClass(function(index, css) {
-						return (css.match(/testcase-result-icon-[^\s]*/g) || [])
-							.join(' ');
-					}).addClass('testcase-result-icon-' + result);
+				tree.set_icon(selectedNode, ('testcase-result-icon-' + result));
 				Redcase.ExecutionTree.selectNextNode();
 				jQuery2('#exec-comment').val('');
 				// TODO: When a user executes a test case, the results are

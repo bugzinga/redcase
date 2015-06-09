@@ -1,6 +1,6 @@
 jQuery2(function() {
 	Redcase.ExecutionTree.build();
-	jQuery2('#execution_settings_id').on('change', '#list2_id', function() {Redcase.ExecutionTree.tree.refresh()});
+	jQuery2('#execution_settings_id').on('change', 'select', function() {Redcase.ExecutionTree.tree.refresh()});
 });
 
 Redcase.ExecutionTree = {}
@@ -142,7 +142,7 @@ Redcase.ExecutionTree.build = function (params) {
 							Redcase.methods.executionSuite.actions.show(
 								jQuery2('#list2_id').val()
 							).method
-					}
+					},
 					'data' : function() {
 						return {
 							'version' : jQuery2('#version').val(),

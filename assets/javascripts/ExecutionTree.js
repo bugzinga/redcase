@@ -188,18 +188,27 @@ Redcase.ExecutionTree.execute = function() {
 		// TODO: Log something.
 		return;
 	}
+	var tree =  Redcase.ExecutionTree.tree;
+	var selectedNode = tree.get_node(tree.get_selected(true)[0], true);
+	var result = jQuery2('#results').val();
 	var apiParams = jQuery2.extend(
 		{},
 		Redcase.methods.testCase.actions.update(issueId), {
 			params: {
 				version: jQuery2('#version').val(),
-				result: jQuery2('#results').val(),
+				result: result,
 				envs: jQuery2('#environments').val(),
 				comment: jQuery2('#exec-comment').val()
 			},
 			success: function(data) {
 				jQuery2('#all-results-d').toggle(data.length > 0);
 				jQuery2('#all-results').html(Redcase.ExecutionTree.getHistory(data));
+				selectedNode
+					.find('.jstree-themeicon')
+					.removeClass(function(index, css) {
+						return (css.match(/testcase-result-icon-[^\s]*/g) || [])
+							.join(' ');
+					}).addClass('testcase-result-icon-' + result);
 				Redcase.ExecutionTree.selectNextNode();
 				jQuery2('#exec-comment').val('');
 				// TODO: When a user executes a test case, the results are

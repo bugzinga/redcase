@@ -1,0 +1,26 @@
+# Russian strings go here for Rails i18n
+
+ru:
+
+  label_test_case_management    : "Управление тестами"
+  label_test_case_execution     : "Выполнение"
+  label_test_case_report        : "Отчет"
+  label_test_suites             : "Наборы тестов"
+  label_execution_suite         : "Тесты на выполнение"
+  label_environment             : "Окружение"
+  label_version                 : "Версия"
+  label_execution_info          : "Информация"
+  label_description             : "Описание"
+  label_history                 : "История"
+  label_id                      : "ID"
+  label_name                    : "Имя"
+  label_date                    : "Дата"
+  label_result                  : "Результат"
+  label_comments                : "Комментарии"
+  label_comment                 : "Комментарий"
+  label_executor                : "Исполнитель"
+  label_not_available           : "Недоступно"
+  label_report                  : "Отчет"
+  label_full_report             : "Полный отчет"
+  label_test_case_specification : "Спецификация тестового сценария"
+  label_button_save             : "сохранить"

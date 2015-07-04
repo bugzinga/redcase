@@ -76,8 +76,13 @@ Redcase.ExecutionSuiteTree.CheckCallback =
 	var IsOK = true;
 	if (operation === "copy_node" && more.ref !== undefined) {
 		var sameNode = this.get_node(node);
-		IsOK = (this.get_node(node.parent) != node_parent) && 
-			(!sameNode || sameNode === node);
+		var element = Redcase.TestSuiteTree.tree.get_node(
+			node,
+			true
+		);
+		IsOK = (this.get_node(node.parent) != node_parent)
+			&& (!sameNode || (sameNode === node))
+			&& (element.find('[class*=testcase]').length > 0);
 		if (!IsOK && sameNode) {
 			this.select_node(sameNode);
 		}

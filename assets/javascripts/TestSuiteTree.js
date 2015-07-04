@@ -20,7 +20,11 @@ Redcase.TestSuiteTree.IsDraggable = function (nodes) {
 	var i;
 	//Make sure the user can't drag the root node, "default" nodes, the "unsorted" node, and disabled nodes
 	for (i = 0; i < nodes.length; i++) {
-		if ((nodes[i].parents.length < 2) || (nodes[i].type === 'default') || (nodes[i].text === '.Unsorted') || (nodes[i].state.disabled === true)) {
+		if ((nodes[i].parents.length < 2)
+			|| (nodes[i].type === 'default')
+			|| (nodes[i].text === '.Unsorted')
+			|| (nodes[i].state.disabled === true)
+		) {
 			return false;
 		}
 	}

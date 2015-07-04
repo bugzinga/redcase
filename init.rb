@@ -11,7 +11,7 @@ Redmine::Plugin.register :redcase do
 	name 'Redcase'
 	description 'Test cases management plugin for Redmine'
 	author 'Bugzinga Team'
-	version '1.0-RC-1'
+	version '1.0'
 
 	permission :view_test_cases, {
 		:redcase => [

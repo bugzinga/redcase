@@ -25,6 +25,10 @@
 <script type="text/javascript">
 	// NonConflict jQuery
 	var jQuery2 = $.noConflict(true);
+
+	function getIssueUrl(issueId) {
+		return '<%= issue_path('issue_id') %>'.replace('issue_id', issueId);
+	}
 </script>
 
 <!-- Redcase -->

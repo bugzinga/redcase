@@ -80,7 +80,8 @@ Redcase.ExecutionTree.selectionChange = function (event, params) {
 				jQuery2('#exec_descr_id').toggle(data.desc !== undefined);
 				desc = jQuery2('#test-case-desc');
 				subj = jQuery2('#test-case-subj');
-				subj.html('<a href="/issues/' + data.issue_id + '">' + data.text + '</a>');
+				var issueUrl = getIssueUrl(data.issue_id);
+				subj.html('<a href="' + issueUrl + '">' + data.text + '</a>');
 				desc.html(data.desc);
 				edit.show();
 				results = jQuery2('#results');

@@ -1,45 +1,65 @@
+
 jQuery2(function() {
 	Redcase.ExecutionTree.build();
-	jQuery2('#execution_settings_id').on('change', 'select', function() {Redcase.ExecutionTree.tree.refresh()});
+	jQuery2('#execution_settings_id').on(
+		'change',
+		'select',
+		function() {
+			Redcase.ExecutionTree.tree.refresh()
+		}
+	);
 });
 
-Redcase.ExecutionTree = {}
+Redcase.ExecutionTree = {};
 
 Redcase.ExecutionTree.CheckCallback = function() {
 	return false;
-}
+};
 
 Redcase.ExecutionTree.IsDraggable = function() {
 	return true;
-}
+};
 
 Redcase.ExecutionTree.getHistory = function(data) {
-	var
-	i,
-	notFirst,
-	color,
-	unique = {},
-	txt = "<table class='redcase-row' width='100%'>";
-	txt += "<tr style='font-weight: bold; background-color: #eeeeee'><td>date</td><td>result</td><td>comments</td><td>executor</td><td>environment</td><td>version</td></tr>";
-	for (i = 0; i < data.length; i++) {
+	var unique = {};
+	var txt = "<table class='redcase-row' width='100%'>"
+		+ "<tr style='font-weight: bold; background-color: #eeeeee'>"
+		+ "<td>date</td>"
+		+ "<td>result</td>"
+		+ "<td>comments</td>"
+		+ "<td>executor</td>"
+		+ "<td>environment</td>"
+		+ "<td>version</td>"
+		+ "</tr>";
+	for (var i = 0; i < data.length; i++) {
+		var color;
 		switch (data[i].result) {
 			case "Passed":
-				color = "#BBFF88";
+				color = "#bbff88";
 				break;
 			case "Failed":
-				color = "#FFBBBB";
+				color = "#ffbbbb";
 				break;
 			case "Not Available":
-				color = "#DDDDDD";
+				color = "#dddddd";
 				break;
 			case "Blocked":
-				color = "#CCCCFF";
+				color = "#ccccff";
 				break;
 			default:
-				color = "#FFFFFF";
+				color = "#ffffff";
 		}
-		notFirst = (unique[data[i].environment + data[i].version]);
-		txt += "<tr" + (notFirst ? " style='background-color: " + color + "'" : " style='background-color: " + color + "; font-weight: bold'") + ">";
+		var notFirst = (unique[data[i].environment + data[i].version]);
+		txt += "<tr"
+			+ (notFirst
+				? " style='background-color: " + color + "'"
+				: (
+					" style='background-color: "
+					+ color
+					+ "; font-weight: bold'"
+				)
+			)
+			+ ">";
 		txt += "<td>" + data[i].created_on + "</td>";
 		txt += "<td>" + data[i].result + "</td>";
 		txt += "<td>" + data[i].comment + "</td>";
@@ -53,116 +73,136 @@ Redcase.ExecutionTree.getHistory = function(data) {
 	}
 	txt += "</table>";
 	return txt;
-}
+};
 
-Redcase.ExecutionTree.selectionChange = function (event, params) {
-	var
-	node = params.node,
-	edit = jQuery2('#test-case-edit');
+Redcase.ExecutionTree.selectionChange = function(event, params) {
+	var node = params.node;
+	var edit = jQuery2('#test-case-edit');
 	edit.hide();
 	jQuery2('#all-results-d').hide();
 	if (node.original.type == 'case') {
-		var apiParms = {};
-		jQuery2.extend(apiParms, Redcase.methods.testCase.actions.index(), {
-			params: {
-				"object_id": node.original.issue_id
-			},
-			success: function(data) {
-				var
-				desc,
-				subj,
-				results,
-				version,
-				txt,
-				apiParms = {};
-
-				Redcase.ExecutionTree.currentIssue = data.issue_id;
-				jQuery2('#exec_descr_id').toggle(data.desc !== undefined);
-				desc = jQuery2('#test-case-desc');
-				subj = jQuery2('#test-case-subj');
-				var issueUrl = getIssueUrl(data.issue_id);
-				subj.html('<a href="' + issueUrl + '">' + data.text + '</a>');
-				desc.html(data.desc);
-				edit.show();
-				results = jQuery2('#results');
-				results.val('Passed');
-				version = jQuery2('#version');
-
-				jQuery2.extend(apiParms, Redcase.methods.executionJournal.actions.index(), {
-					params: {
-						"issue_id": node.original.issue_id,
-						"version": version.val()
-					},
-					success: function(data) {
-						jQuery2('#all-results-d').toggle(data.length > 0);
-						if (data.length > 0) {
-							txt = Redcase.ExecutionTree.getHistory(data);
-							jQuery2('#all-results').html(txt);
+		var apiParms = jQuery2.extend(
+			{},
+			Redcase.methods.testCase.actions.index(), {
+				params: {
+					"object_id": node.original.issue_id
+				},
+				success: function(data) {
+					Redcase.ExecutionTree.currentIssue = data.issue_id;
+					jQuery2('#exec_descr_id').toggle(
+						data.desc !== undefined
+					);
+					var desc = jQuery2('#test-case-desc');
+					var subj = jQuery2('#test-case-subj');
+					var issueUrl = getIssueUrl(data.issue_id);
+					subj.html(
+						'<a href="'
+						+ issueUrl
+						+ '">'
+						+ data.text
+						+ '</a>'
+					);
+					desc.html(data.desc);
+					edit.show();
+					var results = jQuery2('#results');
+					results.val('Passed');
+					var version = jQuery2('#version');
+					var apiParms = jQuery2.extend(
+						{},
+						Redcase.methods.executionJournal.actions.index(), {
+							params: {
+								"issue_id": node.original.issue_id,
+								"version": version.val()
+							},
+							success: function(data) {
+								jQuery2('#all-results-d').toggle(
+									data.length > 0
+								);
+								if (data.length > 0) {
+									var txt = Redcase.ExecutionTree
+										.getHistory(data);
+									jQuery2('#all-results').html(txt);
+								}
+							},
+							errorMessage: "Unable to get execution results"
 						}
-					},
-					errorMessage: "Unable to get execution results"
-				});
-				Redcase.apiCall(apiParms);
-				apiParms = {};
-				jQuery2.extend(apiParms, Redcase.methods.redcase.actions.getAttachmentURLs(), {
-					params: {
-						"issue_id": node.original.issue_id
-					},
-					success: function(data) {
-						var txt;
-						jQuery2('#test-case-attach').toggle(data.length > 0);
-						if (data.length > 0) {
-							txt = "";
-							for (i = 0; i < data.length; i++) {
-								txt += "<a href='" + data[i].url + "' target='_blank'>" + "<img src=" + '"' + "/images/attachment.png" + '"' + "></img>" + data[i].name + "</a><br/>";
-							}
-							jQuery2('#test-case-attach').html(txt);
+					);
+					Redcase.apiCall(apiParms);
+					apiParms = jQuery2.extend(
+						{},
+						Redcase.methods.redcase.actions
+							.getAttachmentURLs(), {
+							params: {
+								"issue_id": node.original.issue_id
+							},
+							success: function(data) {
+								jQuery2('#test-case-attach').toggle(
+									data.length > 0
+								);
+								if (data.length > 0) {
+									var txt = "";
+									for (i = 0; i < data.length; i++) {
+										txt += "<a href='"
+											+ data[i].url
+											+ "' target='_blank'>"
+											+ "<img src="
+											+ '"'
+											+ "/images/attachment.png"
+											+ '"'
+											+ "></img>"
+											+ data[i].name
+											+ "</a><br/>";
+									}
+									jQuery2('#test-case-attach').html(txt);
+								}
+							},
+							errorMessage: "Getting attachments failed"
 						}
-					},
-					errorMessage: "Getting attachments failed"
-				});
-				Redcase.apiCall(apiParms);
-			},
-			errorMessage: "Information about test case '" + node.text + "' can't be obtained"
-		});
-
+					);
+					Redcase.apiCall(apiParms);
+				},
+				errorMessage: (
+					"Information about test case '"
+					+ node.text
+					+ "' can't be obtained"
+				)
+			}
+		);
 		Redcase.apiCall(apiParms);
 	}
-}
+};
 
-Redcase.ExecutionTree.build = function (params) {
-	Redcase.ExecutionTree.tree =
-		jQuery2('#execution_test_cases_tree_id').jstree({
-			// Core config
-			'core' : {
-				'check_callback' : Redcase.ExecutionTree.CheckCallback,
-				'data' : {
-					'type' : 'GET',
-					'url' : function() {
-						return Redcase.context +
-							Redcase.methods.executionSuite.actions.show(
+Redcase.ExecutionTree.build = function(params) {
+	Redcase.ExecutionTree.tree = jQuery2('#execution_test_cases_tree_id')
+		.jstree({
+			core: {
+				check_callback: Redcase.ExecutionTree.CheckCallback,
+				data: {
+					type: 'GET',
+					url: function() {
+						return Redcase.context
+							+ Redcase.methods.executionSuite.actions.show(
 								jQuery2('#list2_id').val()
 							).method
 					},
-					'data' : function() {
+					data: function() {
 						return {
-							'version' : jQuery2('#version').val(),
-							'environment' : jQuery2('#environments').val()
+							version: jQuery2('#version').val(),
+							environment: jQuery2('#environments').val()
 						}
 					}
 				},
-				'multiple' : false
+				multiple: false
 			}
 		});
-
-	// Bind tree events
 	Redcase.ExecutionTree.tree.on(
-		'select_node.jstree', Redcase.ExecutionTree.selectionChange
+		'select_node.jstree',
+		Redcase.ExecutionTree.selectionChange
 	);
 	Redcase.ExecutionTree.tree = jQuery2.jstree.reference(
 		Redcase.ExecutionTree.tree
 	);
-}
+};
 
 Redcase.ExecutionTree.selectNextNode = function() {
 	var tree =  Redcase.ExecutionTree.tree;
@@ -202,7 +242,9 @@ Redcase.ExecutionTree.execute = function() {
 			},
 			success: function(data) {
 				jQuery2('#all-results-d').toggle(data.length > 0);
-				jQuery2('#all-results').html(Redcase.ExecutionTree.getHistory(data));
+				jQuery2('#all-results').html(
+					Redcase.ExecutionTree.getHistory(data)
+				);
 				tree.set_icon(
 					selectedNode,
 					('testcase-result-icon-' + result.replace(/\s*/g, ''))
@@ -210,14 +252,15 @@ Redcase.ExecutionTree.execute = function() {
 				Redcase.ExecutionTree.selectNextNode();
 				jQuery2('#exec-comment').val('');
 				// TODO: When a user executes a test case, the results are
-				//       getting updated and we need to refresh the Report tab
-				//       as well. Triggering combo controls' changes might be
-				//       not the best solution, but at least it seems to fix the
-				//       issue with updates.
+				//       getting updated and we need to refresh the Report
+				//       tab as well. Triggering combo controls' changes
+				//       might be not the best solution, but at least it
+				//       seems to fix the issue with updates.
 				Redcase.Combos.refresh();
 			},
 			errorMessage: 'Execution failed'
 		}
 	);
 	Redcase.apiCall(apiParams);
-}
+};
+

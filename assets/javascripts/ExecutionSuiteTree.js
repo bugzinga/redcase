@@ -1,507 +1,518 @@
 
-jQuery2(function() {
-	Redcase.ExecutionSuiteTree.prepareContextItems();
-	Redcase.ExecutionSuiteTree.build();
-	jQuery2('#btn_save_exec_suite').on(
-		'click',
-		Redcase.ExecutionSuiteTree.saveExecSuiteClick
-	);
-	jQuery2('#btn_create_exec_suite').on(
-		'click',
-		Redcase.ExecutionSuiteTree.createExecSuiteClick
-	);
-	jQuery2('#btn_destroy_exec_suite').on(
-		'click',
-		Redcase.ExecutionSuiteTree.destroyExecSuiteClick
-	);
-	jQuery2('#list_id').on(
-		'change',
-		Redcase.ExecutionSuiteTree.refresh
-	);
-});
+var RedcaseExecutionSuiteTree = function($) {
 
-Redcase.ExecutionSuiteTree = {};
+	var tree;
 
-Redcase.ExecutionSuiteTree.updateList2 = function() {
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.executionSuite.actions.index(), {
-			success: function(data, textStatus, request) {
-				jQuery2('#execution_settings_id').html(data);
-				Redcase.ExecutionTree.refresh();
-			},
-			errorMessage : "Couldn't load execution list"
-		}
-	);
-	Redcase.apiCall(apiParms);
-};
+	var caseItems;
 
-Redcase.ExecutionSuiteTree.saveExecSuiteClick = function(event) {
-	Redcase.ExecutionSuiteTree.renameSuite(
-		jQuery2('#list_id').val(),
-		jQuery2('#list_name').val(),
-		function(data, textStatus, request) {
-			jQuery2('#list_id option:selected').text(
-				jQuery2('#list_name').val()
-			);
-		},
-		function() {
-			Redcase.ExecutionSuiteTree.tree.refresh();
-			Redcase.full();
-		}
-	);
-	event.preventDefault();
-};
+	var specialSuiteItems;
 
-Redcase.ExecutionSuiteTree.createExecSuiteClick = function(event) {
-	Redcase.ExecutionSuiteTree.addSuite(
-		undefined,
-		jQuery2('#list_name').val(),
-		function(data, textStatus, request) {
-			jQuery2('#list_id').append(
-				jQuery2(
-					'<option>', {
-						value: data.suite_id
-					}
-				).text(jQuery2('#list_name').val())
-			);
-			jQuery2('#list_id').val(data.suite_id);
-		},
-		function() {
-			Redcase.ExecutionSuiteTree.tree.refresh();
-			Redcase.full();
-		}
-	);
-	event.preventDefault();
-};
+	var suiteItems;
 
-Redcase.ExecutionSuiteTree.destroyExecSuiteClick = function(event) {
-	Redcase.ExecutionSuiteTree.deleteSuite(
-		jQuery2('#list_id').val(),
-		jQuery2('#list_id option:selected').text(),
-		function(data, textStatus, request) {
-			jQuery2("#list_id option:selected").remove();
-			jQuery2('#list_name').val(
-				jQuery2("#list_id option:selected").text()
-			);
-			Redcase.ExecutionSuiteTree.tree.refresh();
-			Redcase.full();
-		}
-	);
-	event.preventDefault();
-};
+	var commonItems;
 
-Redcase.ExecutionSuiteTree.CheckCallback = function(
-	operation,
-	node,
-	node_parent,
-	node_position,
-	more
-) {
-	// Operation can be 'create_node', 'rename_node',
-	// 'delete_node', 'move_node' or 'copy_node'.
-	var isOK = true;
-	if ((operation === "copy_node") && (more.ref !== undefined)) {
-		var sameNode = this.get_node(node);
-		var element = Redcase.TestSuiteTree.tree.get_node(node, true);
-		isOK = (this.get_node(node.parent) != node_parent)
-			&& (!sameNode || (sameNode === node))
-			&& (!element || (element.find('[class*=testcase]').length > 0));
-		if (!isOK && sameNode) {
-			this.select_node(sameNode);
-		}
-	}
-	return isOK;
-};
-
-Redcase.ExecutionSuiteTree.IsDraggable = function(nodes) {
-	// Make sure the user can't drag the root node
-	for (var i = 0; i < nodes.length; i++) {
-		if (nodes[i].parents.length < 2) {
-			return false;
-		}
-	}
-	return true;
-};
-
-Redcase.ExecutionSuiteTree.prepareContextItems = function() {
-	Redcase.ExecutionSuiteTree.caseItems = {};
-	Redcase.ExecutionSuiteTree.specialSuiteItems = {
-		addSuite: {
-			label: 'Add suite',
-			action: Redcase.ExecutionSuiteTree.addSuiteDialog
-		}
-	};
-	Redcase.ExecutionSuiteTree.suiteItems = {
-		renameSuite: {
-			label: 'Rename suite',
-			action: Redcase.ExecutionSuiteTree.renameSuiteDialog
-		}
-	};
-	Redcase.ExecutionSuiteTree.commonItems = {
-		deleteItem: {
-			label: 'Delete',
-			action: Redcase.ExecutionSuiteTree.deleteItem
-		}
-	};
-};
-
-Redcase.ExecutionSuiteTree.refresh = function() {
-	jQuery2('#list_name').val(
-		jQuery2('#list_id').children(':selected').text()
-	);
-	Redcase.ExecutionSuiteTree.tree.refresh();
-};
-
-Redcase.ExecutionSuiteTree.addSuite = function(
-	parent_id,
-	name,
-	successCallback,
-	completeCallback
-) {
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.executionSuite.actions.create(), {
-			params: {
-				name: name,
-				parent_id: parent_id
-			},
-			success: successCallback,
-			errorMessage: ("Execution suite '" + name + "' can't be created"),
-			complete: completeCallback
-		}
-	);
-	Redcase.apiCall(apiParms);
-};
-
-Redcase.ExecutionSuiteTree.addSuiteDialog = function(params) {
-	var node = Redcase.ExecutionSuiteTree.tree.get_node(params.reference);
-	jQuery2('#redcase-dialog').dialog({
-		title: 'Creating execution suite',
-		modal: true,
-		resizable: false,
-		buttons: {
-			OK: function() {
-				var name = jQuery2('#redcase-dialog-value').val();
-				Redcase.ExecutionSuiteTree.addSuite(
-					node.original.suite_id,
-					name,
-					function(newNode) {
-						Redcase.ExecutionSuiteTree.tree.create_node(
-							node,
-							newNode
-						);
-						Redcase.full();
-					},
-					function() {
-						jQuery2('#redcase-dialog').dialog('close');
-					}
-				);
+	this.updateList2 = function() {
+		var apiParms = $.extend(
+			{},
+			Redcase.methods.executionSuite.actions.index(), {
+				success: function(data, textStatus, request) {
+					$('#execution_settings_id').html(data);
+					Redcase.ExecutionTree.refresh();
+				},
+				errorMessage : "Couldn't load execution list"
 			}
-		}
-	});
-};
+		);
+		Redcase.apiCall(apiParms);
+	};
 
-Redcase.ExecutionSuiteTree.deleteSuite = function(
-	suite_id,
-	name,
-	successCallback
-) {
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.executionSuite.actions.destroy(suite_id), {
-			success: successCallback,
-			errorMessage: ("Execution suite '" + name + "' can't be deleted")
-		}
-	);
-	Redcase.apiCall(apiParms);
-};
-
-Redcase.ExecutionSuiteTree.deleteSuiteNode = function(node) {
-	if (node.parents.length > 1) {
-		Redcase.ExecutionSuiteTree.deleteSuite(
-			node.original.suite_id,
-			node.text,
+	var saveExecSuiteClick = function(event) {
+		renameSuite(
+			$('#list_id').val(),
+			$('#list_name').val(),
+			function(data, textStatus, request) {
+				$('#list_id option:selected').text($('#list_name').val());
+			},
 			function() {
-				Redcase.ExecutionSuiteTree.tree.delete_node(node);
+				tree.refresh();
 				Redcase.full();
 			}
 		);
-	} else {
-		// Error, can't delete root node.
-		console.log('Tried to delete suite: ' + node.text);
-	}
-};
+		event.preventDefault();
+	};
 
-Redcase.ExecutionSuiteTree.deleteCase = function (node) {
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.testCase.actions.update(node.original.issue_id), {
-			params: {
-				remove_from_exec_id: Redcase.ExecutionSuiteTree.tree
-					.get_node(node.parent)
-					.original
-					.suite_id
-			},
-			success: function() {
-				Redcase.ExecutionSuiteTree.tree.delete_node(node);
-				Redcase.full();
-			},
-			errorMessage: ("Test case '" + node.text + "' can't be deleted")
-		}
-	);
-	Redcase.apiCall(apiParms);
-};
-
-Redcase.ExecutionSuiteTree.deleteItem = function(params) {
-	var selected = Redcase.ExecutionSuiteTree.tree.get_selected(true);
-	for (var i = 0; i < selected.length; i++) {
-		if (selected[i].type === 'case') {
-			Redcase.ExecutionSuiteTree.deleteCase(selected[i]);
-		} else {
-			Redcase.ExecutionSuiteTree.deleteSuiteNode(selected[i]);
-		}
-	}
-};
-
-Redcase.ExecutionSuiteTree.renameSuite = function(
-	suite_id,
-	name,
-	successCallback,
-	completeCallback
-) {
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.executionSuite.actions.update(suite_id), {
-			params: {
-				new_name: name
-			},
-			success: successCallback,
-			errorMessage: ("Execution suite '" + name + "' can't be renamed"),
-			complete: completeCallback
-		}
-	);
-	Redcase.apiCall(apiParms);
-};
-
-Redcase.ExecutionSuiteTree.renameSuiteDialog = function(params) {
-	var node = Redcase.ExecutionSuiteTree.tree.get_node(params.reference);
-	jQuery2('#redcase-dialog').dialog({
-		title: 'Renaming execution suite',
-		modal: true,
-		resizable: false,
-		buttons: {
-			OK: function() {
-				var name = jQuery2('#redcase-dialog-value').val();
-				Redcase.ExecutionSuiteTree.renameSuite(
-					node.original.suite_id,
-					name,
-					function() {
-						Redcase.ExecutionSuiteTree.tree.set_text(node, name);
-						Redcase.full();
-					},
-					function() {
-						jQuery2('#redcase-dialog').dialog('close')
-					}
+	var createExecSuiteClick = function(event) {
+		addSuite(
+			undefined,
+			$('#list_name').val(),
+			function(data, textStatus, request) {
+				$('#list_id').append(
+					$('<option>', {
+						value: data.suite_id
+					}).text($('#list_name').val())
 				);
+				$('#list_id').val(data.suite_id);
+			},
+			function() {
+				tree.refresh();
+				Redcase.full();
+			}
+		);
+		event.preventDefault();
+	};
+
+	var destroyExecSuiteClick = function(event) {
+		deleteSuite(
+			$('#list_id').val(),
+			$('#list_id option:selected').text(),
+			function(data, textStatus, request) {
+				$("#list_id option:selected").remove();
+				$('#list_name').val(
+					$("#list_id option:selected").text()
+				);
+				tree.refresh();
+				Redcase.full();
+			}
+		);
+		event.preventDefault();
+	};
+
+	var checkCallback = function(
+		operation,
+		node,
+		nodeParent,
+		nodePosition,
+		more
+	) {
+		// Operation can be 'create_node', 'rename_node',
+		// 'delete_node', 'move_node' or 'copy_node'.
+		var isOK = true;
+		if ((operation === "copy_node") && (more.ref !== undefined)) {
+			var sameNode = this.get_node(node);
+			isOK = (this.get_node(node.parent) != nodeParent)
+				&& (!sameNode || (sameNode === node))
+				&& (node.original.type == 'case');
+			if (!isOK && sameNode) {
+				this.select_node(sameNode);
 			}
 		}
-	});
-};
+		return isOK;
+	};
 
-Redcase.ExecutionSuiteTree.getItems = function() {
-	var items = {};
-	var selectionType = Redcase.TestSuiteTree.getSelectionType(
-		Redcase.ExecutionSuiteTree.tree
-	);
-	if (selectionType < 3) {
-		items = jQuery2.extend(items, Redcase.ExecutionSuiteTree.commonItems);
-	}
-	// Testcase
-	if (selectionType === 0) {
-		jQuery2.extend(items, Redcase.ExecutionSuiteTree.caseItems);
-	}
-	// Testsuite
-	if (selectionType === 1) {
-		jQuery2.extend(items, Redcase.ExecutionSuiteTree.suiteItems);
-	}
-	// Testsuite or Special
-	if ((selectionType === 1) || (selectionType === 3)) {
-		jQuery2.extend(items, Redcase.ExecutionSuiteTree.specialSuiteItems);
-	}
-	return items;
-};
-
-Redcase.ExecutionSuiteTree.moveTestCase = function(
-	new_node,
-	org_node,
-	new_instance,
-	old_instance
-) {
-	new_node.original = org_node.original;
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.testCase.actions.update(org_node.original.issue_id), {
-			params: {
-				source_exec_id: old_instance
-					.get_node(org_node.parent)
-					.original
-					.suite_id,
-				dest_exec_id: new_instance
-					.get_node(new_node.parent)
-					.original
-					.suite_id
-			},
-			success: function() {
-				old_instance.delete_node(org_node);
-				Redcase.full();
-			},
-			error: function() {
-				new_instance.delete_node(new_node);
-			},
-			errorMessage: ("Test case '" + org_node.text + "' can't be moved")
+	var isDraggable = function(nodes) {
+		// Make sure the user can't drag the root node
+		for (var i = 0; i < nodes.length; i++) {
+			if (nodes[i].parents.length < 2) {
+				return false;
+			}
 		}
-	);
-	Redcase.apiCall(apiParms);
-};
+		return true;
+	};
 
-Redcase.ExecutionSuiteTree.moveTestSuite = function(
-	new_node,
-	org_node,
-	new_instance,
-	old_instance
-) {
-	new_node.original = org_node.original;
-	var apiParms = jQuery2.extend(
-		{},
-		Redcase.methods.executionSuite.actions.update(
-			org_node.original.suite_id
-		), {
-			params: {
-				parent_id: new_instance.get_node(new_node.parent).original.suite_id
-			},
-			success: function() {
-				old_instance.delete_node(org_node);
-				Redcase.full();
-			},
-			error: function() {
-				new_instance.delete_node(new_node);
-			},
-			errorMessage: ("Test suite '" + org_node.text + "' can't be moved")
-		}
-	);
-	Redcase.apiCall(apiParms);
-};
+	var prepareContextItems = function() {
+		caseItems = {};
+		specialSuiteItems = {
+			addSuite: {
+				label: 'Add suite',
+				action: addSuiteDialog
+			}
+		};
+		suiteItems = {
+			renameSuite: {
+				label: 'Rename suite',
+				action: renameSuiteDialog
+			}
+		};
+		commonItems = {
+			deleteItem: {
+				label: 'Delete',
+				action: deleteItem
+			}
+		};
+	};
 
-Redcase.ExecutionSuiteTree.copyTestCase = function(
-	new_node,
-	org_node,
-	new_instance,
-	old_instance
-) {
-	if (org_node.original.status.name === "In Progress") {
-		new_node.original = org_node.original;
-		new_instance.set_id(new_node, org_node.id);
-		var apiParms = jQuery2.extend(
+	var refresh = function() {
+		$('#list_name').val(
+			$('#list_id').children(':selected').text()
+		);
+		tree.refresh();
+	};
+
+	var addSuite = function(
+		parentId,
+		name,
+		successCallback,
+		completeCallback
+	) {
+		var apiParms = $.extend(
 			{},
-			Redcase.methods.testCase.actions.update(
-				org_node.original.issue_id
-			), {
+			Redcase.methods.executionSuite.actions.create(), {
 				params: {
-					dest_exec_id: new_instance
-						.get_node(new_node.parent)
-						.original
-						.suite_id
+					name: name,
+					parent_id: parentId
 				},
-				success: function(data) {
-					if (data.success === true) {
-						Redcase.full();
-					} else {
-						new_instance.delete_node(new_node);
-						Redcase.errorBox(
-							"Test case '"
-							+ org_node.text
-							+ "' can't be added"
-						);
-					}
-				},
-				error: function() {
-					new_instance.delete_node(new_node);
-				},
+				success: successCallback,
 				errorMessage: (
-					"Test case '" + org_node.text + "' can't be added"
+					"Execution suite '"
+					+ name
+					+ "' can't be created"
+				),
+				complete: completeCallback
+			}
+		);
+		Redcase.apiCall(apiParms);
+	};
+
+	var addSuiteDialog = function(params) {
+		var node = tree.get_node(params.reference);
+		$('#redcase-dialog').dialog({
+			title: 'Creating execution suite',
+			modal: true,
+			resizable: false,
+			buttons: {
+				OK: function() {
+					var name = $('#redcase-dialog-value').val();
+					addSuite(
+						node.original.suite_id,
+						name,
+						function(newNode) {
+							tree.create_node(
+								node,
+								newNode
+							);
+							Redcase.full();
+						},
+						function() {
+							$('#redcase-dialog').dialog('close');
+						}
+					);
+				}
+			}
+		});
+	};
+
+	var deleteSuite = function(
+		suiteId,
+		name,
+		successCallback
+	) {
+		var apiParms = $.extend(
+			{},
+			Redcase.methods.executionSuite.actions.destroy(suiteId), {
+				success: successCallback,
+				errorMessage: (
+					"Execution suite '"
+					+ name
+					+ "' can't be deleted"
 				)
 			}
 		);
 		Redcase.apiCall(apiParms);
-	} else {
-		new_instance.delete_node(new_node);
-	}
-};
+	};
 
-Redcase.ExecutionSuiteTree.OnCopy = function(event, object) {
-	// Fields: is_foreign, is_multi, new_instance, node, old_instance,
-	//         old_parent (ID), old_position (index), original (node),
-	//         parent (id), position (index (altid 0?))
-	// Internal drag + drop
-	if (object.old_instance === object.new_instance) {
-		switch (object.original.type) {
-		case 'case':
-			Redcase.ExecutionSuiteTree.moveTestCase(
-				object.node,
-				object.original,
-				object.new_instance,
-				object.old_instance
-			);
-			break;
-		case 'suite':
-			Redcase.ExecutionSuiteTree.moveTestSuite(
-				object.node,
-				object.original,
-				object.new_instance,
-				object.old_instance
-			);
-			break;
-		}
-	} else {
-		if (object.original.type === 'case') {
-			Redcase.ExecutionSuiteTree.copyTestCase(
-				object.node,
-				object.original,
-				object.new_instance,
-				object.old_instance
+	var deleteSuiteNode = function(node) {
+		if (node.parents.length > 1) {
+			deleteSuite(
+				node.original.suite_id,
+				node.text,
+				function() {
+					tree.delete_node(node);
+					Redcase.full();
+				}
 			);
 		} else {
-			object.new_instance.delete_node(object.node);
+			// Error, can't delete root node.
+			console.log('Tried to delete suite: ' + node.text);
 		}
-	}
-};
+	};
 
-Redcase.ExecutionSuiteTree.build = function(params) {
-	Redcase.ExecutionSuiteTree.tree = jQuery2(
-			'#management_execution_suite_tree_id'
-		).jstree({
+	var deleteCase = function (node) {
+		var apiParms = $.extend(
+			{},
+			Redcase.methods.testCase.actions.update(
+				node.original.issue_id
+			), {
+				params: {
+					remove_from_exec_id: tree
+						.get_node(node.parent)
+						.original
+						.suite_id
+				},
+				success: function() {
+					tree.delete_node(node);
+					Redcase.full();
+				},
+				errorMessage: (
+					"Test case '"
+					+ node.text
+					+ "' can't be deleted"
+				)
+			}
+		);
+		Redcase.apiCall(apiParms);
+	};
+
+	var deleteItem = function(params) {
+		var selected = tree.get_selected(true);
+		for (var i = 0; i < selected.length; i++) {
+			if (selected[i].type === 'case') {
+				deleteCase(selected[i]);
+			} else {
+				deleteSuiteNode(selected[i]);
+			}
+		}
+	};
+
+	var renameSuite = function(
+		suiteId,
+		name,
+		successCallback,
+		completeCallback
+	) {
+		var apiParms = $.extend(
+			{},
+			Redcase.methods.executionSuite.actions.update(suiteId), {
+				params: {
+					new_name: name
+				},
+				success: successCallback,
+				errorMessage: (
+					"Execution suite '"
+					+ name
+					+ "' can't be renamed"
+				),
+				complete: completeCallback
+			}
+		);
+		Redcase.apiCall(apiParms);
+	};
+
+	var renameSuiteDialog = function(params) {
+		var node = tree.get_node(params.reference);
+		$('#redcase-dialog').dialog({
+			title: 'Renaming execution suite',
+			modal: true,
+			resizable: false,
+			buttons: {
+				OK: function() {
+					var name = $('#redcase-dialog-value').val();
+					renameSuite(
+						node.original.suite_id,
+						name,
+						function() {
+							tree.set_text(node, name);
+							Redcase.full();
+						},
+						function() {
+							$('#redcase-dialog').dialog('close')
+						}
+					);
+				}
+			}
+		});
+	};
+
+	var getItems = function() {
+		var items = {};
+		var selectionType = Redcase.TestSuiteTree.getSelectionType(tree);
+		if (selectionType < 3) {
+			items = $.extend(items, commonItems);
+		}
+		// Testcase
+		if (selectionType === 0) {
+			$.extend(items, caseItems);
+		}
+		// Testsuite
+		if (selectionType === 1) {
+			$.extend(items, suiteItems);
+		}
+		// Testsuite or Special
+		if ((selectionType === 1) || (selectionType === 3)) {
+			$.extend(items, specialSuiteItems);
+		}
+		return items;
+	};
+
+	var moveTestCase = function(
+		newNode,
+		orgNode,
+		newInstance,
+		oldInstance
+	) {
+		newNode.original = orgNode.original;
+		var apiParms = $.extend(
+			{},
+			Redcase.methods.testCase.actions.update(
+				orgNode.original.issue_id
+			), {
+				params: {
+					source_exec_id: oldInstance
+						.get_node(orgNode.parent)
+						.original
+						.suite_id,
+					dest_exec_id: newInstance
+						.get_node(newNode.parent)
+						.original
+						.suite_id
+				},
+				success: function() {
+					oldInstance.delete_node(orgNode);
+					Redcase.full();
+				},
+				error: function() {
+					newInstance.delete_node(newNode);
+				},
+				errorMessage: (
+					"Test case '"
+					+ orgNode.text
+					+ "' can't be moved"
+				)
+			}
+		);
+		Redcase.apiCall(apiParms);
+	};
+
+	var moveTestSuite = function(
+		newNode,
+		orgNode,
+		newInstance,
+		oldInstance
+	) {
+		newNode.original = orgNode.original;
+		var apiParms = $.extend(
+			{},
+			Redcase.methods.executionSuite.actions.update(
+				orgNode.original.suite_id
+			), {
+				params: {
+					parent_id: newInstance
+						.get_node(new_node.parent)
+						.original
+						.suite_id
+				},
+				success: function() {
+					oldInstance.delete_node(orgNode);
+					Redcase.full();
+				},
+				error: function() {
+					newInstance.delete_node(newNode);
+				},
+				errorMessage: (
+					"Test suite '"
+					+ orgNode.text
+					+ "' can't be moved"
+				)
+			}
+		);
+		Redcase.apiCall(apiParms);
+	};
+
+	var copyTestCase = function(
+		newNode,
+		orgNode,
+		newInstance,
+		oldInstance
+	) {
+		if (orgNode.original.status.name === 'In Progress') {
+			newNode.original = orgNode.original;
+			newInstance.set_id(newNode, orgNode.id);
+			var apiParms = $.extend(
+				{},
+				Redcase.methods.testCase.actions.update(
+					orgNode.original.issue_id
+				), {
+					params: {
+						dest_exec_id: newInstance
+							.get_node(newNode.parent)
+							.original
+							.suite_id
+					},
+					success: function(data) {
+						if (data.success === true) {
+							Redcase.full();
+						} else {
+							newInstance.delete_node(newNode);
+							Redcase.errorBox(
+								"Test case '"
+								+ orgNode.text
+								+ "' can't be added"
+							);
+						}
+					},
+					error: function() {
+						newInstance.delete_node(newNode);
+					},
+					errorMessage: (
+						"Test case '" + orgNode.text + "' can't be added"
+					)
+				}
+			);
+			Redcase.apiCall(apiParms);
+		} else {
+			newInstance.delete_node(newNode);
+		}
+	};
+
+	var onCopy = function(event, object) {
+		// Fields: is_foreign, is_multi, new_instance, node, old_instance,
+		//         old_parent (ID), old_position (index), original (node),
+		//         parent (id), position (index (altid 0?))
+		// Internal drag + drop
+		if (object.old_instance === object.new_instance) {
+			switch (object.original.type) {
+				case 'case':
+					moveTestCase(
+						object.node,
+						object.original,
+						object.new_instance,
+						object.old_instance
+					);
+					break;
+				case 'suite':
+					moveTestSuite(
+						object.node,
+						object.original,
+						object.new_instance,
+						object.old_instance
+					);
+					break;
+			}
+		} else {
+			if (object.original.type === 'case') {
+				copyTestCase(
+					object.node,
+					object.original,
+					object.new_instance,
+					object.old_instance
+				);
+			} else {
+				object.new_instance.delete_node(object.node);
+			}
+		}
+	};
+
+	var build = function(params) {
+		tree = $('#management_execution_suite_tree_id').jstree({
 			core: {
-				check_callback: Redcase.ExecutionSuiteTree.CheckCallback,
+				check_callback: checkCallback,
 				data: {
 					type: 'GET',
 					url: function() {
 						return (
 							Redcase.context
 							+ Redcase.methods.executionSuite.actions.show(
-								jQuery2('#list_id').val()
+								$('#list_id').val()
 							).method
 						);
 					}
 				}
 			},
-			// Bug workaround, should only be in "dnd" settings when JSTree is
-			// fixed.
+			// Bug workaround, should only be in "dnd" settings when
+			// JSTree is fixed.
 			drag_selection: true,
 			dnd: {
 				always_copy: true,
 				drag_selection: true,
-				is_draggable: Redcase.ExecutionSuiteTree.IsDraggable
+				is_draggable: isDraggable
 			},
 			types: {
 				'#': {
@@ -521,16 +532,29 @@ Redcase.ExecutionSuiteTree.build = function(params) {
 				}
 			},
 			contextmenu: {
-				items: Redcase.ExecutionSuiteTree.getItems
+				items: getItems
 			},
 			plugins: ['dnd', 'types', 'contextmenu']
 		});
-	Redcase.ExecutionSuiteTree.tree.on(
-		'copy_node.jstree',
-		Redcase.ExecutionSuiteTree.OnCopy
-	);
-	Redcase.ExecutionSuiteTree.tree = jQuery2.jstree.reference(
-		Redcase.ExecutionSuiteTree.tree
-	);
+		tree.on('copy_node.jstree', onCopy);
+		tree = $.jstree.reference(tree);
+	};
+
+	(function() {
+		prepareContextItems();
+		build();
+		$('#btn_save_exec_suite').on('click', saveExecSuiteClick);
+		$('#btn_create_exec_suite').on('click', createExecSuiteClick);
+		$('#btn_destroy_exec_suite').on('click', destroyExecSuiteClick);
+		$('#list_id').on('change', refresh);
+	})();
+
 };
+
+jQuery2(function($) {
+	if (Redcase.ExecutionSuiteTree) {
+		return;
+	}
+	Redcase.ExecutionSuiteTree = new RedcaseExecutionSuiteTree($);
+});
 

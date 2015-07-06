@@ -79,7 +79,7 @@ var RedcaseGraph = function($) {
 
 }
 
-jQuery(function($) {
+jQuery2(function($) {
 	if (Redcase.Graph) {
 		return;
 	}

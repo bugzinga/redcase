@@ -87,7 +87,7 @@ var RedcaseCombos = function($) {
 
 };
 
-jQuery(function($) {
+jQuery2(function($) {
 	if (Redcase.Combos) {
 		return;
 	}

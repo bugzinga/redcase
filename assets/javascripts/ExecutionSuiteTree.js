@@ -148,7 +148,7 @@ Redcase.ExecutionSuiteTree.addSuiteDialog = function (params) {
 	var
 	node = Redcase.ExecutionSuiteTree.tree.get_node(params.reference);
 
-	jQuery('#redcase-dialog').dialog({
+	jQuery2('#redcase-dialog').dialog({
 		title : 'Creating execution suite',
 		modal : true,
 		resizable : false,
@@ -164,7 +164,7 @@ Redcase.ExecutionSuiteTree.addSuiteDialog = function (params) {
 						Redcase.full();
 					},
 					function () {
-						jQuery('#redcase-dialog').dialog('close');
+						jQuery2('#redcase-dialog').dialog('close');
 					}
 				);				
 			}
@@ -241,18 +241,18 @@ Redcase.ExecutionSuiteTree.renameSuiteDialog = function (params) {
 	var
 	node = Redcase.ExecutionSuiteTree.tree.get_node(params.reference);
 
-	jQuery('#redcase-dialog').dialog({
+	jQuery2('#redcase-dialog').dialog({
 		title : 'Renaming execution suite',
 		modal : true,
 		resizable : false,
 		buttons : {
 			'OK' : function() {
 				var 
-				name = jQuery('#redcase-dialog-value').val();
+				name = jQuery2('#redcase-dialog-value').val();
 				Redcase.ExecutionSuiteTree.renameSuite(node.original.suite_id, name, function () {
 					Redcase.ExecutionSuiteTree.tree.set_text(node, name);
 					Redcase.full();
-				}, function () {jQuery('#redcase-dialog').dialog('close')})
+				}, function () {jQuery2('#redcase-dialog').dialog('close')})
 			}
 		}
 	});

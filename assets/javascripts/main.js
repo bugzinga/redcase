@@ -1,38 +1,8 @@
 
-var Form = {
-	Element: {
-		EventObserver: function(element, callback) {
-			$('#' + element).change(function(event) {
-				var target = event.target;
-				callback(target, $(target).val());
-			});
-		}
-	},
-	serialize: function(element) {
-		return $('#' + element).serialize();
-	}
-};
-
-var Ajax = {
-	Updater: function(elementToUpdate, url, config) {
-		$.ajax(
-			url, {
-				type: (config.method || 'GET'),
-				data: config.parameters,
-				success: function(data, textStatus, request) {
-					$('#' + elementToUpdate).html(data);
-				},
-				complete: function() {
-					if (config.onComplete) {
-						config.onComplete();
-					}
-				}
-			}
-		);
-	}
-};
-
-$(function() {
+// TODO: Create a simple wrapper to keep all the functionality related to
+//       Redcase's dialog windows at the only place, and provide more OOP-like
+//       access to show/hide it.
+jQuery2(function($) {
 	$('#redcase-dialog').keydown(function(event) {
 		if (event.keyCode === 13) {
 			$('#redcase-dialog')

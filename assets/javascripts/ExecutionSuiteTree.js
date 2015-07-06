@@ -15,9 +15,7 @@ Redcase.ExecutionSuiteTree.updateList2 = function() {
 	jQuery2.extend(apiParms, Redcase.methods.executionSuite.actions.index(), {
 		success : function(data, textStatus, request) {
 			jQuery2('#execution_settings_id').html(data);
-			if (Redcase.ExecutionTree.tree) {
-				Redcase.ExecutionTree.tree.refresh();
-			}
+			Redcase.ExecutionTree.refresh();
 		},
 		errorMessage : "Couldn't load execution list"
 	});

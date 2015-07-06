@@ -227,8 +227,8 @@ var Redcase = {
 
     full: function() {
 		this.log.info('Running full update...')
-		Redcase.ExecutionSuiteTree.updateList2();
-		Redcase.Combos.update();
+		Redcase.executionSuiteTree.updateList2();
+		Redcase.combos.update();
     }
 
 };

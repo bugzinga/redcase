@@ -44,7 +44,7 @@ var RedcaseCombos = function($) {
 			}
 		);
 		Redcase.apiCall(apiParams);
-		Redcase.Graph.update();
+		Redcase.graph.update();
 		apiParams = jQuery2.extend(
 			{},
 			Redcase.methods.executionSuite.actions.index(), {
@@ -88,9 +88,12 @@ var RedcaseCombos = function($) {
 };
 
 jQuery2(function($) {
-	if (Redcase.Combos) {
+	if (!Redcase) {
+		Redcase = {};
+	}
+	if (Redcase.combos) {
 		return;
 	}
-	Redcase.Combos = new RedcaseCombos($);
+	Redcase.combos = new RedcaseCombos($);
 });
 

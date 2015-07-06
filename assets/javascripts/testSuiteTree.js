@@ -453,9 +453,12 @@ var RedcaseTestSuiteTree = function($) {
 };
 
 jQuery2(function($) {
-	if (Redcase.TestSuiteTree) {
+	if (!Redcase) {
+		Redcase = {};
+	}
+	if (Redcase.testSuiteTree) {
 		return;
 	}
-	Redcase.TestSuiteTree = new RedcaseTestSuiteTree($);
+	Redcase.testSuiteTree = new RedcaseTestSuiteTree($);
 });
 

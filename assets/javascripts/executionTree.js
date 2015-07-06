@@ -45,7 +45,7 @@ var RedcaseExecutionTree = function($) {
 					//       controls' changes might be not the best
 					//       solution, but at least it seems to fix the
 					//       issue with updates.
-					Redcase.Combos.refresh();
+					Redcase.combos.refresh();
 				},
 				errorMessage: 'Execution failed'
 			}
@@ -267,9 +267,12 @@ var RedcaseExecutionTree = function($) {
 };
 
 jQuery2(function($) {
-	if (Redcase.ExecutionTree) {
+	if (!Redcase) {
+		Redcase = {};
+	}
+	if (Redcase.executionTree) {
 		return;
 	}
-	Redcase.ExecutionTree = new RedcaseExecutionTree($);
+	Redcase.executionTree = new RedcaseExecutionTree($);
 });
 

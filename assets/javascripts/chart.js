@@ -80,9 +80,12 @@ var RedcaseGraph = function($) {
 }
 
 jQuery2(function($) {
-	if (Redcase.Graph) {
+	if (!Redcase) {
+		Redcase = {};
+	}
+	if (Redcase.graph) {
 		return;
 	}
-	Redcase.Graph = new RedcaseGraph($);
+	Redcase.graph = new RedcaseGraph($);
 });
 

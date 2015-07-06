@@ -17,7 +17,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			Redcase.methods.executionSuite.actions.index(), {
 				success: function(data, textStatus, request) {
 					$('#execution_settings_id').html(data);
-					Redcase.ExecutionTree.refresh();
+					Redcase.executionTree.refresh();
 				},
 				errorMessage : "Couldn't load execution list"
 			}
@@ -313,7 +313,7 @@ var RedcaseExecutionSuiteTree = function($) {
 
 	var getItems = function() {
 		var items = {};
-		var selectionType = Redcase.TestSuiteTree.getSelectionType(tree);
+		var selectionType = Redcase.testSuiteTree.getSelectionType(tree);
 		if (selectionType < 3) {
 			items = $.extend(items, commonItems);
 		}
@@ -552,9 +552,12 @@ var RedcaseExecutionSuiteTree = function($) {
 };
 
 jQuery2(function($) {
-	if (Redcase.ExecutionSuiteTree) {
+	if (!Redcase) {
+		Redcase = {};
+	}
+	if (Redcase.executionSuiteTree) {
 		return;
 	}
-	Redcase.ExecutionSuiteTree = new RedcaseExecutionSuiteTree($);
+	Redcase.executionSuiteTree = new RedcaseExecutionSuiteTree($);
 });
 

@@ -117,9 +117,12 @@ var RedcaseEnvironments = function($) {
 }
 
 jQuery2(function($) {
-	if (Redcase.Environments) {
+	if (!Redcase) {
+		Redcase = {};
+	}
+	if (Redcase.environments) {
 		return;
 	}
-	Redcase.Environments = new RedcaseEnvironments($);
+	Redcase.environments = new RedcaseEnvironments($);
 });
 

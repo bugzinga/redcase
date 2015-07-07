@@ -5,175 +5,208 @@ var RedcaseApi = function($) {
 
 	this.context = 'redcase/';
 
-	this.methods = {
+	this.core = new function() {
 
-		redcase: {
-			controller: '',
-			actions: {
-				getAttachmentURLs: function() {
-					return {
-						method: Redcase.api.methods.redcase.controller + '/get_attachment_urls',
-						httpMethod: 'GET'
-					}
-				}
-			}
-		},
+		var self = this;
 
-		testSuite: {
-			controller: 'testsuites',
-			actions: {
-				index: function() {
-					return {
-						method: Redcase.api.methods.testSuite.controller,
-						httpMethod: 'GET'
-					}
-				},
-				destroy: function(id) {
-					return {
-						method: (Redcase.api.methods.testSuite.controller + '/' + id),
-						httpMethod: 'DELETE'
-					}
-				},
-				update: function(id) {
-					return {
-						method: (Redcase.api.methods.testSuite.controller + '/' + id),
-						httpMethod: 'PUT'
-					}
-				},
-				create: function() {
-					return {
-						method: Redcase.api.methods.testSuite.controller,
-						httpMethod: 'POST'
-					}
-				}
-			}
-		},
+		this.controller = '';
 
-		executionSuite: {
-			controller: 'executionsuites',
-			actions: {
-				create: function() {
-					return {
-						method: Redcase.api.methods.executionSuite.controller,
-						httpMethod: 'POST'
-					}
-				},
-				update: function(id) {
-					return {
-						method: (Redcase.api.methods.executionSuite.controller + '/' + id),
-						httpMethod: 'PUT'
-					}
-				},
-				destroy: function(id) {
-					return {
-						method: (Redcase.api.methods.executionSuite.controller + '/' + id),
-						httpMethod: 'DELETE'
-					}
-				},
-				show: function(id) {
-					return {
-						method: (Redcase.api.methods.executionSuite.controller + '/' + id),
-						httpMethod: 'GET'
-					}
-				},
-				index: function() {
-					return {
-						method: Redcase.api.methods.executionSuite.controller,
-						httpMethod: 'GET'
-					}
-				}
-			}
-		},
+		this.getAttachmentURLs = function() {
+			return {
+				method: (self.controller + '/get_attachment_urls'),
+				httpMethod: 'GET'
+			};
+		};
 
-		executionJournal: {
-			controller: 'executionjournals',
-			actions: {
-				index: function() {
-					return {
-						method: Redcase.api.methods.executionJournal.controller,
-						httpMethod: 'GET'
-					}
-				},
-			}
-		},
+	};
 
-		environments: {
-			controller: 'environments',
-			actions: {
-				index: function() {
-					return {
-						method: Redcase.api.methods.environments.controller,
-						httpMethod: 'GET'
-					}
-				},
-				update: function(id) {
-					return {
-						method: (Redcase.api.methods.environments.controller + '/' + id),
-						httpMethod: 'PUT'
-					}
-				},
-				create: function() {
-					return {
-						method: Redcase.api.methods.environments.controller,
-						httpMethod: 'POST'
-					}
-				},
-				destroy: function(id) {
-					return {
-						method: (Redcase.api.methods.environments.controller + '/' + id),
-						httpMethod: 'DELETE'
-					}
-				}
-			}
-		},
+	this.testSuite = new function() {
 
-		testCase: {
-			controller: 'testcases',
-			actions: {
-				index: function() {
-					return {
-						method: Redcase.api.methods.testCase.controller,
-						httpMethod: 'GET'
-					}
-				},
-				update: function(id) {
-					return {
-						method: (Redcase.api.methods.testCase.controller + '/' + id),
-						httpMethod: 'PUT',
-					}
-				},
-				copy: function(id) {
-					return {
-						method: (Redcase.api.methods.testCase.controller + '/' + id + '/copy'),
-						httpMethod: 'POST',
-					}
-				}
-			}
-		},
+		var self = this;
 
-		combos: {
-			controller: 'combos',
-			actions: {
-				index: function() {
-					return {
-						method: Redcase.api.methods.combos.controller,
-						httpMethod: 'GET'
-					}
-				}
-			}
-		},
+		this.controller = 'testsuites';
 
-		graph: {
-			controller: 'graph',
-			actions: {
-				show: function(id) {
-					return {
-						method: (Redcase.api.methods.graph.controller + '/' + id),
-						httpMethod: 'GET'
-					}
-				}
-			}
-		}
+		this.index = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'GET'
+			};
+		};
+
+		this.destroy = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'DELETE'
+			};
+		};
+
+		this.update = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'PUT'
+			};
+		};
+
+		this.create = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'POST'
+			};
+		};
+
+	};
+
+	this.executionSuite = new function() {
+
+		var self = this;
+
+		this.controller = 'executionsuites';
+
+		this.create = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'POST'
+			};
+		};
+
+		this.update = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'PUT'
+			};
+		};
+
+		this.destroy = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'DELETE'
+			};
+		};
+
+		this.show = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'GET'
+			};
+		};
+
+		this.index = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'GET'
+			};
+		};
+
+	};
+
+	this.executionJournal = new function() {
+
+		var self = this;
+
+		this.controller = 'executionjournals';
+
+		this.index = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'GET'
+			};
+		};
+
+	};
+
+	this.environments = new function() {
+
+		var self = this;
+
+		this.controller = 'environments';
+
+		this.index = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'GET'
+			};
+		};
+
+		this.update = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'PUT'
+			};
+		};
+
+		this.create = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'POST'
+			};
+		};
+
+		this.destroy = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'DELETE'
+			};
+		};
+
+	};
+
+	this.testCase = new function() {
+
+		var self = this;
+
+		this.controller = 'testcases';
+
+		this.index = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'GET'
+			};
+		};
+
+		this.update = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'PUT',
+			};
+		};
+
+		this.copy = function(id) {
+			return {
+				method: (self.controller + '/' + id + '/copy'),
+				httpMethod: 'POST',
+			};
+		};
+
+	};
+
+	this.combos = new function() {
+		
+		var self = this;
+
+		this.controller = 'combos';
+
+		this.index = function() {
+			return {
+				method: self.controller,
+				httpMethod: 'GET'
+			};
+		};
+
+	};
+
+	this.graph = new function() {
+
+		var self = this;
+
+		this.controller = 'graph';
+
+		this.show = function(id) {
+			return {
+				method: (self.controller + '/' + id),
+				httpMethod: 'GET'
+			};
+		};
+
 	};
 
 	this.apiCall = function(parameters) {

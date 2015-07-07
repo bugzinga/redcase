@@ -92,9 +92,7 @@ var RedcaseTestSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.testCase.actions.update(
-				orgNode.original.issue_id
-			), {
+			Redcase.api.testCase.update(orgNode.original.issue_id), {
 				params: {
 					parent_id: newInstance
 						.get_node(newNode.parent)
@@ -124,9 +122,7 @@ var RedcaseTestSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.testSuite.actions.update(
-				orgNode.original.suite_id
-			), {
+			Redcase.api.testSuite.update(orgNode.original.suite_id), {
 				params: {
 					parent_id: newInstance
 						.get_node(newNode.parent)
@@ -178,9 +174,7 @@ var RedcaseTestSuiteTree = function($) {
 		var node = self.tree.get_node(params.reference);
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.testCase.actions.copy(
-				node.original.issue_id
-			), {
+			Redcase.api.testCase.copy(node.original.issue_id), {
 				params : {
 					dest_project: params.item.id
 				},
@@ -234,9 +228,7 @@ var RedcaseTestSuiteTree = function($) {
 	var deleteCase = function(node) {
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.testCase.actions.update(
-				node.original.issue_id
-			), {
+			Redcase.api.testCase.update(node.original.issue_id), {
 				params: {
 					obsolesce: true
 				},
@@ -264,9 +256,7 @@ var RedcaseTestSuiteTree = function($) {
 		) {
 			var apiParms = $.extend(
 				{},
-				Redcase.api.methods.testSuite.actions.destroy(
-					node.original.suite_id
-				), {
+				Redcase.api.testSuite.destroy(node.original.suite_id), {
 					success: function () {
 						self.tree.delete_node(node);
 					},
@@ -306,7 +296,7 @@ var RedcaseTestSuiteTree = function($) {
 					var name = $('#redcase-dialog-value').val();
 					var apiParms = $.extend(
 						{},
-						Redcase.api.methods.testSuite.actions.create(), {
+						Redcase.api.testSuite.create(), {
 							params: {
 								name: name,
 								parent_id: node.original.suite_id
@@ -341,7 +331,7 @@ var RedcaseTestSuiteTree = function($) {
 					var name = $('#redcase-dialog-value').val();
 					var apiParms = $.extend(
 						{},
-						Redcase.api.methods.testSuite.actions.update(
+						Redcase.api.testSuite.update(
 							node.original.suite_id
 						), {
 							params: {
@@ -412,7 +402,7 @@ var RedcaseTestSuiteTree = function($) {
 						type: 'GET',
 						url: (
 							Redcase.api.context
-							+ Redcase.api.methods.testSuite.controller
+							+ Redcase.api.testSuite.controller
 						)
 					}
 				},

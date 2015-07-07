@@ -14,7 +14,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	this.updateList2 = function() {
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.executionSuite.actions.index(), {
+			Redcase.api.executionSuite.index(), {
 				success: function(data, textStatus, request) {
 					$('#execution_settings_id').html(data);
 					Redcase.executionTree.refresh();
@@ -145,7 +145,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	) {
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.executionSuite.actions.create(), {
+			Redcase.api.executionSuite.create(), {
 				params: {
 					name: name,
 					parent_id: parentId
@@ -197,7 +197,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	) {
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.executionSuite.actions.destroy(suiteId), {
+			Redcase.api.executionSuite.destroy(suiteId), {
 				success: successCallback,
 				errorMessage: (
 					"Execution suite '"
@@ -228,9 +228,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	var deleteCase = function (node) {
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.testCase.actions.update(
-				node.original.issue_id
-			), {
+			Redcase.api.testCase.update(node.original.issue_id), {
 				params: {
 					remove_from_exec_id: tree
 						.get_node(node.parent)
@@ -270,7 +268,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	) {
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.executionSuite.actions.update(suiteId), {
+			Redcase.api.executionSuite.update(suiteId), {
 				params: {
 					new_name: name
 				},
@@ -341,9 +339,7 @@ var RedcaseExecutionSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.testCase.actions.update(
-				orgNode.original.issue_id
-			), {
+			Redcase.api.testCase.update(orgNode.original.issue_id), {
 				params: {
 					source_exec_id: oldInstance
 						.get_node(orgNode.parent)
@@ -380,7 +376,7 @@ var RedcaseExecutionSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.api.methods.executionSuite.actions.update(
+			Redcase.api.executionSuite.update(
 				orgNode.original.suite_id
 			), {
 				params: {
@@ -417,9 +413,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			newInstance.set_id(newNode, orgNode.id);
 			var apiParms = $.extend(
 				{},
-				Redcase.api.methods.testCase.actions.update(
-					orgNode.original.issue_id
-				), {
+				Redcase.api.testCase.update(orgNode.original.issue_id), {
 					params: {
 						dest_exec_id: newInstance
 							.get_node(newNode.parent)
@@ -499,7 +493,7 @@ var RedcaseExecutionSuiteTree = function($) {
 					url: function() {
 						return (
 							Redcase.api.context
-							+ Redcase.api.methods.executionSuite.actions.show(
+							+ Redcase.api.executionSuite.show(
 								$('#list_id').val()
 							).method
 						);

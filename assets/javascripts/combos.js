@@ -15,7 +15,7 @@ var RedcaseCombos = function($) {
 	this.update = function() {
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.combos.actions.index(), {
+			Redcase.api.combos.index(), {
 				success: function(data, textStatus, request) {
 					$('#combos_id').html(data);
 					rebind();
@@ -30,7 +30,7 @@ var RedcaseCombos = function($) {
 	this.refresh = function() {
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.combos.actions.index(), {
+			Redcase.api.combos.index(), {
 				params: {
 					environment_id: $('#environment').val(),
 					suite_id: $('#suite').val(),
@@ -47,7 +47,7 @@ var RedcaseCombos = function($) {
 		Redcase.graph.update();
 		apiParams = jQuery2.extend(
 			{},
-			Redcase.api.methods.executionSuite.actions.index(), {
+			Redcase.api.executionSuite.index(), {
 				params: {
 					environment_id: $('#environment').val(),
 					suite_id: $('#suite').val(),

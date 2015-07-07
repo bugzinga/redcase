@@ -21,7 +21,7 @@ var RedcaseExecutionTree = function($) {
 		var result = $('#results').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.testCase.actions.update(issueId), {
+			Redcase.api.testCase.update(issueId), {
 				params: {
 					version: $('#version').val(),
 					result: result,
@@ -63,7 +63,7 @@ var RedcaseExecutionTree = function($) {
 					type: 'GET',
 					url: function() {
 						return Redcase.api.context
-							+ Redcase.api.methods.executionSuite.actions.show(
+							+ Redcase.api.executionSuite.show(
 								$('#list2_id').val()
 							).method
 					},
@@ -89,7 +89,7 @@ var RedcaseExecutionTree = function($) {
 		if (node.original.type == 'case') {
 			var apiParms = $.extend(
 				{},
-				Redcase.api.methods.testCase.actions.index(), {
+				Redcase.api.testCase.index(), {
 					params: {
 						"object_id": node.original.issue_id
 					},
@@ -115,8 +115,7 @@ var RedcaseExecutionTree = function($) {
 						var version = $('#version');
 						var apiParms = $.extend(
 							{},
-							Redcase.api.methods.executionJournal.actions
-								.index(), {
+							Redcase.api.executionJournal.index(), {
 								params: {
 									"issue_id": node.original.issue_id,
 									"version": version.val()
@@ -138,8 +137,7 @@ var RedcaseExecutionTree = function($) {
 						Redcase.api.apiCall(apiParms);
 						apiParms = $.extend(
 							{},
-							Redcase.api.methods.redcase.actions
-								.getAttachmentURLs(), {
+							Redcase.api.core.getAttachmentURLs(), {
 								params: {
 									"issue_id": node.original.issue_id
 								},

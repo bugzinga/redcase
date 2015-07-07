@@ -12,7 +12,7 @@ var RedcaseEnvironments = function($) {
 		var environmentId = $('#execution_environment_id').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.environments.actions.index(), {
+			Redcase.api.environments.index(), {
 				params: {
 					execution_environment_id: environmentId
 				},
@@ -37,7 +37,7 @@ var RedcaseEnvironments = function($) {
 		var environment_id = $('#execution_environment_id').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.environments.actions.destroy(environment_id), {
+			Redcase.api.environments.destroy(environment_id), {
 				success: function(data, textStatus, request) {
 					$('#execution_environment_id option:selected').remove();
 					$('#execution_environment_id').change();
@@ -61,7 +61,7 @@ var RedcaseEnvironments = function($) {
 		var description = $('#execution_environment_description').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.environments.actions.create(), {
+			Redcase.api.environments.create(), {
 				params: {
 					execution_environment: {
 						name: name,
@@ -90,7 +90,7 @@ var RedcaseEnvironments = function($) {
 		var description = $('#execution_environment_description').val()
 		var apiParams = $.extend(
 			{},
-			Redcase.api.methods.environments.actions.update(environmentId), {
+			Redcase.api.environments.update(environmentId), {
 				params: {
 					execution_environment: {
 						name: name,

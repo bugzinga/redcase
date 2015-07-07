@@ -193,10 +193,10 @@ var RedcaseTestSuiteTree = function($) {
 	var prepareContextItems = function() {
 		var tmpObj = {};
 		var copyItems = {};
-		for (var i = 0; i < Redcase.api.jsCopyToMenuItems.length; i++) {
-			tmpObj['keyfor_' + Redcase.api.jsCopyToMenuItems[i].id] = {
-				label: Redcase.api.jsCopyToMenuItems[i].text,
-				id: Redcase.api.jsCopyToMenuItems[i].id,
+		for (var i = 0; i < Redcase.jsCopyToMenuItems.length; i++) {
+			tmpObj['keyfor_' + Redcase.jsCopyToMenuItems[i].id] = {
+				label: Redcase.jsCopyToMenuItems[i].text,
+				id: Redcase.jsCopyToMenuItems[i].id,
 				action: contextCopyTo
 			};
 			$.extend(copyItems, tmpObj);

@@ -34,7 +34,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			},
 			function() {
 				tree.refresh();
-				Redcase.api.full();
+				Redcase.full();
 			}
 		);
 		event.preventDefault();
@@ -54,7 +54,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			},
 			function() {
 				tree.refresh();
-				Redcase.api.full();
+				Redcase.full();
 			}
 		);
 		event.preventDefault();
@@ -70,7 +70,7 @@ var RedcaseExecutionSuiteTree = function($) {
 					$("#list_id option:selected").text()
 				);
 				tree.refresh();
-				Redcase.api.full();
+				Redcase.full();
 			}
 		);
 		event.preventDefault();
@@ -179,7 +179,7 @@ var RedcaseExecutionSuiteTree = function($) {
 								node,
 								newNode
 							);
-							Redcase.api.full();
+							Redcase.full();
 						},
 						function() {
 							$('#redcase-dialog').dialog('close');
@@ -216,7 +216,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				node.text,
 				function() {
 					tree.delete_node(node);
-					Redcase.api.full();
+					Redcase.full();
 				}
 			);
 		} else {
@@ -239,7 +239,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				},
 				success: function() {
 					tree.delete_node(node);
-					Redcase.api.full();
+					Redcase.full();
 				},
 				errorMessage: (
 					"Test case '"
@@ -300,7 +300,7 @@ var RedcaseExecutionSuiteTree = function($) {
 						name,
 						function() {
 							tree.set_text(node, name);
-							Redcase.api.full();
+							Redcase.full();
 						},
 						function() {
 							$('#redcase-dialog').dialog('close')
@@ -356,7 +356,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				},
 				success: function() {
 					oldInstance.delete_node(orgNode);
-					Redcase.api.full();
+					Redcase.full();
 				},
 				error: function() {
 					newInstance.delete_node(newNode);
@@ -391,7 +391,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				},
 				success: function() {
 					oldInstance.delete_node(orgNode);
-					Redcase.api.full();
+					Redcase.full();
 				},
 				error: function() {
 					newInstance.delete_node(newNode);
@@ -428,10 +428,10 @@ var RedcaseExecutionSuiteTree = function($) {
 					},
 					success: function(data) {
 						if (data.success === true) {
-							Redcase.api.full();
+							Redcase.full();
 						} else {
 							newInstance.delete_node(newNode);
-							Redcase.api.errorBox(
+							Redcase.errorBox(
 								"Test case '"
 								+ orgNode.text
 								+ "' can't be added"

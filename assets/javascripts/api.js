@@ -1,14 +1,11 @@
 
-var RedcaseApi = {
+var RedcaseApi = function($) {
 
-	log: LogManager.getLog('redcase.api'),
+	var log = LogManager.getLog('redcase.api');
 
-	context: 'redcase/',
+	this.context = 'redcase/';
 
-	// FIXME: Not part of the API.
-	jsCopyToMenuItems: [],
-
-	methods: {
+	this.methods = {
 
 		redcase: {
 			controller: '',
@@ -177,9 +174,9 @@ var RedcaseApi = {
 				}
 			}
 		}
-	},
+	};
 
-	apiCall: function(parameters) {
+	this.apiCall = function(parameters) {
 		var url = (this.context + parameters.method);
 		var token = $("meta[name='csrf-token']").attr('content');
 		var params = $.extend(
@@ -188,7 +185,7 @@ var RedcaseApi = {
 				authenticity_token: token
 			}
 		);
-		this.log.info('API call: ' + url);
+		log.info('API call: ' + url);
 		$('#ajax-indicator').fadeIn(100);
 		$.ajax(url, {
 			type: (parameters.httpMethod ? parameters.httpMethod : 'GET'),
@@ -202,8 +199,8 @@ var RedcaseApi = {
 				if (parameters.error) {
 					parameters.error(errorThrown, textStatus, jqXHR);
 				}
-				Redcase.api.errorBox(parameters.errorMessage);
-				this.log.debug(errorThrown);
+				Redcase.errorBox(parameters.errorMessage);
+				log.debug(errorThrown);
 			},
 			complete: function() {
 				if (parameters.complete) {
@@ -212,27 +209,7 @@ var RedcaseApi = {
 				$('#ajax-indicator').fadeOut(100);
 			}
 		});
-	},
-
-	// FIXME: Not part of the API.
-	errorBox: function(errorMessage) {
-		$('#redcase-error-message').text(errorMessage);
-		$('#redcase-error').dialog({
-			modal: true,
-			buttons: {
-				OK: function() {
-					$(this).dialog('close');
-				}
-			}
-		})
-	},
-
-	// FIXME: Not part of the API.
-    full: function() {
-		this.log.info('Running full update...')
-		Redcase.executionSuiteTree.updateList2();
-		Redcase.combos.update();
-    }
+	};
 
 };
 
@@ -243,6 +220,6 @@ jQuery2(function($) {
 	if (Redcase.api) {
 		return;
 	}
-	Redcase.api = RedcaseApi;
+	Redcase.api = new RedcaseApi($);
 });
 

@@ -3,7 +3,7 @@
 	jQuery2(function() {
 		// Collecting information about other projects (to copy test cases)...
 <% Project.allowed_to(:add_issues).where('id <> ?', @project.id).each { |op| %>
-		Redcase.api.jsCopyToMenuItems.push({
+		Redcase.jsCopyToMenuItems.push({
 			id: '<%= op.id %>',
 			text: '<%= op.name.gsub(/'/, "\\\\'") %>'
 		});

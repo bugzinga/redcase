@@ -26,7 +26,7 @@ var RedcaseEnvironments = function($) {
 					+ "' can't be loaded"
 				),
 				complete: function() {
-					Redcase.api.full();
+					Redcase.full();
 				}
 			}
 		);
@@ -48,7 +48,7 @@ var RedcaseEnvironments = function($) {
 					+ "' can't be deleted"
 				),
 				complete: function() {
-					Redcase.api.full();
+					Redcase.full();
 				}
 			}
 		);
@@ -76,7 +76,7 @@ var RedcaseEnvironments = function($) {
 				},
 				errorMessage: ("Environment '" + name + "' can't be created"),
 				complete: function() {
-					Redcase.api.full();
+					Redcase.full();
 				}
 			}
 		);
@@ -102,7 +102,7 @@ var RedcaseEnvironments = function($) {
 				},
 				errorMessage: ("Environment '" + name + "' can't be renamed"),
 				complete: function() {
-					Redcase.api.full();
+					Redcase.full();
 				}
 			}
 		);

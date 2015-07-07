@@ -15,7 +15,7 @@ var RedcaseCombos = function($) {
 	this.update = function() {
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.combos.actions.index(), {
+			Redcase.api.methods.combos.actions.index(), {
 				success: function(data, textStatus, request) {
 					$('#combos_id').html(data);
 					rebind();
@@ -24,13 +24,13 @@ var RedcaseCombos = function($) {
 				errorMessage: 'An unknown error ocurred'
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 	};
 
 	this.refresh = function() {
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.combos.actions.index(), {
+			Redcase.api.methods.combos.actions.index(), {
 				params: {
 					environment_id: $('#environment').val(),
 					suite_id: $('#suite').val(),
@@ -43,11 +43,11 @@ var RedcaseCombos = function($) {
 				errorMessage : 'An unknown error ocurred'
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 		Redcase.graph.update();
 		apiParams = jQuery2.extend(
 			{},
-			Redcase.methods.executionSuite.actions.index(), {
+			Redcase.api.methods.executionSuite.actions.index(), {
 				params: {
 					environment_id: $('#environment').val(),
 					suite_id: $('#suite').val(),
@@ -60,7 +60,7 @@ var RedcaseCombos = function($) {
 				errorMessage: "Couldn't load results"
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 	};
 
 	this.refreshFilter = function() {
@@ -88,7 +88,7 @@ var RedcaseCombos = function($) {
 };
 
 jQuery2(function($) {
-	if (!Redcase) {
+	if (typeof(Redcase) === 'undefined') {
 		Redcase = {};
 	}
 	if (Redcase.combos) {

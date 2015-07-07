@@ -92,7 +92,7 @@ var RedcaseTestSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.testCase.actions.update(
+			Redcase.api.methods.testCase.actions.update(
 				orgNode.original.issue_id
 			), {
 				params: {
@@ -112,7 +112,7 @@ var RedcaseTestSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var moveTestSuite = function(
@@ -124,7 +124,7 @@ var RedcaseTestSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.testSuite.actions.update(
+			Redcase.api.methods.testSuite.actions.update(
 				orgNode.original.suite_id
 			), {
 				params: {
@@ -144,7 +144,7 @@ var RedcaseTestSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var onCopy = function(event, object) {
@@ -178,7 +178,7 @@ var RedcaseTestSuiteTree = function($) {
 		var node = self.tree.get_node(params.reference);
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.testCase.actions.copy(
+			Redcase.api.methods.testCase.actions.copy(
 				node.original.issue_id
 			), {
 				params : {
@@ -187,16 +187,16 @@ var RedcaseTestSuiteTree = function($) {
 				errorMessage: ("Can't copy '" + node.text + "'")
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var prepareContextItems = function() {
 		var tmpObj = {};
 		var copyItems = {};
-		for (var i = 0; i < Redcase.jsCopyToMenuItems.length; i++) {
-			tmpObj['keyfor_' + Redcase.jsCopyToMenuItems[i].id] = {
-				label: Redcase.jsCopyToMenuItems[i].text,
-				id: Redcase.jsCopyToMenuItems[i].id,
+		for (var i = 0; i < Redcase.api.jsCopyToMenuItems.length; i++) {
+			tmpObj['keyfor_' + Redcase.api.jsCopyToMenuItems[i].id] = {
+				label: Redcase.api.jsCopyToMenuItems[i].text,
+				id: Redcase.api.jsCopyToMenuItems[i].id,
 				action: contextCopyTo
 			};
 			$.extend(copyItems, tmpObj);
@@ -234,7 +234,7 @@ var RedcaseTestSuiteTree = function($) {
 	var deleteCase = function(node) {
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.testCase.actions.update(
+			Redcase.api.methods.testCase.actions.update(
 				node.original.issue_id
 			), {
 				params: {
@@ -254,7 +254,7 @@ var RedcaseTestSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var deleteSuite = function(node) {
@@ -264,7 +264,7 @@ var RedcaseTestSuiteTree = function($) {
 		) {
 			var apiParms = $.extend(
 				{},
-				Redcase.methods.testSuite.actions.destroy(
+				Redcase.api.methods.testSuite.actions.destroy(
 					node.original.suite_id
 				), {
 					success: function () {
@@ -277,7 +277,7 @@ var RedcaseTestSuiteTree = function($) {
 					)
 				}
 			);
-			Redcase.apiCall(apiParms);
+			Redcase.api.apiCall(apiParms);
 		} else {
 			// Error, can't delete root node.
 			console.log('Tried to delete suite: ' + node.text);
@@ -306,7 +306,7 @@ var RedcaseTestSuiteTree = function($) {
 					var name = $('#redcase-dialog-value').val();
 					var apiParms = $.extend(
 						{},
-						Redcase.methods.testSuite.actions.create(), {
+						Redcase.api.methods.testSuite.actions.create(), {
 							params: {
 								name: name,
 								parent_id: node.original.suite_id
@@ -324,7 +324,7 @@ var RedcaseTestSuiteTree = function($) {
 							}
 						}
 					);
-					Redcase.apiCall(apiParms);
+					Redcase.api.apiCall(apiParms);
 				}
 			}
 		});
@@ -341,7 +341,7 @@ var RedcaseTestSuiteTree = function($) {
 					var name = $('#redcase-dialog-value').val();
 					var apiParms = $.extend(
 						{},
-						Redcase.methods.testSuite.actions.update(
+						Redcase.api.methods.testSuite.actions.update(
 							node.original.suite_id
 						), {
 							params: {
@@ -358,7 +358,7 @@ var RedcaseTestSuiteTree = function($) {
 							}
 						}
 					);
-					Redcase.apiCall(apiParms);
+					Redcase.api.apiCall(apiParms);
 				}
 			},
 			open: function () {
@@ -411,8 +411,8 @@ var RedcaseTestSuiteTree = function($) {
 					data: {
 						type: 'GET',
 						url: (
-							Redcase.context
-							+ Redcase.methods.testSuite.controller
+							Redcase.api.context
+							+ Redcase.api.methods.testSuite.controller
 						)
 					}
 				},
@@ -453,7 +453,7 @@ var RedcaseTestSuiteTree = function($) {
 };
 
 jQuery2(function($) {
-	if (!Redcase) {
+	if (typeof(Redcase) === 'undefined') {
 		Redcase = {};
 	}
 	if (Redcase.testSuiteTree) {

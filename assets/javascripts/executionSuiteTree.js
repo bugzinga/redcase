@@ -14,7 +14,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	this.updateList2 = function() {
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.executionSuite.actions.index(), {
+			Redcase.api.methods.executionSuite.actions.index(), {
 				success: function(data, textStatus, request) {
 					$('#execution_settings_id').html(data);
 					Redcase.executionTree.refresh();
@@ -22,7 +22,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				errorMessage : "Couldn't load execution list"
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var saveExecSuiteClick = function(event) {
@@ -34,7 +34,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			},
 			function() {
 				tree.refresh();
-				Redcase.full();
+				Redcase.api.full();
 			}
 		);
 		event.preventDefault();
@@ -54,7 +54,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			},
 			function() {
 				tree.refresh();
-				Redcase.full();
+				Redcase.api.full();
 			}
 		);
 		event.preventDefault();
@@ -70,7 +70,7 @@ var RedcaseExecutionSuiteTree = function($) {
 					$("#list_id option:selected").text()
 				);
 				tree.refresh();
-				Redcase.full();
+				Redcase.api.full();
 			}
 		);
 		event.preventDefault();
@@ -145,7 +145,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	) {
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.executionSuite.actions.create(), {
+			Redcase.api.methods.executionSuite.actions.create(), {
 				params: {
 					name: name,
 					parent_id: parentId
@@ -159,7 +159,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				complete: completeCallback
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var addSuiteDialog = function(params) {
@@ -179,7 +179,7 @@ var RedcaseExecutionSuiteTree = function($) {
 								node,
 								newNode
 							);
-							Redcase.full();
+							Redcase.api.full();
 						},
 						function() {
 							$('#redcase-dialog').dialog('close');
@@ -197,7 +197,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	) {
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.executionSuite.actions.destroy(suiteId), {
+			Redcase.api.methods.executionSuite.actions.destroy(suiteId), {
 				success: successCallback,
 				errorMessage: (
 					"Execution suite '"
@@ -206,7 +206,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var deleteSuiteNode = function(node) {
@@ -216,7 +216,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				node.text,
 				function() {
 					tree.delete_node(node);
-					Redcase.full();
+					Redcase.api.full();
 				}
 			);
 		} else {
@@ -228,7 +228,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	var deleteCase = function (node) {
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.testCase.actions.update(
+			Redcase.api.methods.testCase.actions.update(
 				node.original.issue_id
 			), {
 				params: {
@@ -239,7 +239,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				},
 				success: function() {
 					tree.delete_node(node);
-					Redcase.full();
+					Redcase.api.full();
 				},
 				errorMessage: (
 					"Test case '"
@@ -248,7 +248,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var deleteItem = function(params) {
@@ -270,7 +270,7 @@ var RedcaseExecutionSuiteTree = function($) {
 	) {
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.executionSuite.actions.update(suiteId), {
+			Redcase.api.methods.executionSuite.actions.update(suiteId), {
 				params: {
 					new_name: name
 				},
@@ -283,7 +283,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				complete: completeCallback
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var renameSuiteDialog = function(params) {
@@ -300,7 +300,7 @@ var RedcaseExecutionSuiteTree = function($) {
 						name,
 						function() {
 							tree.set_text(node, name);
-							Redcase.full();
+							Redcase.api.full();
 						},
 						function() {
 							$('#redcase-dialog').dialog('close')
@@ -341,7 +341,7 @@ var RedcaseExecutionSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.testCase.actions.update(
+			Redcase.api.methods.testCase.actions.update(
 				orgNode.original.issue_id
 			), {
 				params: {
@@ -356,7 +356,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				},
 				success: function() {
 					oldInstance.delete_node(orgNode);
-					Redcase.full();
+					Redcase.api.full();
 				},
 				error: function() {
 					newInstance.delete_node(newNode);
@@ -368,7 +368,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var moveTestSuite = function(
@@ -380,7 +380,7 @@ var RedcaseExecutionSuiteTree = function($) {
 		newNode.original = orgNode.original;
 		var apiParms = $.extend(
 			{},
-			Redcase.methods.executionSuite.actions.update(
+			Redcase.api.methods.executionSuite.actions.update(
 				orgNode.original.suite_id
 			), {
 				params: {
@@ -391,7 +391,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				},
 				success: function() {
 					oldInstance.delete_node(orgNode);
-					Redcase.full();
+					Redcase.api.full();
 				},
 				error: function() {
 					newInstance.delete_node(newNode);
@@ -403,7 +403,7 @@ var RedcaseExecutionSuiteTree = function($) {
 				)
 			}
 		);
-		Redcase.apiCall(apiParms);
+		Redcase.api.apiCall(apiParms);
 	};
 
 	var copyTestCase = function(
@@ -417,7 +417,7 @@ var RedcaseExecutionSuiteTree = function($) {
 			newInstance.set_id(newNode, orgNode.id);
 			var apiParms = $.extend(
 				{},
-				Redcase.methods.testCase.actions.update(
+				Redcase.api.methods.testCase.actions.update(
 					orgNode.original.issue_id
 				), {
 					params: {
@@ -428,10 +428,10 @@ var RedcaseExecutionSuiteTree = function($) {
 					},
 					success: function(data) {
 						if (data.success === true) {
-							Redcase.full();
+							Redcase.api.full();
 						} else {
 							newInstance.delete_node(newNode);
-							Redcase.errorBox(
+							Redcase.api.errorBox(
 								"Test case '"
 								+ orgNode.text
 								+ "' can't be added"
@@ -446,7 +446,7 @@ var RedcaseExecutionSuiteTree = function($) {
 					)
 				}
 			);
-			Redcase.apiCall(apiParms);
+			Redcase.api.apiCall(apiParms);
 		} else {
 			newInstance.delete_node(newNode);
 		}
@@ -498,8 +498,8 @@ var RedcaseExecutionSuiteTree = function($) {
 					type: 'GET',
 					url: function() {
 						return (
-							Redcase.context
-							+ Redcase.methods.executionSuite.actions.show(
+							Redcase.api.context
+							+ Redcase.api.methods.executionSuite.actions.show(
 								$('#list_id').val()
 							).method
 						);
@@ -552,7 +552,7 @@ var RedcaseExecutionSuiteTree = function($) {
 };
 
 jQuery2(function($) {
-	if (!Redcase) {
+	if (typeof(Redcase) === 'undefined') {
 		Redcase = {};
 	}
 	if (Redcase.executionSuiteTree) {

@@ -12,7 +12,7 @@ var RedcaseEnvironments = function($) {
 		var environmentId = $('#execution_environment_id').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.environments.actions.index(), {
+			Redcase.api.methods.environments.actions.index(), {
 				params: {
 					execution_environment_id: environmentId
 				},
@@ -26,18 +26,18 @@ var RedcaseEnvironments = function($) {
 					+ "' can't be loaded"
 				),
 				complete: function() {
-					Redcase.full();
+					Redcase.api.full();
 				}
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 	};
 
 	var onButtonDestroyClicked = function(event) {
 		var environment_id = $('#execution_environment_id').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.environments.actions.destroy(environment_id), {
+			Redcase.api.methods.environments.actions.destroy(environment_id), {
 				success: function(data, textStatus, request) {
 					$('#execution_environment_id option:selected').remove();
 					$('#execution_environment_id').change();
@@ -48,11 +48,11 @@ var RedcaseEnvironments = function($) {
 					+ "' can't be deleted"
 				),
 				complete: function() {
-					Redcase.full();
+					Redcase.api.full();
 				}
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 		event.preventDefault();
 	};
 
@@ -61,7 +61,7 @@ var RedcaseEnvironments = function($) {
 		var description = $('#execution_environment_description').val();
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.environments.actions.create(), {
+			Redcase.api.methods.environments.actions.create(), {
 				params: {
 					execution_environment: {
 						name: name,
@@ -76,11 +76,11 @@ var RedcaseEnvironments = function($) {
 				},
 				errorMessage: ("Environment '" + name + "' can't be created"),
 				complete: function() {
-					Redcase.full();
+					Redcase.api.full();
 				}
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 		event.preventDefault();
 	};
 
@@ -90,7 +90,7 @@ var RedcaseEnvironments = function($) {
 		var description = $('#execution_environment_description').val()
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.environments.actions.update(environmentId), {
+			Redcase.api.methods.environments.actions.update(environmentId), {
 				params: {
 					execution_environment: {
 						name: name,
@@ -102,11 +102,11 @@ var RedcaseEnvironments = function($) {
 				},
 				errorMessage: ("Environment '" + name + "' can't be renamed"),
 				complete: function() {
-					Redcase.full();
+					Redcase.api.full();
 				}
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 		event.preventDefault();
 	};
 
@@ -117,7 +117,7 @@ var RedcaseEnvironments = function($) {
 }
 
 jQuery2(function($) {
-	if (!Redcase) {
+	if (typeof(Redcase) === 'undefined') {
 		Redcase = {};
 	}
 	if (Redcase.environments) {

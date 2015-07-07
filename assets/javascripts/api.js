@@ -1,10 +1,11 @@
 
-var Redcase = {
+var RedcaseApi = {
 
-	log: LogManager.getLog('redcase'),
+	log: LogManager.getLog('redcase.api'),
 
 	context: 'redcase/',
 
+	// FIXME: Not part of the API.
 	jsCopyToMenuItems: [],
 
 	methods: {
@@ -14,7 +15,7 @@ var Redcase = {
 			actions: {
 				getAttachmentURLs: function() {
 					return {
-						method: Redcase.methods.redcase.controller + '/get_attachment_urls',
+						method: Redcase.api.methods.redcase.controller + '/get_attachment_urls',
 						httpMethod: 'GET'
 					}
 				}
@@ -26,25 +27,25 @@ var Redcase = {
 			actions: {
 				index: function() {
 					return {
-						method: Redcase.methods.testSuite.controller,
+						method: Redcase.api.methods.testSuite.controller,
 						httpMethod: 'GET'
 					}
 				},
 				destroy: function(id) {
 					return {
-						method: (Redcase.methods.testSuite.controller + '/' + id),
+						method: (Redcase.api.methods.testSuite.controller + '/' + id),
 						httpMethod: 'DELETE'
 					}
 				},
 				update: function(id) {
 					return {
-						method: (Redcase.methods.testSuite.controller + '/' + id),
+						method: (Redcase.api.methods.testSuite.controller + '/' + id),
 						httpMethod: 'PUT'
 					}
 				},
 				create: function() {
 					return {
-						method: Redcase.methods.testSuite.controller,
+						method: Redcase.api.methods.testSuite.controller,
 						httpMethod: 'POST'
 					}
 				}
@@ -56,31 +57,31 @@ var Redcase = {
 			actions: {
 				create: function() {
 					return {
-						method: Redcase.methods.executionSuite.controller,
+						method: Redcase.api.methods.executionSuite.controller,
 						httpMethod: 'POST'
 					}
 				},
 				update: function(id) {
 					return {
-						method: (Redcase.methods.executionSuite.controller + '/' + id),
+						method: (Redcase.api.methods.executionSuite.controller + '/' + id),
 						httpMethod: 'PUT'
 					}
 				},
 				destroy: function(id) {
 					return {
-						method: (Redcase.methods.executionSuite.controller + '/' + id),
+						method: (Redcase.api.methods.executionSuite.controller + '/' + id),
 						httpMethod: 'DELETE'
 					}
 				},
 				show: function(id) {
 					return {
-						method: (Redcase.methods.executionSuite.controller + '/' + id),
+						method: (Redcase.api.methods.executionSuite.controller + '/' + id),
 						httpMethod: 'GET'
 					}
 				},
 				index: function() {
 					return {
-						method: Redcase.methods.executionSuite.controller,
+						method: Redcase.api.methods.executionSuite.controller,
 						httpMethod: 'GET'
 					}
 				}
@@ -92,7 +93,7 @@ var Redcase = {
 			actions: {
 				index: function() {
 					return {
-						method: Redcase.methods.executionJournal.controller,
+						method: Redcase.api.methods.executionJournal.controller,
 						httpMethod: 'GET'
 					}
 				},
@@ -104,25 +105,25 @@ var Redcase = {
 			actions: {
 				index: function() {
 					return {
-						method: Redcase.methods.environments.controller,
+						method: Redcase.api.methods.environments.controller,
 						httpMethod: 'GET'
 					}
 				},
 				update: function(id) {
 					return {
-						method: (Redcase.methods.environments.controller + '/' + id),
+						method: (Redcase.api.methods.environments.controller + '/' + id),
 						httpMethod: 'PUT'
 					}
 				},
 				create: function() {
 					return {
-						method: Redcase.methods.environments.controller,
+						method: Redcase.api.methods.environments.controller,
 						httpMethod: 'POST'
 					}
 				},
 				destroy: function(id) {
 					return {
-						method: (Redcase.methods.environments.controller + '/' + id),
+						method: (Redcase.api.methods.environments.controller + '/' + id),
 						httpMethod: 'DELETE'
 					}
 				}
@@ -134,19 +135,19 @@ var Redcase = {
 			actions: {
 				index: function() {
 					return {
-						method: Redcase.methods.testCase.controller,
+						method: Redcase.api.methods.testCase.controller,
 						httpMethod: 'GET'
 					}
 				},
 				update: function(id) {
 					return {
-						method: (Redcase.methods.testCase.controller + '/' + id),
+						method: (Redcase.api.methods.testCase.controller + '/' + id),
 						httpMethod: 'PUT',
 					}
 				},
 				copy: function(id) {
 					return {
-						method: (Redcase.methods.testCase.controller + '/' + id + '/copy'),
+						method: (Redcase.api.methods.testCase.controller + '/' + id + '/copy'),
 						httpMethod: 'POST',
 					}
 				}
@@ -158,7 +159,7 @@ var Redcase = {
 			actions: {
 				index: function() {
 					return {
-						method: Redcase.methods.combos.controller,
+						method: Redcase.api.methods.combos.controller,
 						httpMethod: 'GET'
 					}
 				}
@@ -170,7 +171,7 @@ var Redcase = {
 			actions: {
 				show: function(id) {
 					return {
-						method: (Redcase.methods.graph.controller + '/' + id),
+						method: (Redcase.api.methods.graph.controller + '/' + id),
 						httpMethod: 'GET'
 					}
 				}
@@ -201,7 +202,7 @@ var Redcase = {
 				if (parameters.error) {
 					parameters.error(errorThrown, textStatus, jqXHR);
 				}
-				Redcase.errorBox(parameters.errorMessage);
+				Redcase.api.errorBox(parameters.errorMessage);
 				this.log.debug(errorThrown);
 			},
 			complete: function() {
@@ -213,6 +214,7 @@ var Redcase = {
 		});
 	},
 
+	// FIXME: Not part of the API.
 	errorBox: function(errorMessage) {
 		$('#redcase-error-message').text(errorMessage);
 		$('#redcase-error').dialog({
@@ -225,6 +227,7 @@ var Redcase = {
 		})
 	},
 
+	// FIXME: Not part of the API.
     full: function() {
 		this.log.info('Running full update...')
 		Redcase.executionSuiteTree.updateList2();
@@ -232,4 +235,14 @@ var Redcase = {
     }
 
 };
+
+jQuery2(function($) {
+	if (typeof(Redcase) === 'undefined') {
+		Redcase = {};
+	}
+	if (Redcase.api) {
+		return;
+	}
+	Redcase.api = RedcaseApi;
+});
 

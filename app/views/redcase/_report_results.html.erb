@@ -1,7 +1,10 @@
 <script type="text/javascript">
-	Redcase.result_names = <%=
-		ExecutionResult.all.collect { |x| x.name }.to_json.html_safe
-	%>;
+	if (typeof(Redcase) === 'undefined') {
+		Redcase = {};
+		Redcase.result_names = <%=
+			ExecutionResult.all.collect { |x| x.name }.to_json.html_safe
+		%>;
+	}
 </script>
 <table class="redcase-row" style="width: 100%; margin: 0px; text-align: center">
 	<tr style="font-weight: bold; background-color: #507aaa; color: white; text-align: center; vertical-align: top">

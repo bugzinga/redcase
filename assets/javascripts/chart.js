@@ -34,7 +34,7 @@ var RedcaseGraph = function($) {
 	this.update = function() {
 		var apiParams = $.extend(
 			{},
-			Redcase.methods.graph.actions.show(0), {
+			Redcase.api.methods.graph.actions.show(0), {
 				params: {
 					environment_id: $('#environment').val(),
 					suite_id: $('#suite').val(),
@@ -46,7 +46,7 @@ var RedcaseGraph = function($) {
 				errorMessage: "Couldn't load graph"
 			}
 		);
-		Redcase.apiCall(apiParams);
+		Redcase.api.apiCall(apiParams);
 	};
 
 	this.refresh = function(data) {
@@ -80,7 +80,7 @@ var RedcaseGraph = function($) {
 }
 
 jQuery2(function($) {
-	if (!Redcase) {
+	if (typeof(Redcase) === 'undefined') {
 		Redcase = {};
 	}
 	if (Redcase.graph) {

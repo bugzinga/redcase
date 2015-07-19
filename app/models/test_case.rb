@@ -120,10 +120,10 @@ class TestCase < ActiveRecord::Base
 	def to_json(context, version = nil, environment = nil)
 		atext = "#{issue_id}-#{issue.subject}"
 		last_result = get_last_result(version, environment)
-				
+
 		textilized_description =
 			if issue.description
-				context.textilizable(issue, :description, {})
+				context.textilizable(issue, :description, {}) rescue issue.description
 			else
 				''
 			end

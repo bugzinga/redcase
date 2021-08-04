@@ -1,1 +1,17 @@
-1
+name: Build
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: 790ced3cf01a895eaedb0df50a30022937300cf7
+          SONAR_HOST_URL: http://3.35.138.105:49111/
